@@ -93,7 +93,7 @@
         border-radius: 8px;
     }
 
-    /* === ОБЩИЕ КНОПКИ === */
+    /* === КНОПКИ === */
     .btn {
         padding: 9px 16px;
         border: none;
@@ -156,7 +156,7 @@
         margin: 0 auto;
     }
 
-    /* === БЛОКИ === */
+    /* === ПАНЕЛИ === */
     .panel {
         background: var(--card);
         border-radius: 14px;
@@ -197,7 +197,6 @@
     }
 
     .panel-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
-    .panel-title-icon.green { background: linear-gradient(135deg, #22c55e, #15803d); }
     .panel-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
     .panel-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
 
@@ -360,22 +359,44 @@
         gap: 3px;
     }
 
-    .gate-comment {
-        font-size: 11px;
-        padding: 5px 10px;
-        background: var(--warning-light);
-        border-left: 3px solid var(--warning);
-        border-radius: 4px;
-        color: #78350f;
-        font-style: italic;
-        margin-top: 4px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    /* Видимая плашка комментария */
+    .gate-comment-visible {
+        font-size: 12px;
+        padding: 7px 12px;
+        border-radius: 8px;
+        margin-top: 8px;
+        font-weight: 700;
+        line-height: 1.4;
+        word-wrap: break-word;
+        white-space: normal;
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        animation: comment-appear 0.3s ease;
     }
 
-    .gate-comment.do { background: var(--success-light); border-left-color: var(--success); color: #14532d; }
-    .gate-comment.no { background: var(--danger-light); border-left-color: var(--danger); color: #7f1d1d; }
+    @keyframes comment-appear {
+        0% { opacity: 0; transform: translateY(-4px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .gate-comment-visible.do {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        border-left: 4px solid var(--success);
+        color: #14532d;
+    }
+
+    .gate-comment-visible.no {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-left: 4px solid var(--danger);
+        color: #7f1d1d;
+    }
+
+    .gate-comment-visible.wait {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-left: 4px solid var(--warning);
+        color: #78350f;
+    }
 
     .gate-timer-box {
         background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
@@ -887,8 +908,7 @@
     </div>
     <div class="header-actions">
         <div class="clock" id="clock">--:--:--</div>
-        <button class="btn btn-secondary btn-icon" onclick="openImportBufferModal()" title="Импорт среза по буферу">📊</button>
-        <button class="btn btn-secondary btn-icon" onclick="openImportRoutesModal()" title="Импорт рейсов">📋</button>
+        <button class="btn btn-secondary btn-icon" onclick="openImportRoutesModal()" title="Импорт рейсов из чата">📋</button>
         <button class="btn btn-secondary btn-icon" onclick="resetAll()" title="Сброс">🔄</button>
     </div>
 </header>
@@ -911,14 +931,17 @@
     <!-- ПРАВАЯ КОЛОНКА -->
     <div style="display: flex; flex-direction: column; gap: 20px;">
 
-        <!-- БЛОК 1: Срез по буферу -->
+        <!-- БЛОК 1: Срез по буферу (редактируемый) -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">
                     <div class="panel-title-icon orange">📊</div>
                     СРЕЗ ПО БУФЕРУ
                 </div>
-                <div class="panel-count" id="bufferCount">0 направлений</div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <div class="panel-count" id="bufferCount">0 направлений</div>
+                    <button class="btn btn-primary" onclick="addBufferRow()" style="padding: 6px 12px; font-size: 11px;">➕ Добавить</button>
+                </div>
             </div>
             <div class="table-wrap">
                 <table id="bufferTable">
@@ -932,6 +955,7 @@
                             <th rowspan="2" class="td-center" style="vertical-align: bottom;">Есть ТС</th>
                             <th rowspan="2" class="td-center" style="vertical-align: bottom;">X-dok</th>
                             <th rowspan="2" class="td-center" style="vertical-align: bottom;">ВП</th>
+                            <th rowspan="2" class="td-center" style="vertical-align: bottom; width: 40px;"></th>
                         </tr>
                         <tr>
                             <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
@@ -940,12 +964,7 @@
                             <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
                         </tr>
                     </thead>
-                    <tbody id="bufferTableBody">
-                        <tr><td colspan="10" class="empty-block">
-                            <div class="empty-block-icon">📊</div>
-                            Нажми «📊» в шапке, чтобы загрузить срез по буферу
-                        </td></tr>
-                    </tbody>
+                    <tbody id="bufferTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -970,48 +989,6 @@
     </div>
 </div>
 
-<!-- === МОДАЛКА ИМПОРТА СРЕЗА === -->
-<div class="modal-overlay" id="bufferModal" onclick="if(event.target===this) closeBufferModal()">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title">📊 Импорт среза по буферу</div>
-            <button class="modal-close" onclick="closeBufferModal()">✕</button>
-        </div>
-        <div class="modal-desc">
-            Скопируй из Google Таблицы <b>как есть</b> (с шапкой) и вставь сюда. Приложение само разберёт столбцы.
-        </div>
-        <textarea id="bufferInput" placeholder="Направления	Старый сорт		Новый сорт		Тотал	Потребность ТС
-	Габарит	Негабарит	Габарит	Негабарит		
-Ижевск	2	1	9	0	12	1
-Чебоксары	0	0	1	0	1	0
-Челны	0	0	8	0	8	0
-Киров	0	12	5	0	17	1
-Екатеринбург	0	3	1	0	4	1
-Самара	3	1	1	0	5	1
-Самара Возврат	0	0	0	0	0	0
-Уфа	2	2	0	0	4	1
-Ростов	3	13	0	0	16	1
-Ульяновск	1	7	0	0	8	1
-Оренбург	1	2	1	0	4	1
-Нижний Новгород	7	12	1	0	20	1
-Пенза	1	1	1	0	3	1
-Саратов	2	2	0	0	4	1
-Дзержинский	0	0	3	0	3	0
-Возвраты
-DPD	18	0	0	0	18	0
-X5	10	0	0	0	10	0
-Софьино 3.1	0	0	0	0	0	0
-Софьино КГТ	0	0	0	0	0	0
-Домодедово	19	7	0	0	26	0
-Казань ВП	184	28	0	0	212	0
-ДМД ЕВСЦ	2	32	0	0	34	0"></textarea>
-        <div class="modal-buttons">
-            <button class="btn btn-secondary" onclick="closeBufferModal()">Отмена</button>
-            <button class="btn btn-primary" onclick="importBuffer()">✅ Загрузить</button>
-        </div>
-    </div>
-</div>
-
 <!-- === МОДАЛКА ИМПОРТА РЕЙСОВ === -->
 <div class="modal-overlay" id="routesModal" onclick="if(event.target===this) closeRoutesModal()">
     <div class="modal">
@@ -1031,7 +1008,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 Водитель: Мороз Евгений Сергеевич
 +79897344001
 Номер тягача: H008OY790
-Номер прицепа: KE997150
 Палетовместимость прицепа: 40
 
 Рейс #824787
@@ -1081,8 +1057,8 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             <div class="rec-option" data-rec="wait" onclick="selectRec('wait')">⏳ Ждать ФФЦ</div>
         </div>
 
-        <label>Комментарий</label>
-        <input type="text" id="gateComment" placeholder="Например: ждём документы">
+        <label>Комментарий (важно — виден на карточке)</label>
+        <input type="text" id="gateComment" placeholder="Например: ждём документы, догрузить Дзержинск">
 
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeGateModal()">Отмена</button>
@@ -1097,6 +1073,17 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 <script>
     // ===== КОНСТАНТЫ =====
     const GATES = [11, 12, 13, 14, 15, 16, 17];
+
+    const DEFAULT_DIRECTIONS = [
+        'Ижевск', 'Чебоксары', 'Челны', 'Киров', 'Екатеринбург',
+        'Самара', 'Самара Возврат', 'Уфа', 'Ростов', 'Ульяновск',
+        'Оренбург', 'Нижний Новгород', 'Пенза', 'Саратов', 'Дзержинский'
+    ];
+
+    const DEFAULT_RETURNS = [
+        'DPD', 'X5', 'Софьино 3.1', 'Софьино КГТ',
+        'Домодедово', 'Казань ВП', 'ДМД ЕВСЦ'
+    ];
 
     let gateStates = {};
     let bufferData = [];
@@ -1150,7 +1137,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     function onGateClick(num) {
         if (gateStates[num].active) {
             const state = gateStates[num];
-            if (confirm(`Ворота ${num}\n\nРейс: ${state.data.route}\nНаправление: ${state.data.direction}\nВодитель: ${state.data.driver}\n\nЗавершить?`)) {
+            if (confirm(`Ворота ${num}\n\nРейс: ${state.data.route}\nНаправление: ${state.data.direction}\nВодитель: ${state.data.driver}${state.data.comment ? '\n\n💬 ' + state.data.comment : ''}\n\nЗавершить?`)) {
                 completeOperation(num);
             }
         } else {
@@ -1223,6 +1210,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         showToast(`Рейс ${route} → ворота ${selectedGate}`, 'success');
     }
 
+    // ===== ПОСТАВИТЬ ФУРУ НА ВОРОТА =====
     function placeTruckOnGate(num, data) {
         const row = document.getElementById('gate-row-' + num);
         row.classList.remove('free');
@@ -1231,21 +1219,28 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         const recText = data.rec === 'do' ? 'Загрузка' : data.rec === 'no' ? 'Не грузить' : 'Ждать ФФЦ';
         const recClass = data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading';
 
-        let commentHtml = '';
-        if (data.comment) {
-            const commentClass = data.rec === 'do' ? 'do' : data.rec === 'no' ? 'no' : '';
-            commentHtml = `<div class="gate-comment ${commentClass}">💬 ${data.comment}</div>`;
-        }
-
         document.getElementById('gate-info-' + num).innerHTML = `
-            <div class="gate-status ${recClass}">${recText}</div>
-            <div class="gate-route">${data.route}</div>
-            <div class="gate-direction">${data.direction}</div>
-            <div class="gate-meta">
-                <div class="gate-meta-item">👤 ${data.driver || '—'}</div>
-                <div class="gate-meta-item">🚛 ${data.vehicle || '—'}</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <div style="flex: 1; min-width: 0;">
+                    <div class="gate-status ${recClass}">${recText}</div>
+                    <div class="gate-route">${data.route}</div>
+                    <div class="gate-direction">${data.direction}</div>
+                    <div class="gate-meta">
+                        <div class="gate-meta-item">👤 ${data.driver || '—'}</div>
+                        <div class="gate-meta-item">🚛 ${data.vehicle || '—'}</div>
+                    </div>
+                </div>
+                <button onclick="event.stopPropagation(); editComment(${num})" 
+                        style="background: white; border: 1.5px solid var(--border-strong); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 800; cursor: pointer; color: var(--text-dim); white-space: nowrap; font-family: inherit;"
+                        title="Добавить/изменить комментарий">
+                    ✏️ Комментарий
+                </button>
             </div>
-            ${commentHtml}
+            ${data.comment ? `
+                <div class="gate-comment-visible ${data.rec}" id="comment-${num}">
+                    💬 ${data.comment}
+                </div>
+            ` : `<div id="comment-${num}"></div>`}
         `;
 
         document.getElementById('gate-timer-' + num).innerHTML = `
@@ -1259,6 +1254,66 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         gateStates[num] = { active: true, data, startTime: Date.now() };
         updateGatesCount();
         startTimer(num);
+        saveGatesToLocal();
+    }
+
+    // ===== РЕДАКТИРОВАНИЕ КОММЕНТАРИЯ =====
+    function editComment(num) {
+        const state = gateStates[num];
+        if (!state.active) return;
+
+        const currentComment = state.data.comment || '';
+        const newComment = prompt(
+            `Комментарий к рейсу ${state.data.route} (ворота ${num}):\n\nОставьте пустым, чтобы удалить.`,
+            currentComment
+        );
+
+        if (newComment === null) return;
+
+        state.data.comment = newComment.trim();
+
+        const commentEl = document.getElementById('comment-' + num);
+        if (commentEl) {
+            if (state.data.comment) {
+                commentEl.className = 'gate-comment-visible ' + state.data.rec;
+                commentEl.innerHTML = '💬 ' + state.data.comment;
+            } else {
+                commentEl.className = '';
+                commentEl.innerHTML = '';
+            }
+        }
+
+        saveGatesToLocal();
+        showToast(state.data.comment ? 'Комментарий сохранён' : 'Комментарий удалён', 'success');
+    }
+
+    // ===== СОХРАНЕНИЕ ВОРОТ =====
+    function saveGatesToLocal() {
+        try {
+            const data = {};
+            GATES.forEach(num => {
+                if (gateStates[num].active) {
+                    data[num] = {
+                        data: gateStates[num].data,
+                        startTime: gateStates[num].startTime
+                    };
+                }
+            });
+            localStorage.setItem('warehouseGates', JSON.stringify(data));
+        } catch(e) {}
+    }
+
+    function loadGatesFromLocal() {
+        try {
+            const saved = JSON.parse(localStorage.getItem('warehouseGates') || '{}');
+            Object.keys(saved).forEach(num => {
+                const numInt = parseInt(num);
+                if (GATES.includes(numInt)) {
+                    placeTruckOnGate(numInt, saved[num].data);
+                    gateStates[numInt].startTime = saved[num].startTime;
+                }
+            });
+        } catch(e) {}
     }
 
     // ===== ТАЙМЕР =====
@@ -1312,145 +1367,186 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 
         gateStates[num] = { active: false, data: null };
         updateGatesCount();
+        saveGatesToLocal();
         showToast(`Ворота ${num} освобождены`, 'success');
     }
 
-    // ===== ИМПОРТ СРЕЗА ПО БУФЕРУ =====
-    function openImportBufferModal() {
-        document.getElementById('bufferModal').classList.add('active');
+    // ===== СРЕЗ ПО БУФЕРУ — РУЧНОЙ ВВОД =====
+    function initBufferData() {
+        const saved = localStorage.getItem('warehouseBuffer');
+        if (saved) {
+            try {
+                bufferData = JSON.parse(saved);
+                if (bufferData.length > 0) return;
+            } catch(e) {}
+        }
+        bufferData = [
+            ...DEFAULT_DIRECTIONS.map(d => ({
+                direction: d,
+                oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
+                haveTS: 0, xdok: 0, vp: 0,
+                isReturn: false
+            })),
+            ...DEFAULT_RETURNS.map(d => ({
+                direction: d,
+                oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
+                haveTS: 0, xdok: 0, vp: 0,
+                isReturn: true
+            }))
+        ];
     }
-    function closeBufferModal() {
-        document.getElementById('bufferModal').classList.remove('active');
+
+    function saveBufferData() {
+        localStorage.setItem('warehouseBuffer', JSON.stringify(bufferData));
     }
 
-    function importBuffer() {
-        const text = document.getElementById('bufferInput').value.trim();
-        if (!text) { showToast('Вставь текст среза', 'warning'); return; }
-
-        const lines = text.split('\n').map(l => l.replace(/\r$/, ''));
-        bufferData = [];
-        let inReturns = false;
-
-        lines.forEach((line) => {
-            if (!line.trim()) return;
-
-            // Разделитель "Возвраты"
-            if (/^\s*Возвраты\s*$/i.test(line.trim())) {
-                inReturns = true;
-                return;
-            }
-
-            // Разбираем строку по табу
-            const parts = line.split('\t').map(p => p.trim());
-
-            // Пропускаем шапки — первая часть не должна быть числом и должна быть осмысленной
-            const firstPart = parts[0] || '';
-            if (/^(Направления?|Габарит|Старый сорт|Новый сорт|Тотал|Потребность|Возвраты)/i.test(firstPart)) {
-                return;
-            }
-            if (!firstPart || /^\d+$/.test(firstPart)) return;
-
-            const direction = firstPart;
-            const nums = parts.slice(1).map(p => {
-                const n = parseInt(p);
-                return isNaN(n) ? 0 : n;
-            });
-
-            const oldGab = nums[0] || 0;
-            const oldNegab = nums[1] || 0;
-            const newGab = nums[2] || 0;
-            const newNegab = nums[3] || 0;
-            const total = oldGab + oldNegab + newGab + newNegab;
-
-            // Формула: ОКРВВЕРХ((Старый Габ + Старый Негаб × 1.5) / 33)
-            const needTS = Math.ceil((oldGab + oldNegab * 1.5) / 33);
-
-            bufferData.push({
-                direction,
-                oldGab, oldNegab, newGab, newNegab,
-                total, needTS,
-                isReturn: inReturns
-            });
+    function addBufferRow() {
+        const name = prompt('Название направления:', '');
+        if (!name) return;
+        bufferData.push({
+            direction: name.trim(),
+            oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
+            haveTS: 0, xdok: 0, vp: 0,
+            isReturn: false
         });
-
+        saveBufferData();
         renderBufferTable();
-        closeBufferModal();
-        showToast(`Загружено ${bufferData.length} направлений`, 'success');
+    }
+
+    function removeBufferRow(idx) {
+        if (!confirm(`Удалить строку "${bufferData[idx].direction}"?`)) return;
+        bufferData.splice(idx, 1);
+        saveBufferData();
+        renderBufferTable();
+    }
+
+    function updateBufferCell(idx, field, value) {
+        const num = parseInt(value) || 0;
+        bufferData[idx][field] = Math.max(0, num);
+        saveBufferData();
+        updateBufferRowTotals(idx);
+        updateBufferCount();
+    }
+
+    function updateBufferRowTotals(idx) {
+        const row = bufferData[idx];
+        const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
+        const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
+
+        const totalEl = document.getElementById(`total-${idx}`);
+        const needEl = document.getElementById(`need-${idx}`);
+        if (totalEl) totalEl.textContent = total;
+        if (needEl) {
+            needEl.textContent = needTS;
+            needEl.className = 'need-ts ' + getNeedClass(needTS);
+        }
+        const tr = document.getElementById(`buf-row-${idx}`);
+        if (tr) {
+            if (needTS > 0 && !row.isReturn) tr.classList.add('highlight-row');
+            else tr.classList.remove('highlight-row');
+        }
+    }
+
+    function getNeedClass(need) {
+        if (need === 0) return 'zero';
+        if (need === 1) return 'one';
+        if (need <= 3) return 'many';
+        return 'urgent';
+    }
+
+    function updateBufferCount() {
+        const dirs = bufferData.filter(b => !b.isReturn).length;
+        document.getElementById('bufferCount').textContent = dirs + ' направлений';
     }
 
     function renderBufferTable() {
         const tbody = document.getElementById('bufferTableBody');
-        document.getElementById('bufferCount').textContent = bufferData.length + ' направлений';
+        updateBufferCount();
 
         if (bufferData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" class="empty-block"><div class="empty-block-icon">📊</div>Нажми «📊» в шапке, чтобы загрузить срез</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11" class="empty-block"><div class="empty-block-icon">📊</div>Нажми «➕ Добавить», чтобы создать строку</td></tr>';
             return;
         }
 
         let html = '';
-        let mainRows = bufferData.filter(b => !b.isReturn);
-        let returnRows = bufferData.filter(b => b.isReturn);
+        const mainRows = bufferData.map((row, idx) => ({ ...row, idx })).filter(r => !r.isReturn);
+        const returnRows = bufferData.map((row, idx) => ({ ...row, idx })).filter(r => r.isReturn);
 
-        // Сортировка: сначала с потребностью >0, потом по алфавиту
         mainRows.sort((a, b) => {
-            if (b.needTS !== a.needTS) return b.needTS - a.needTS;
+            const needA = Math.ceil(((a.oldGab || 0) + (a.oldNegab || 0) * 1.5) / 33);
+            const needB = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
+            if (needB !== needA) return needB - needA;
             return a.direction.localeCompare(b.direction);
         });
 
-        // Основные направления
         mainRows.forEach(row => {
-            let needClass = 'zero';
-            if (row.needTS === 1) needClass = 'one';
-            else if (row.needTS >= 2 && row.needTS <= 3) needClass = 'many';
-            else if (row.needTS > 3) needClass = 'urgent';
-
-            const highlight = row.needTS > 0 ? 'highlight-row' : '';
+            const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
+            const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
+            const needClass = getNeedClass(needTS);
+            const highlight = needTS > 0 ? 'highlight-row' : '';
 
             html += `
-                <tr class="${highlight}">
+                <tr class="${highlight}" id="buf-row-${row.idx}">
                     <td><b>${row.direction}</b></td>
-                    <td class="td-center">${row.oldGab || '—'}</td>
-                    <td class="td-center">${row.oldNegab || '—'}</td>
-                    <td class="td-center">${row.newGab || '—'}</td>
-                    <td class="td-center">${row.newNegab || '—'}</td>
-                    <td class="td-center num-highlight">${row.total}</td>
-                    <td class="td-center"><span class="need-ts ${needClass}">${row.needTS}</span></td>
-                    <td class="td-center" style="color: var(--text-muted);">—</td>
-                    <td class="td-center" style="color: var(--text-muted);">—</td>
-                    <td class="td-center" style="color: var(--text-muted);">—</td>
+                    <td class="td-center">${editableCell(row.idx, 'oldGab', row.oldGab, '#fef3c7')}</td>
+                    <td class="td-center">${editableCell(row.idx, 'oldNegab', row.oldNegab, '#fef3c7')}</td>
+                    <td class="td-center">${editableCell(row.idx, 'newGab', row.newGab, '#dbeafe')}</td>
+                    <td class="td-center">${editableCell(row.idx, 'newNegab', row.newNegab, '#dbeafe')}</td>
+                    <td class="td-center num-highlight" id="total-${row.idx}">${total}</td>
+                    <td class="td-center"><span class="need-ts ${needClass}" id="need-${row.idx}">${needTS}</span></td>
+                    <td class="td-center">${editableCell(row.idx, 'haveTS', row.haveTS, '#f0fdf4')}</td>
+                    <td class="td-center">${editableCell(row.idx, 'xdok', row.xdok, '#f8fafc')}</td>
+                    <td class="td-center">${editableCell(row.idx, 'vp', row.vp, '#f8fafc')}</td>
+                    <td class="td-center">
+                        <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;" title="Удалить">✕</button>
+                    </td>
                 </tr>
             `;
         });
 
-        // Разделитель "Возвраты"
         if (returnRows.length > 0) {
             html += `
                 <tr style="background: #dbeafe;">
-                    <td colspan="10" style="text-align: center; font-weight: 900; color: #1e40af; padding: 8px; letter-spacing: 2px; font-size: 11px;">
+                    <td colspan="11" style="text-align: center; font-weight: 900; color: #1e40af; padding: 8px; letter-spacing: 2px; font-size: 11px;">
                         ВОЗВРАТЫ
                     </td>
                 </tr>
             `;
-
             returnRows.forEach(row => {
+                const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
+                const needTS = 0;
                 html += `
-                    <tr style="background: #f0f9ff;">
+                    <tr style="background: #f0f9ff;" id="buf-row-${row.idx}">
                         <td><b>${row.direction}</b></td>
-                        <td class="td-center">${row.oldGab || '—'}</td>
-                        <td class="td-center">${row.oldNegab || '—'}</td>
-                        <td class="td-center">${row.newGab || '—'}</td>
-                        <td class="td-center">${row.newNegab || '—'}</td>
-                        <td class="td-center num-highlight">${row.total}</td>
-                        <td class="td-center"><span class="need-ts zero">${row.needTS}</span></td>
-                        <td class="td-center" style="color: var(--text-muted);">—</td>
-                        <td class="td-center" style="color: var(--text-muted);">—</td>
-                        <td class="td-center" style="color: var(--text-muted);">—</td>
+                        <td class="td-center">${editableCell(row.idx, 'oldGab', row.oldGab, '#fef3c7')}</td>
+                        <td class="td-center">${editableCell(row.idx, 'oldNegab', row.oldNegab, '#fef3c7')}</td>
+                        <td class="td-center">${editableCell(row.idx, 'newGab', row.newGab, '#dbeafe')}</td>
+                        <td class="td-center">${editableCell(row.idx, 'newNegab', row.newNegab, '#dbeafe')}</td>
+                        <td class="td-center num-highlight" id="total-${row.idx}">${total}</td>
+                        <td class="td-center"><span class="need-ts zero" id="need-${row.idx}">${needTS}</span></td>
+                        <td class="td-center">${editableCell(row.idx, 'haveTS', row.haveTS, '#f0fdf4')}</td>
+                        <td class="td-center">${editableCell(row.idx, 'xdok', row.xdok, '#f8fafc')}</td>
+                        <td class="td-center">${editableCell(row.idx, 'vp', row.vp, '#f8fafc')}</td>
+                        <td class="td-center">
+                            <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;" title="Удалить">✕</button>
+                        </td>
                     </tr>
                 `;
             });
         }
 
         tbody.innerHTML = html;
+    }
+
+    function editableCell(idx, field, value, bgColor) {
+        return `<input type="number" 
+                       value="${value || 0}" 
+                       min="0" 
+                       style="width: 48px; padding: 4px 6px; border: 1.5px solid transparent; border-radius: 6px; background: ${bgColor}; text-align: center; font-weight: 800; font-size: 12px; color: #1e293b; font-family: inherit; outline: none;"
+                       onfocus="this.style.borderColor='#2563eb'; this.style.background='white';"
+                       onblur="this.style.borderColor='transparent'; this.style.background='${bgColor}';"
+                       onchange="updateBufferCell(${idx}, '${field}', this.value)"
+                       onclick="event.stopPropagation();">`;
     }
 
     // ===== ИМПОРТ РЕЙСОВ =====
@@ -1465,7 +1561,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         const text = document.getElementById('routesInput').value.trim();
         if (!text) { showToast('Вставь текст с рейсами', 'warning'); return; }
 
-        // Разбиваем по пустым строкам
         const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
         routes = [];
 
@@ -1486,42 +1581,36 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         let route = '', direction = '', company = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [];
 
         lines.forEach(line => {
-            // Номер рейса
             const routeMatch = line.match(/[Рр]ейс\s*#?(\d+)/i);
             if (routeMatch) {
                 route = '#' + routeMatch[1];
                 return;
             }
 
-            // Водитель
             const driverMatch = line.match(/[Вв]одитель[:\s]+(.+)/i);
             if (driverMatch) {
                 driver = driverMatch[1].trim();
                 return;
             }
 
-            // Телефон
             const phoneMatch = line.match(/\+?\d{10,12}/);
             if (phoneMatch && !phone) {
                 phone = phoneMatch[0];
                 return;
             }
 
-            // Номер ТС (тягач / машина)
             const vehicleMatch = line.match(/[Нн]омер\s+(?:тягача|машины|ТС|прицепа)[:\s]+([А-ЯA-Z0-9]+)/i);
             if (vehicleMatch && !vehicle) {
                 vehicle = vehicleMatch[1].trim();
                 return;
             }
 
-            // Паллетовместимость
             const palletsMatch = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
             if (palletsMatch) {
                 pallets = parseInt(palletsMatch[1]) || 0;
                 return;
             }
 
-            // Направление (маршрут)
             const hasDash = / [-—] /.test(line) || line.includes(' - ') || line.includes(' — ');
             const hasCities = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
             if (hasDash && hasCities && !direction) {
@@ -1529,22 +1618,18 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                 return;
             }
 
-            // Пометки
             if (/обе ваши|ваш\b|наша/i.test(line)) marks.push('ours');
             if (/ФФЦ/i.test(line) && /сначала|потом|берёт|берет|берут/i.test(line)) marks.push('wait-ffc');
             if (/голова/i.test(line)) marks.push('head');
             if (/хвост/i.test(line)) marks.push('tail');
 
-            // Название компании
             if (/ООО|ИП\s|ТК\s|Логистик|Транс|Веатон|Делко|Фаст|К2/i.test(line) && !company) {
                 company = line;
             }
         });
 
-        // Если не нашли рейс — пропускаем блок
         if (!route && !direction) return null;
 
-        // Нормализуем направление — берём последний город
         const normalizedDirection = normalizeDirection(direction);
 
         return {
@@ -1564,14 +1649,10 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 
     function normalizeDirection(dir) {
         if (!dir) return 'Не указано';
-        // Убираем префиксы
         let cleaned = dir.replace(/\b(СЦ|ПСЦ|ФФЦ|МК|ВП)\b/gi, '').trim();
-        // Берём последний осмысленный город
         const parts = cleaned.split(/\s*[-—→]\s*/).map(p => p.trim()).filter(p => p);
         if (parts.length === 0) return 'Не указано';
-        // Последний город
         let last = parts[parts.length - 1].trim();
-        // Если последний содержит пробелы, берём последнее слово
         if (last.includes(' ')) {
             const words = last.split(/\s+/);
             last = words[words.length - 1];
@@ -1588,14 +1669,12 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             return;
         }
 
-        // Сопоставление с bufferData
         const bufferDirs = bufferData.filter(b => !b.isReturn).map(b => b.direction.toLowerCase());
         routes.forEach(r => {
             const dir = r.direction.toLowerCase();
             r.matched = bufferDirs.some(b => b.includes(dir) || dir.includes(b));
         });
 
-        // Сортировка: сначала сопоставленные, потом остальные
         const sorted = [...routes].sort((a, b) => (b.matched ? 1 : 0) - (a.matched ? 1 : 0));
 
         container.innerHTML = sorted.map(r => {
@@ -1674,10 +1753,13 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     }
 
     function resetAll() {
-        if (!confirm('Сбросить всё? Данные будут потеряны.')) return;
+        if (!confirm('Сбросить всё? Данные буфера и ворот будут потеряны.')) return;
+        localStorage.removeItem('warehouseBuffer');
+        localStorage.removeItem('warehouseGates');
         bufferData = [];
         routes = [];
         gateStates = {};
+        initBufferData();
         initGates();
         renderBufferTable();
         renderRoutes();
@@ -1685,9 +1767,11 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     }
 
     // ===== СТАРТ =====
+    initBufferData();
     initGates();
     renderBufferTable();
     renderRoutes();
+    loadGatesFromLocal();
 </script>
 
 </body>

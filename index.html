@@ -3,160 +3,238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Склад — 3D изометрия с панелью ворот</title>
+<title>Диспетчерская склада</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
+    :root {
+        --bg: #f0f2f5;
+        --card: #ffffff;
+        --card-hover: #fafbfc;
+        --border: #e1e4e8;
+        --border-strong: #d0d7de;
+        --text: #24292f;
+        --text-dim: #57606a;
+        --text-muted: #8b949e;
+        --accent: #0969da;
+        --accent-light: #ddf4ff;
+        --success: #1a7f37;
+        --success-light: #dafbe1;
+        --warning: #bf8700;
+        --warning-light: #fff8c5;
+        --danger: #cf222e;
+        --danger-light: #ffebe9;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
     body {
-        font-family: 'Segoe UI', Tahoma, sans-serif;
-        background: radial-gradient(ellipse at center, #1a1d21 0%, #0a0c0f 100%);
-        color: #e4e6eb;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+        background: var(--bg);
+        color: var(--text);
         min-height: 100vh;
         overflow: hidden;
     }
 
-    /* === ОБЩИЙ LAYOUT === */
+    /* === LAYOUT === */
     .app {
         display: grid;
-        grid-template-columns: 340px 1fr;
+        grid-template-columns: 1.15fr 1fr;
         height: 100vh;
         width: 100vw;
-        gap: 0;
     }
 
-    /* === ЛЕВАЯ ПАНЕЛЬ === */
-    .sidebar {
-        background: linear-gradient(180deg, #1e2227 0%, #15181c 100%);
-        border-right: 3px solid #353b44;
+    /* === ЛЕВАЯ ЧАСТЬ — ВИЗУАЛИЗАЦИЯ === */
+    .scene-panel {
+        background: linear-gradient(180deg, #e8ebef 0%, #d8dde3 100%);
+        border-right: 2px solid var(--border-strong);
         display: flex;
         flex-direction: column;
         overflow: hidden;
     }
 
-    .sidebar-header {
-        padding: 16px 20px;
-        border-bottom: 2px solid #353b44;
-        background: #1a1d21;
-    }
-
-    .sidebar-header h1 {
-        font-size: 16px;
-        color: #4fc3f7;
-        font-weight: 900;
-        letter-spacing: 1.5px;
-        text-shadow: 0 0 15px rgba(79, 195, 247, 0.5);
-        margin-bottom: 8px;
-    }
-
-    .current-time {
-        font-size: 22px;
-        font-weight: 900;
-        color: #4fc3f7;
-        font-variant-numeric: tabular-nums;
-        letter-spacing: 2px;
-        text-shadow: 0 0 15px rgba(79, 195, 247, 0.5);
-        margin-bottom: 4px;
-    }
-
-    .sidebar-info {
-        font-size: 11px;
-        color: #6c757d;
-        letter-spacing: 1px;
-    }
-
-    .gates-list {
-        flex: 1;
-        overflow-y: auto;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .gates-list::-webkit-scrollbar { width: 6px; }
-    .gates-list::-webkit-scrollbar-track { background: transparent; }
-    .gates-list::-webkit-scrollbar-thumb { background: #353b44; border-radius: 3px; }
-
-    /* === ЭЛЕМЕНТ ВОРОТ В ПАНЕЛИ === */
-    .gate-item {
-        background: linear-gradient(180deg, #252a31 0%, #1e2227 100%);
-        border: 2px solid #353b44;
-        border-left: 5px solid #4caf50;
-        border-radius: 10px;
-        padding: 12px 14px;
-        cursor: pointer;
-        transition: all 0.2s;
-        position: relative;
-    }
-
-    .gate-item:hover {
-        background: linear-gradient(180deg, #2d333b 0%, #252a31 100%);
-        border-color: #4fc3f7;
-        transform: translateX(3px);
-    }
-
-    .gate-item.free { border-left-color: #4caf50; }
-    .gate-item.loading { border-left-color: #ffc107; }
-    .gate-item.unloading { border-left-color: #ef5350; }
-    .gate-item.problem {
-        border-left-color: #ff1744;
-        animation: pulse-item 1s infinite;
-    }
-
-    @keyframes pulse-item {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.5); }
-        50% { box-shadow: 0 0 0 8px rgba(255, 23, 68, 0); }
-    }
-
-    .gate-item-header {
+    .scene-header {
+        padding: 14px 20px;
+        background: var(--card);
+        border-bottom: 2px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 4px;
+        box-shadow: var(--shadow-sm);
+        z-index: 10;
     }
 
-    .gate-item-number {
-        font-size: 18px;
+    .scene-title {
+        font-size: 16px;
         font-weight: 900;
-        color: #4fc3f7;
+        color: var(--text);
         letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .gate-item-status {
+    .scene-title::before {
+        content: '🏭';
+        font-size: 20px;
+    }
+
+    .clock {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 2px;
+    }
+
+    /* Контейнер ворот */
+    .gates-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .gates-scroll::-webkit-scrollbar { width: 8px; }
+    .gates-scroll::-webkit-scrollbar-track { background: transparent; }
+    .gates-scroll::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 4px;
+    }
+    .gates-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* === КАРТОЧКА ВОРОТ === */
+    .gate-card {
+        background: var(--card);
+        border-radius: 16px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        transition: all 0.2s;
+        cursor: pointer;
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 140px;
+        min-height: 150px;
+    }
+
+    .gate-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .gate-card.free { border-left: 6px solid var(--success); }
+    .gate-card.loading { border-left: 6px solid var(--warning); }
+    .gate-card.unloading { border-left: 6px solid var(--danger); }
+    .gate-card.problem {
+        border-left: 6px solid var(--danger);
+        animation: pulse-card 1.5s infinite;
+    }
+
+    @keyframes pulse-card {
+        0%, 100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(207, 34, 46, 0.3); }
+        50% { box-shadow: var(--shadow-md), 0 0 0 8px rgba(207, 34, 46, 0); }
+    }
+
+    /* Левая часть карточки — инфо */
+    .gate-info {
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+    }
+
+    .gate-info-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+    .gate-number {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: 1px;
+        line-height: 1;
+    }
+
+    .gate-number::before {
+        content: '🚪';
+        font-size: 22px;
+        margin-right: 4px;
+        filter: grayscale(0.3);
+    }
+
+    .gate-status-badge {
         font-size: 10px;
         font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .gate-status-badge.free { background: var(--success-light); color: var(--success); }
+    .gate-status-badge.loading { background: var(--warning-light); color: var(--warning); }
+    .gate-status-badge.unloading { background: var(--danger-light); color: var(--danger); }
+
+    /* Инфо о рейсе */
+    .gate-route-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .gate-route {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--accent);
         letter-spacing: 0.5px;
     }
 
-    .gate-item.free .gate-item-status { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
-    .gate-item.loading .gate-item-status { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-    .gate-item.unloading .gate-item-status { background: rgba(239, 83, 80, 0.2); color: #ef5350; }
-
-    .gate-item-details {
-        font-size: 11px;
-        color: #9aa0a6;
-        line-height: 1.5;
-    }
-
-    .gate-item-details .route {
-        color: #e4e6eb;
-        font-weight: 700;
+    .gate-direction {
         font-size: 12px;
-        margin-bottom: 2px;
+        color: var(--text-dim);
+        line-height: 1.3;
     }
 
-    .gate-item-details .timer {
-        color: #4caf50;
-        font-weight: 900;
-        font-size: 14px;
-        font-variant-numeric: tabular-nums;
+    .gate-driver {
+        font-size: 11px;
+        color: var(--text-muted);
         margin-top: 4px;
     }
-    .gate-item-details .timer.warning { color: #ffc107; }
-    .gate-item-details .timer.danger {
-        color: #ff5252;
+
+    .gate-empty {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    /* Таймер и прогресс */
+    .gate-metrics {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .gate-timer {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--success);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 1px;
+    }
+
+    .gate-timer.warning { color: var(--warning); }
+    .gate-timer.danger {
+        color: var(--danger);
         animation: timer-blink 1s infinite;
     }
 
@@ -165,523 +243,313 @@
         50% { opacity: 0.4; }
     }
 
-    /* === КОММЕНТАРИИ === */
-    .gate-item-recommendation {
-        margin-top: 6px;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-        display: inline-block;
+    .gate-progress {
+        font-size: 12px;
+        color: var(--text-dim);
+        font-weight: 700;
     }
 
-    .gate-item-recommendation.do-unload {
-        background: rgba(76, 175, 80, 0.2);
-        color: #66bb6a;
-        border: 1px solid #4caf50;
-    }
-
-    .gate-item-recommendation.no-unload {
-        background: rgba(239, 83, 80, 0.2);
-        color: #ef5350;
-        border: 1px solid #c62828;
-    }
-
-    .gate-item-recommendation.no-info {
-        background: rgba(255, 193, 7, 0.15);
-        color: #ffc107;
-        border: 1px solid #f57c00;
-    }
-
-    .gate-item-comment {
-        margin-top: 4px;
-        font-size: 10px;
-        color: #ffc107;
-        font-style: italic;
-        line-height: 1.3;
-    }
-
-    /* === ПРАВАЯ ЧАСТЬ — 3D-СЦЕНА === */
-    .scene-wrapper {
-        position: relative;
-        perspective: 1400px;
-        perspective-origin: 50% 40%;
+    /* Прогресс-бар */
+    .gate-progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #e8ebef;
+        border-radius: 3px;
+        margin-top: 8px;
         overflow: hidden;
-        background: linear-gradient(180deg, #1a1d21 0%, #0a0c0f 100%);
     }
 
-    /* 3D-сцена */
-    .scene {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 1400px;
-        height: 800px;
-        transform: translate(-50%, -50%) rotateX(45deg) rotateZ(-25deg);
-        transform-style: preserve-3d;
+    .gate-progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), #58a6ff);
+        border-radius: 3px;
+        transition: width 0.3s ease;
     }
 
-    /* === АСФАЛЬТ === */
-    .ground {
-        position: absolute;
-        inset: 0;
-        background: 
-            repeating-linear-gradient(45deg, #2a2d33 0px, #2a2d33 4px, #25282d 4px, #25282d 8px);
-        box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
-        border-radius: 20px;
+    /* Правая часть — фура */
+    .gate-truck-visual {
+        background: linear-gradient(135deg, #f6f8fa 0%, #e8ebef 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        position: relative;
+        border-left: 1px solid var(--border);
     }
 
-    /* Разметка */
-    .ground::before {
-        content: '';
-        position: absolute;
-        top: 350px;
-        left: 0; right: 0;
-        height: 4px;
-        background: repeating-linear-gradient(90deg, #f5c542 0px, #f5c542 40px, transparent 40px, transparent 80px);
+    /* Свободные ворота */
+    .gate-truck-empty {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        color: var(--text-muted);
+    }
+
+    .gate-truck-empty-icon {
+        font-size: 32px;
         opacity: 0.4;
     }
 
-    /* === СТЕНА СКЛАДА === */
-    .warehouse-wall {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 220px;
-        background: linear-gradient(180deg, #4a5058 0%, #3a4048 50%, #2a3038 100%);
-        border-bottom: 4px solid #0a0c0f;
-        box-shadow: 
-            inset 0 -40px 80px rgba(0,0,0,0.5),
-            0 20px 40px rgba(0,0,0,0.5);
+    .gate-truck-empty-text {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        opacity: 0.7;
     }
 
-    /* Крыша склада (объёмная) */
-    .warehouse-roof {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 220px;
-        background: linear-gradient(180deg, #5a6068 0%, #4a5058 100%);
-        transform-origin: top;
-        transform: rotateX(-90deg);
-        box-shadow: inset 0 0 100px rgba(0,0,0,0.4);
-    }
-
-    /* Детали крыши */
-    .roof-vent {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        background: radial-gradient(circle, #6a7078 0%, #3a4048 100%);
-        border-radius: 50%;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.6), inset 0 -4px 8px rgba(0,0,0,0.4);
-    }
-    .roof-vent::before {
-        content: '';
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        width: 26px; height: 26px;
-        background: #1a1d21;
-        border-radius: 50%;
-    }
-
-    .roof-antenna {
-        position: absolute;
-        width: 4px;
-        height: 80px;
-        background: linear-gradient(180deg, #888 0%, #444 100%);
-    }
-    .roof-antenna::before {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 14px;
-        height: 14px;
-        background: #ff1744;
-        border-radius: 50%;
-        box-shadow: 0 0 20px #ff1744;
-        animation: blink-light 2s infinite;
-    }
-
-    @keyframes blink-light {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.2; }
-    }
-
-    /* Окна */
-    .warehouse-window {
-        position: absolute;
-        width: 70px;
-        height: 35px;
-        background: linear-gradient(180deg, #4a5a6a 0%, #2a3a4a 100%);
-        border: 2px solid #1a1d21;
-        box-shadow: inset 0 0 25px rgba(100, 180, 255, 0.3);
-    }
-    .warehouse-window::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(120deg, rgba(255,255,255,0.25) 0%, transparent 60%);
-    }
-
-    /* === ВОРОТА === */
-    .gates-row {
-        position: absolute;
-        top: 90px;
-        left: 0;
-        right: 0;
-        height: 130px;
+    /* === ПРАВАЯ ЧАСТЬ — ТАБЛИЦЫ === */
+    .tables-panel {
+        background: var(--bg);
         display: flex;
-        justify-content: space-around;
-        align-items: flex-start;
-        padding: 0 40px;
-        gap: 12px;
-        z-index: 10;
-    }
-
-    .gate {
-        position: relative;
-        width: 120px;
-        height: 130px;
-        cursor: pointer;
-        transition: transform 0.2s;
-    }
-
-    .gate:hover { transform: translateZ(8px); }
-
-    /* Ниша ворот (объёмная) */
-    .gate-niche {
-        position: absolute;
-        inset: 0;
-        background: #0a0c0f;
-        border-radius: 4px;
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
-    }
-
-    /* Дверь ворот */
-    .gate-door {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, #3a3f47 0%, #25292e 100%);
-        border: 3px solid #4a5058;
-        border-radius: 4px;
+        flex-direction: column;
         overflow: hidden;
-        box-shadow: inset 0 10px 30px rgba(0,0,0,0.5);
-        transition: all 0.3s;
     }
 
-    .gate-door::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: repeating-linear-gradient(
-            180deg,
-            transparent 0px,
-            transparent 10px,
-            rgba(255,255,255,0.06) 10px,
-            rgba(255,255,255,0.06) 11px
-        );
+    .tables-header {
+        padding: 14px 20px;
+        background: var(--card);
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: var(--shadow-sm);
     }
 
-    .gate-number {
-        position: absolute;
-        top: -35px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 26px;
+    .tables-title {
+        font-size: 16px;
         font-weight: 900;
-        color: #4fc3f7;
-        text-shadow: 0 0 20px #4fc3f7, 0 0 40px #4fc3f7;
-        letter-spacing: 2px;
-        z-index: 15;
-    }
-
-    .gate-indicator {
-        position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 70px;
-        height: 8px;
-        border-radius: 4px;
-        background: #4caf50;
-        box-shadow: 0 0 25px #4caf50;
-        transition: all 0.3s;
-        z-index: 12;
-    }
-
-    .gate.free .gate-indicator { background: #4caf50; box-shadow: 0 0 25px #4caf50; }
-    .gate.free .gate-door { background: linear-gradient(180deg, #1a3a2a 0%, #0a1a10 100%); border-color: #2e7d32; }
-
-    .gate.loading .gate-indicator { background: #ffc107; box-shadow: 0 0 30px #ffc107; }
-    .gate.loading .gate-door { background: linear-gradient(180deg, #3a3520 0%, #1a1808 100%); border-color: #f57c00; }
-
-    .gate.unloading .gate-indicator { background: #ef5350; box-shadow: 0 0 30px #ef5350; }
-    .gate.unloading .gate-door { background: linear-gradient(180deg, #3a2020 0%, #1a0808 100%); border-color: #c62828; }
-
-    .gate.problem .gate-indicator {
-        background: #ff1744;
-        box-shadow: 0 0 50px #ff1744;
-        animation: blink-light 0.4s infinite;
-    }
-
-    /* === ФУРА (3D SVG) === */
-    .truck {
-        position: absolute;
-        width: 90px;
-        height: 200px;
-        transition: all 1.2s cubic-bezier(0.34, 1.2, 0.64, 1);
-        z-index: 20;
-        transform-style: preserve-3d;
-    }
-
-    .truck.entering {
-        transform: translateX(-700px) translateZ(-200px) scale(0.5);
-        opacity: 0;
-    }
-    .truck.entered {
-        transform: translateX(0) translateZ(0) scale(1);
-        opacity: 1;
-    }
-
-    /* Тень фуры */
-    .truck-shadow {
-        position: absolute;
-        bottom: -10px;
-        left: -15px;
-        right: -15px;
-        height: 20px;
-        background: radial-gradient(ellipse, rgba(0,0,0,0.7) 0%, transparent 70%);
-        z-index: -1;
-    }
-
-    /* Инфо-панель над фурой */
-    .truck-label {
-        position: absolute;
-        top: -130px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(15, 18, 21, 0.97);
-        border: 2px solid #4fc3f7;
-        border-radius: 10px;
-        padding: 10px 14px;
-        min-width: 220px;
-        text-align: center;
-        font-size: 11px;
-        white-space: nowrap;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 30px rgba(79, 195, 247, 0.4);
-        pointer-events: none;
-        z-index: 30;
-    }
-
-    .truck-label .route {
-        font-size: 15px;
-        font-weight: 900;
-        color: #4fc3f7;
-        margin-bottom: 4px;
+        color: var(--text);
         letter-spacing: 1px;
-    }
-
-    .truck-label .direction {
-        color: #e4e6eb;
-        font-size: 11px;
-        margin-bottom: 6px;
-        white-space: normal;
-        line-height: 1.3;
-        max-width: 240px;
-    }
-
-    .truck-label .timer {
-        font-size: 20px;
-        font-weight: 900;
-        color: #4caf50;
-        font-variant-numeric: tabular-nums;
-        margin-bottom: 4px;
-        letter-spacing: 2px;
-    }
-
-    .truck-label .timer.warning { color: #ffc107; }
-    .truck-label .timer.danger {
-        color: #ff5252;
-        animation: timer-blink 1s infinite;
-    }
-
-    .truck-label .progress {
-        font-size: 12px;
-        color: #9aa0a6;
-        margin-bottom: 4px;
-    }
-
-    /* Рекомендация */
-    .truck-label .recommendation {
-        margin-top: 8px;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        display: inline-block;
-    }
-    .truck-label .recommendation.do-unload {
-        background: rgba(76, 175, 80, 0.25);
-        color: #66bb6a;
-        border: 1.5px solid #4caf50;
-    }
-    .truck-label .recommendation.no-unload {
-        background: rgba(239, 83, 80, 0.25);
-        color: #ef5350;
-        border: 1.5px solid #c62828;
-    }
-    .truck-label .recommendation.no-info {
-        background: rgba(255, 193, 7, 0.2);
-        color: #ffc107;
-        border: 1.5px solid #f57c00;
-    }
-
-    .truck-label .comment {
-        font-size: 11px;
-        color: #ffc107;
-        font-style: italic;
-        max-width: 240px;
-        white-space: normal;
-        line-height: 1.3;
-        margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px dashed #4a5058;
-    }
-
-    /* === ПАРКОВКА === */
-    .parking-zone {
-        position: absolute;
-        bottom: 30px;
-        left: 30px;
-        right: 30px;
-        height: 150px;
-        border: 3px dashed #4a5058;
-        border-radius: 16px;
-        background: rgba(0,0,0,0.4);
-        padding: 12px;
-        z-index: 3;
-    }
-
-    .parking-zone::before {
-        content: '🅿️ ПАРКОВКА';
-        position: absolute;
-        top: -16px;
-        left: 24px;
-        background: #1a1d21;
-        padding: 0 14px;
-        font-size: 13px;
-        color: #6c757d;
-        font-weight: 900;
-        letter-spacing: 2px;
-    }
-
-    .parking-zone-content {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        padding: 10px;
-        height: 100%;
-        flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
     }
 
-    .parking-truck {
-        position: relative;
-        width: 60px;
-        height: 130px;
-        opacity: 0.7;
-        cursor: pointer;
-        transition: all 0.3s;
-        filter: grayscale(0.4);
+    .tables-title::before {
+        content: '📊';
+        font-size: 20px;
     }
 
-    .parking-truck:hover {
-        opacity: 1;
-        filter: grayscale(0);
-        transform: scale(1.15);
-    }
-
-    /* === КНОПКИ === */
-    .controls {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
+    .tables-actions {
         display: flex;
-        gap: 10px;
-        z-index: 100;
+        gap: 8px;
+        align-items: center;
     }
 
-    button {
-        padding: 14px 24px;
+    .btn {
+        padding: 8px 14px;
         border: none;
-        border-radius: 10px;
-        font-size: 13px;
+        border-radius: 8px;
+        font-size: 12px;
         font-weight: 800;
         cursor: pointer;
         transition: all 0.15s;
         font-family: inherit;
-        letter-spacing: 1px;
-        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    button:active { transform: scale(0.95); }
+    .btn:active { transform: scale(0.95); }
 
     .btn-primary {
-        background: linear-gradient(135deg, #4fc3f7, #0288d1);
+        background: var(--accent);
         color: white;
-        box-shadow: 0 6px 20px rgba(79, 195, 247, 0.5);
+        box-shadow: 0 2px 6px rgba(9, 105, 218, 0.3);
     }
+    .btn-primary:hover { background: #0860c9; }
 
     .btn-secondary {
-        background: linear-gradient(135deg, #6c757d, #495057);
-        color: white;
-        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border-strong);
+    }
+    .btn-secondary:hover { background: var(--card-hover); }
+
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        justify-content: center;
+        font-size: 16px;
     }
 
     .btn-danger {
-        background: linear-gradient(135deg, #ef5350, #c62828);
+        background: var(--danger);
         color: white;
-        box-shadow: 0 6px 20px rgba(239, 83, 80, 0.5);
+    }
+    .btn-danger:hover { background: #b31d28; }
+
+    /* Контейнер таблиц */
+    .tables-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
 
-    /* === MUTE === */
-    .mute-btn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 48px;
-        height: 48px;
-        background: #252a31;
-        border: 2px solid #353b44;
+    .tables-scroll::-webkit-scrollbar { width: 8px; }
+    .tables-scroll::-webkit-scrollbar-track { background: transparent; }
+    .tables-scroll::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 4px;
+    }
+
+    /* Блок таблицы */
+    .table-block {
+        background: var(--card);
         border-radius: 12px;
-        color: #4fc3f7;
-        font-size: 22px;
-        cursor: pointer;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+
+    .table-block-header {
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid var(--border);
+        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    }
+
+    .table-block-title {
+        font-size: 14px;
+        font-weight: 900;
+        letter-spacing: 1px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        transition: 0.2s;
-        z-index: 100;
+        gap: 8px;
+        text-transform: uppercase;
     }
-    .mute-btn:hover { background: #2d333b; border-color: #4fc3f7; }
-    .mute-btn.muted { color: #ef5350; border-color: #ef5350; }
+
+    .table-block-title.incoming { color: var(--danger); }
+    .table-block-title.outgoing { color: var(--warning); }
+
+    .table-block-count {
+        font-size: 12px;
+        color: var(--text-dim);
+        font-weight: 700;
+        background: var(--bg);
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    /* Сама таблица */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    thead th {
+        background: #f6f8fa;
+        color: var(--text-dim);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 8px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    tbody td {
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    tbody tr {
+        transition: background 0.15s;
+        cursor: pointer;
+    }
+
+    tbody tr:hover { background: var(--card-hover); }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody tr.empty-row {
+        cursor: default;
+    }
+    tbody tr.empty-row:hover { background: transparent; }
+
+    .empty-message {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    /* Статусы в таблице */
+    .status-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .status-badge.free { background: var(--success-light); color: var(--success); }
+    .status-badge.loading { background: var(--warning-light); color: var(--warning); }
+    .status-badge.unloading { background: var(--danger-light); color: var(--danger); }
+    .status-badge.problem { background: var(--danger); color: white; animation: timer-blink 0.8s infinite; }
+
+    .dir-cell {
+        color: var(--accent);
+        font-weight: 800;
+    }
+
+    /* Кнопка действия */
+    .action-cell {
+        text-align: center;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .action-btn.free-action {
+        background: var(--success-light);
+        color: var(--success);
+    }
+    .action-btn.free-action:hover { background: var(--success); color: white; }
+
+    .action-btn.end-action {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+    .action-btn.end-action:hover { background: var(--danger); color: white; }
 
     /* === МОДАЛКА === */
     .modal-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.85);
-        backdrop-filter: blur(8px);
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
         z-index: 1000;
         align-items: center;
         justify-content: center;
@@ -690,56 +558,56 @@
     .modal-overlay.active { display: flex; }
 
     .modal {
-        background: linear-gradient(180deg, #2a2f37 0%, #1e2227 100%);
-        border: 2px solid #4fc3f7;
-        border-radius: 20px;
+        background: var(--card);
+        border-radius: 16px;
         padding: 28px;
         max-width: 500px;
         width: 100%;
         max-height: 90vh;
         overflow-y: auto;
-        box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 60px rgba(79, 195, 247, 0.2);
+        box-shadow: var(--shadow-lg);
     }
 
     .modal h3 {
-        color: #4fc3f7;
+        color: var(--text);
         margin-bottom: 20px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 900;
-        text-align: center;
-        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .modal label {
         display: block;
         font-size: 11px;
-        color: #9aa0a6;
-        font-weight: 700;
+        color: var(--text-dim);
+        font-weight: 800;
         margin-bottom: 6px;
         margin-top: 14px;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
 
     .modal input, .modal select, .modal textarea {
         width: 100%;
-        padding: 12px 14px;
-        background: #1e2227;
-        border: 2px solid #353b44;
-        border-radius: 10px;
-        color: #e4e6eb;
-        font-size: 14px;
+        padding: 10px 12px;
+        background: #f6f8fa;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 13px;
         font-family: inherit;
         font-weight: 600;
     }
 
     .modal input:focus, .modal select:focus, .modal textarea:focus {
         outline: none;
-        border-color: #4fc3f7;
-        box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+        border-color: var(--accent);
+        background: white;
+        box-shadow: 0 0 0 3px var(--accent-light);
     }
 
-    /* Радиокнопки рекомендации */
     .recommendation-options {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -748,33 +616,34 @@
     }
 
     .recommendation-option {
-        padding: 10px;
-        border: 2px solid #353b44;
+        padding: 10px 6px;
+        border: 2px solid var(--border-strong);
         border-radius: 8px;
         text-align: center;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 800;
         transition: all 0.15s;
         user-select: none;
+        background: white;
     }
 
-    .recommendation-option:hover { border-color: #4fc3f7; }
+    .recommendation-option:hover { border-color: var(--accent); }
 
     .recommendation-option.selected-do {
-        background: rgba(76, 175, 80, 0.2);
-        border-color: #4caf50;
-        color: #66bb6a;
+        background: var(--success-light);
+        border-color: var(--success);
+        color: var(--success);
     }
     .recommendation-option.selected-no {
-        background: rgba(239, 83, 80, 0.2);
-        border-color: #c62828;
-        color: #ef5350;
+        background: var(--danger-light);
+        border-color: var(--danger);
+        color: var(--danger);
     }
     .recommendation-option.selected-none {
-        background: rgba(255, 193, 7, 0.15);
-        border-color: #f57c00;
-        color: #ffc107;
+        background: var(--warning-light);
+        border-color: var(--warning);
+        color: var(--warning);
     }
 
     .modal-buttons {
@@ -783,92 +652,104 @@
         margin-top: 24px;
     }
 
-    .modal-buttons button { flex: 1; }
+    .modal-buttons button { flex: 1; padding: 12px; font-size: 13px; }
 
-    /* Подсказка о звуке */
-    .sound-hint {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(79, 195, 247, 0.95);
-        color: #0a0c0f;
-        padding: 14px 28px;
-        border-radius: 30px;
-        font-weight: 900;
-        font-size: 14px;
-        box-shadow: 0 8px 30px rgba(79, 195, 247, 0.5);
-        z-index: 9999;
-        cursor: pointer;
-        animation: bounce 2s infinite;
-        letter-spacing: 0.5px;
+    /* Адаптив */
+    @media (max-width: 1100px) {
+        .app { grid-template-columns: 1fr 1fr; }
+        .gate-card { grid-template-columns: 1fr 110px; }
+        .gate-number { font-size: 22px; }
     }
-    .sound-hint.hidden { display: none; }
 
-    @keyframes bounce {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(-6px); }
+    @media (max-width: 800px) {
+        .app { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+        .scene-panel { border-right: none; border-bottom: 2px solid var(--border-strong); }
     }
 </style>
 </head>
 <body>
 
 <div class="app">
-    <!-- === ЛЕВАЯ ПАНЕЛЬ === -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h1>🏭 СКЛАД — 3D</h1>
-            <div class="current-time" id="currentTime">--:--:--</div>
-            <div class="sidebar-info">ВОРОТА 11–17</div>
+    <!-- === ЛЕВАЯ ЧАСТЬ — ВИЗУАЛИЗАЦИЯ ВОРОТ === -->
+    <div class="scene-panel">
+        <div class="scene-header">
+            <div class="scene-title">ДИСПЕТЧЕРСКАЯ — ВИЗУАЛИЗАЦИЯ ВОРОТ</div>
+            <div class="clock" id="clock">--:--:--</div>
         </div>
-        <div class="gates-list" id="gatesList"></div>
-    </aside>
+        <div class="gates-scroll" id="gatesScroll">
+            <!-- Карточки ворот генерируются JS -->
+        </div>
+    </div>
 
-    <!-- === ПРАВАЯ ЧАСТЬ — 3D-СЦЕНА === -->
-    <div class="scene-wrapper">
-        <div class="scene" id="scene">
-            <!-- Асфальт -->
-            <div class="ground"></div>
+    <!-- === ПРАВАЯ ЧАСТЬ — ТАБЛИЦЫ === -->
+    <div class="tables-panel">
+        <div class="tables-header">
+            <div class="tables-title">ПОТОКИ МАШИН</div>
+            <div class="tables-actions">
+                <button class="btn btn-primary" onclick="openModal()">
+                    ➕ Поставить
+                </button>
+                <button class="btn btn-secondary btn-icon" onclick="toggleMute()" id="muteBtn" title="Звук">🔊</button>
+                <button class="btn btn-secondary btn-icon" onclick="resetAll()" title="Сброс">🔄</button>
+            </div>
+        </div>
 
-            <!-- Склад -->
-            <div class="warehouse-wall"></div>
-            <div class="warehouse-roof">
-                <div class="roof-vent" style="top: 40px; left: 120px;"></div>
-                <div class="roof-vent" style="top: 40px; right: 120px;"></div>
-                <div class="roof-vent" style="top: 130px; left: 50%; transform: translateX(-50%);"></div>
-                <div class="roof-antenna" style="top: 20px; left: 260px;"></div>
-                <div class="roof-antenna" style="top: 20px; right: 260px;"></div>
+        <div class="tables-scroll">
+            <!-- 📥 ВХОДЯЩИЙ ПОТОК -->
+            <div class="table-block">
+                <div class="table-block-header">
+                    <div class="table-block-title incoming">📥 ВХОДЯЩИЙ ПОТОК — ВЫГРУЗКА</div>
+                    <div class="table-block-count" id="incomingCount">0 рейсов</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Вор.</th>
+                            <th>Рейс</th>
+                            <th>Номер ТС</th>
+                            <th>Направление</th>
+                            <th>Водитель</th>
+                            <th>Статус</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incomingTableBody">
+                        <tr class="empty-row"><td colspan="8" class="empty-message">Нет входящих рейсов</td></tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Окна на стене -->
-            <div class="warehouse-window" style="top: 30px; left: 60px;"></div>
-            <div class="warehouse-window" style="top: 30px; right: 60px;"></div>
-
-            <!-- Ворота -->
-            <div class="gates-row" id="gatesRow"></div>
-
-            <!-- Парковка -->
-            <div class="parking-zone">
-                <div class="parking-zone-content" id="parkingContent"></div>
+            <!-- 📤 ИСХОДЯЩИЙ ПОТОК -->
+            <div class="table-block">
+                <div class="table-block-header">
+                    <div class="table-block-title outgoing">📤 ИСХОДЯЩИЙ ПОТОК — ЗАГРУЗКА</div>
+                    <div class="table-block-count" id="outgoingCount">0 рейсов</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Вор.</th>
+                            <th>Рейс</th>
+                            <th>Номер ТС</th>
+                            <th>Направление</th>
+                            <th>Водитель</th>
+                            <th>ГМ</th>
+                            <th>Статус</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody id="outgoingTableBody">
+                        <tr class="empty-row"><td colspan="9" class="empty-message">Нет исходящих рейсов</td></tr>
+                    </tbody>
+                </table>
             </div>
-
-            <!-- Фуры -->
-            <div id="trucksContainer"></div>
         </div>
     </div>
 </div>
 
-<!-- Кнопки управления -->
-<div class="controls">
-    <button class="btn-primary" onclick="openModal()">➕ Поставить машину</button>
-    <button class="btn-secondary" onclick="addToParking()">🅿️ На парковку</button>
-    <button class="btn-danger" onclick="resetAll()">🔄 Сброс</button>
-</div>
-
-<!-- Mute -->
-<button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
-
-<!-- Модалка -->
+<!-- === МОДАЛКА === -->
 <div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal">
         <h3>🚛 Поставить машину на ворота</h3>
@@ -888,49 +769,43 @@
         <label>Направление (откуда → куда)</label>
         <input type="text" id="modalDirection" placeholder="СЦ Екатеринбург → СЦ Казань" value="СЦ Екатеринбург → СЦ Казань">
 
+        <label>Номер ТС</label>
+        <input type="text" id="modalVehicle" placeholder="В568АМ790" value="В568АМ790">
+
         <label>Водитель</label>
         <input type="text" id="modalDriver" placeholder="Бусыгин А.Н." value="Бусыгин А.Н.">
 
-        <label>Плановый объём ГМ</label>
+        <label>Объём ГМ</label>
         <input type="number" id="modalVolume" value="20" min="0">
 
-        <label>Что делать с машиной?</label>
+        <label>Рекомендация</label>
         <div class="recommendation-options">
-            <div class="recommendation-option selected-do" data-rec="do" onclick="selectRecommendation('do')">
-                ✅ Выгружать
-            </div>
-            <div class="recommendation-option" data-rec="no" onclick="selectRecommendation('no')">
-                ❌ Не выгружать
-            </div>
-            <div class="recommendation-option" data-rec="none" onclick="selectRecommendation('none')">
-                ⚠️ Без указания            </div>
+            <div class="recommendation-option selected-do" data-rec="do" onclick="selectRec('do')">✅ Выгружать</div>
+            <div class="recommendation-option" data-rec="no" onclick="selectRec('no')">❌ Не выгружать</div>
+            <div class="recommendation-option" data-rec="none" onclick="selectRec('none')">⚠️ Без указания</div>
         </div>
 
         <label>Комментарий</label>
-        <textarea id="modalComment" rows="2" placeholder="Например: ждать догрузки..."></textarea>
+        <textarea id="modalComment" rows="2" placeholder="Комментарий..."></textarea>
 
         <div class="modal-buttons">
-            <button class="btn-secondary" onclick="closeModal()">Отмена</button>
-            <button class="btn-primary" onclick="startOperation()">✅ Поставить</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="startOperation()">✅ Поставить</button>
         </div>
     </div>
-</div>
-
-<!-- Подсказка о звуке -->
-<div class="sound-hint" id="soundHint" onclick="activateSound()">
-    🔊 Нажми, чтобы включить звук
 </div>
 
 <script>
     // ===== КОНСТАНТЫ =====
     const GATES = [11, 12, 13, 14, 15, 16, 17];
-    const CABIN_COLORS = [
-        ['#1976d2', '#42a5f5', '#0d47a1'],
-        ['#c62828', '#ef5350', '#8e0000'],
-        ['#2e7d32', '#66bb6a', '#1b5e20'],
-        ['#f57c00', '#ffa726', '#e65100'],
-        ['#6a1b9a', '#9c27b0', '#4a148c'],
-        ['#455a64', '#78909c', '#263238']
+
+    const TRUCK_COLORS = [
+        { cabin: ['#2563eb', '#3b82f6', '#1d4ed8'], name: 'blue' },
+        { cabin: ['#dc2626', '#ef4444', '#b91c1c'], name: 'red' },
+        { cabin: ['#16a34a', '#22c55e', '#15803d'], name: 'green' },
+        { cabin: ['#ea580c', '#f97316', '#c2410c'], name: 'orange' },
+        { cabin: ['#7c3aed', '#a855f7', '#6d28d9'], name: 'purple' },
+        { cabin: ['#475569', '#64748b', '#334155'], name: 'slate' }
     ];
 
     let gateStates = {};
@@ -938,49 +813,40 @@
     let isMuted = false;
     let soundActivated = false;
     let audioContext = null;
-    let currentRecommendation = 'do';
+    let currentRec = 'do';
 
     // ===== ИНИЦИАЛИЗАЦИЯ =====
-    function initGates() {
-        // Панель слева
-        const list = document.getElementById('gatesList');
-        list.innerHTML = '';
-        
-        // Сцена справа
-        const row = document.getElementById('gatesRow');
-        row.innerHTML = '';
+    function init() {
+        const scroll = document.getElementById('gatesScroll');
+        scroll.innerHTML = '';
 
         GATES.forEach(num => {
-            // Элемент в боковой панели
-            const item = document.createElement('div');
-            item.className = 'gate-item free';
-            item.id = 'gate-item-' + num;
-            item.onclick = () => onGateClick(num);
-            item.innerHTML = `
-                <div class="gate-item-header">
-                    <div class="gate-item-number">🚪 ${num}</div>
-                    <div class="gate-item-status">СВОБОДНО</div>
+            const card = document.createElement('div');
+            card.className = 'gate-card free';
+            card.id = 'gate-card-' + num;
+            card.onclick = () => onGateClick(num);
+
+            card.innerHTML = `
+                <div class="gate-info">
+                    <div>
+                        <div class="gate-info-header">
+                            <div class="gate-number">${num}</div>
+                            <span class="gate-status-badge free" id="status-${num}">Свободно</span>
+                        </div>
+                        <div class="gate-route-info" id="info-${num}">
+                            <div class="gate-empty">Готовы принять машину</div>
+                        </div>
+                    </div>
+                    <div id="metrics-${num}"></div>
                 </div>
-                <div class="gate-item-details" id="gate-item-details-${num}">
-                    Готовы принять машину
+                <div class="gate-truck-visual" id="visual-${num}">
+                    <div class="gate-truck-empty">
+                        <div class="gate-truck-empty-icon">🚪</div>
+                        <div class="gate-truck-empty-text">СВОБОДНО</div>
+                    </div>
                 </div>
             `;
-            list.appendChild(item);
-
-            // Ворота на сцене
-            const gate = document.createElement('div');
-            gate.className = 'gate free';
-            gate.id = 'gate-' + num;
-            gate.dataset.gate = num;
-            gate.onclick = () => onGateClick(num);
-            gate.innerHTML = `
-                <div class="gate-niche"></div>
-                <div class="gate-indicator"></div>
-                <div class="gate-number">${num}</div>
-                <div class="gate-door"></div>
-            `;
-            row.appendChild(gate);
-
+            scroll.appendChild(card);
             gateStates[num] = { active: false, truckId: null };
         });
     }
@@ -988,135 +854,110 @@
     // ===== ЧАСЫ =====
     setInterval(() => {
         const now = new Date();
-        document.getElementById('currentTime').textContent = now.toTimeString().slice(0,8);
+        document.getElementById('clock').textContent = now.toTimeString().slice(0,8);
     }, 1000);
 
-    // ===== ЗВУК =====
-    function activateSound() {
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            soundActivated = true;
-            document.getElementById('soundHint').classList.add('hidden');
-            playClick();
-        } catch(e) {}
-    }
-
-    function toggleMute() {
-        isMuted = !isMuted;
-        document.getElementById('muteBtn').textContent = isMuted ? '🔇' : '🔊';
-        document.getElementById('muteBtn').classList.toggle('muted', isMuted);
-    }
-
-    function playClick() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        osc.connect(gain); gain.connect(audioContext.destination);
-        osc.frequency.value = 1200;
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.05, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08);
-        osc.start(); osc.stop(audioContext.currentTime + 0.08);
-    }
-
-    function playEngine(duration = 2) {
-        if (!soundActivated || isMuted || !audioContext) return;
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        osc.connect(gain); gain.connect(audioContext.destination);
-        osc.frequency.setValueAtTime(60, audioContext.currentTime);
-        osc.frequency.linearRampToValueAtTime(90, audioContext.currentTime + duration);
-        osc.type = 'sawtooth';
-        gain.gain.setValueAtTime(0, audioContext.currentTime);
-        gain.gain.linearRampToValueAtTime(0.06, audioContext.currentTime + 0.5);
-        gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
-        osc.start(); osc.stop(audioContext.currentTime + duration);
-    }
-
-    function playReverseBeep() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        let count = 0;
-        const interval = setInterval(() => {
-            if (count >= 3 || !audioContext) { clearInterval(interval); return; }
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain); gain.connect(audioContext.destination);
-            osc.frequency.value = 1500;
-            osc.type = 'sine';
-            gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
-            osc.start(); osc.stop(audioContext.currentTime + 0.15);
-            count++;
-        }, 250);
-    }
-
-    function playAlert() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        osc.connect(gain); gain.connect(audioContext.destination);
-        osc.frequency.setValueAtTime(800, audioContext.currentTime);
-        osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.15);
-        osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.3);
-        osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.45);
-        osc.type = 'square';
-        gain.gain.setValueAtTime(0.12, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.6);
-        osc.start(); osc.stop(audioContext.currentTime + 0.6);
-    }
-
-    // ===== SVG ФУРЫ =====
-    function generateTruckSVG(colorSet, route) {
+    // ===== ГЕНЕРАЦИЯ SVG ФУРЫ =====
+    function generateTruckSVG(colorSet, route, vehicle) {
         const [dark, mid, darker] = colorSet;
+        const routeShort = route.replace('#', '').slice(0, 6);
         return `
-        <svg viewBox="0 0 90 200" width="90" height="200" xmlns="http://www.w3.org/2000/svg">
-            <!-- Кузов -->
-            <rect x="4" y="5" width="82" height="130" rx="4" fill="#e8e8e8" stroke="#888" stroke-width="2.5"/>
-            <line x1="4" y1="30" x2="86" y2="30" stroke="#c0c0c0" stroke-width="1.5"/>
-            <line x1="4" y1="55" x2="86" y2="55" stroke="#c0c0c0" stroke-width="1.5"/>
-            <line x1="4" y1="80" x2="86" y2="80" stroke="#c0c0c0" stroke-width="1.5"/>
-            <line x1="4" y1="105" x2="86" y2="105" stroke="#c0c0c0" stroke-width="1.5"/>
-            
-            <!-- Номер на кузове -->
-            <text x="45" y="75" font-family="Arial" font-size="18" font-weight="bold" fill="#333" text-anchor="middle">${route.replace('#','')}</text>
-            
-            <!-- Полоса-логотип -->
-            <rect x="4" y="115" width="82" height="15" fill="${mid}" opacity="0.8"/>
-            
-            <!-- Кабина -->
-            <path d="M 8 135 L 82 135 L 82 185 Q 82 192 75 192 L 15 192 Q 8 192 8 185 Z" fill="${mid}" stroke="${darker}" stroke-width="2.5"/>
-            
-            <!-- Лобовое стекло -->
-            <path d="M 16 142 L 74 142 L 70 158 L 20 158 Z" fill="#1a2632" stroke="#0a1015" stroke-width="1.5"/>
-            <path d="M 20 145 L 40 145 L 37 155 L 23 155 Z" fill="rgba(255,255,255,0.2)"/>
-            
-            <!-- Фары -->
-            <circle cx="18" cy="183" r="5" fill="#fff8b0" stroke="#333" stroke-width="1.5"/>
-            <circle cx="72" cy="183" r="5" fill="#fff8b0" stroke="#333" stroke-width="1.5"/>
-            
-            <!-- Колёса -->
-            <ellipse cx="18" cy="128" rx="6" ry="4" fill="#1a1a1a"/>
-            <ellipse cx="72" cy="128" rx="6" ry="4" fill="#1a1a1a"/>
-            <ellipse cx="18" cy="180" rx="6" ry="4" fill="#1a1a1a"/>
-            <ellipse cx="72" cy="180" rx="6" ry="4" fill="#1a1a1a"/>
-            
-            <!-- Габаритные огни -->
-            <circle cx="10" cy="10" r="3" fill="#ff1744"/>
-            <circle cx="80" cy="10" r="3" fill="#ff1744"/>
+        <svg viewBox="0 0 140 100" width="140" height="100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="body-${routeShort}" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#f8f9fa"/>
+                    <stop offset="50%" stop-color="#e9ecef"/>
+                    <stop offset="100%" stop-color="#ced4da"/>
+                </linearGradient>
+                <linearGradient id="cabin-${routeShort}" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="${mid}"/>
+                    <stop offset="100%" stop-color="${darker}"/>
+                </linearGradient>
+                <linearGradient id="glass-${routeShort}" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#334155"/>
+                    <stop offset="100%" stop-color="#1e293b"/>
+                </linearGradient>
+                <filter id="shadow-${routeShort}" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+                    <feOffset dx="0" dy="3" result="offsetblur"/>
+                    <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.3"/>
+                    </feComponentTransfer>
+                    <feMerge>
+                        <feMergeNode/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- Тень под фурой -->
+            <ellipse cx="70" cy="92" rx="60" ry="6" fill="rgba(0,0,0,0.15)"/>
+
+            <g filter="url(#shadow-${routeShort})">
+                <!-- Кузов (прицеп) -->
+                <rect x="5" y="15" width="85" height="55" rx="4" fill="url(#body-${routeShort})" stroke="#adb5bd" stroke-width="1.5"/>
+                
+                <!-- Рёбра жёсткости -->
+                <line x1="5" y1="28" x2="90" y2="28" stroke="#dee2e6" stroke-width="1"/>
+                <line x1="5" y1="42" x2="90" y2="42" stroke="#dee2e6" stroke-width="1"/>
+                <line x1="5" y1="56" x2="90" y2="56" stroke="#dee2e6" stroke-width="1"/>
+                
+                <!-- Логотип-полоса -->
+                <rect x="5" y="62" width="85" height="6" fill="${mid}" opacity="0.75"/>
+                
+                <!-- Номер рейса на кузове -->
+                <text x="47" y="48" font-family="Arial, sans-serif" font-size="13" font-weight="900" fill="#495057" text-anchor="middle">${routeShort}</text>
+                
+                <!-- Кабина -->
+                <path d="M 90 20 L 125 20 Q 130 20 130 25 L 130 65 Q 130 70 125 70 L 90 70 Z" 
+                      fill="url(#cabin-${routeShort})" stroke="${darker}" stroke-width="1.5"/>
+                
+                <!-- Лобовое стекло -->
+                <path d="M 95 26 L 122 26 L 122 40 L 95 40 Z" fill="url(#glass-${routeShort})" stroke="#0f172a" stroke-width="1"/>
+                
+                <!-- Блик на стекле -->
+                <path d="M 97 28 L 108 28 L 105 38 L 97 38 Z" fill="rgba(255,255,255,0.15)"/>
+                
+                <!-- Дверь кабины -->
+                <line x1="105" y1="40" x2="105" y2="65" stroke="${darker}" stroke-width="1"/>
+                <circle cx="103" cy="52" r="1.5" fill="${darker}"/>
+                
+                <!-- Фара -->
+                <circle cx="127" cy="60" r="3" fill="#fef3c7" stroke="#92400e" stroke-width="0.8"/>
+                <circle cx="127" cy="60" r="1.5" fill="#fff8b0"/>
+                
+                <!-- Колёса кузова -->
+                <ellipse cx="20" cy="72" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
+                <ellipse cx="20" cy="72" rx="2.5" ry="2" fill="#6b7280"/>
+                
+                <ellipse cx="45" cy="72" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
+                <ellipse cx="45" cy="72" rx="2.5" ry="2" fill="#6b7280"/>
+                
+                <ellipse cx="70" cy="72" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
+                <ellipse cx="70" cy="72" rx="2.5" ry="2" fill="#6b7280"/>
+                
+                <!-- Колёса кабины -->
+                <ellipse cx="105" cy="72" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
+                <ellipse cx="105" cy="72" rx="2.5" ry="2" fill="#6b7280"/>
+                
+                <ellipse cx="122" cy="72" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
+                <ellipse cx="122" cy="72" rx="2.5" ry="2" fill="#6b7280"/>
+                
+                <!-- Габаритные огни -->
+                <circle cx="8" cy="18" r="1.5" fill="#dc2626"/>
+                <circle cx="8" cy="18" r="3" fill="rgba(220,38,38,0.3)"/>
+            </g>
         </svg>
         `;
     }
 
-    // ===== КЛИК =====
+    // ===== КЛИК ПО ВОРОТАМ =====
     function onGateClick(num) {
         playClick();
         if (gateStates[num].active) {
             const truck = document.getElementById(gateStates[num].truckId);
-            if (truck) {
-                const info = truck.dataset;
-                if (confirm(`🚪 Ворота ${num}\n\n📋 Рейс: ${info.route}\n📍 ${info.direction}\n👤 ${info.driver}\n\nЗавершить операцию?`)) {
-                    completeOperation(num);
-                }
+            if (truck && confirm(`🚪 Ворота ${num}\n\n📋 Рейс: ${truck.dataset.route}\n📍 ${truck.dataset.direction}\n👤 ${truck.dataset.driver}\n\nЗавершить операцию?`)) {
+                completeOperation(num);
             }
         } else {
             document.getElementById('modalGate').value = num;
@@ -1136,11 +977,9 @@
 
     function closeModal() { document.getElementById('modal').classList.remove('active'); }
 
-    function selectRecommendation(rec) {
-        currentRecommendation = rec;
-        document.querySelectorAll('.recommendation-option').forEach(el => {
-            el.classList.remove('selected-do', 'selected-no', 'selected-none');
-        });
+    function selectRec(rec) {
+        currentRec = rec;
+        document.querySelectorAll('.recommendation-option').forEach(el => el.classList.remove('selected-do', 'selected-no', 'selected-none'));
         const el = document.querySelector(`.recommendation-option[data-rec="${rec}"]`);
         if (rec === 'do') el.classList.add('selected-do');
         else if (rec === 'no') el.classList.add('selected-no');
@@ -1154,6 +993,7 @@
         const route = document.getElementById('modalRoute').value.trim();
         const type = document.getElementById('modalType').value;
         const direction = document.getElementById('modalDirection').value.trim();
+        const vehicle = document.getElementById('modalVehicle').value.trim();
         const driver = document.getElementById('modalDriver').value.trim();
         const volume = parseInt(document.getElementById('modalVolume').value) || 0;
         const comment = document.getElementById('modalComment').value.trim();
@@ -1161,177 +1001,102 @@
         if (!route) { alert('Введите номер рейса'); return; }
         if (gateStates[gateNum].active) { alert('Ворота заняты!'); return; }
 
-        placeTruckOnGate(gateNum, { route, type, direction, driver, volume, comment, recommendation: currentRecommendation });
+        placeTruckOnGate(gateNum, { route, type, direction, vehicle, driver, volume, comment, recommendation: currentRec });
         closeModal();
     }
 
     // ===== ПОСТАВИТЬ ФУРУ =====
     function placeTruckOnGate(gateNum, data) {
-        const gateEl = document.getElementById('gate-' + gateNum);
-        gateEl.classList.remove('free', 'loading', 'unloading', 'problem');
-        gateEl.classList.add(data.type);
+        const card = document.getElementById('gate-card-' + gateNum);
+        card.classList.remove('free', 'loading', 'unloading', 'problem');
+        card.classList.add(data.type);
 
-        // Обновляем панель слева
-        updateSidebarGate(gateNum, data);
+        // Обновляем статус
+        const statusBadge = document.getElementById('status-' + gateNum);
+        statusBadge.className = 'gate-status-badge ' + data.type;
+        statusBadge.textContent = data.type === 'unloading' ? 'Выгрузка' : 'Загрузка';
 
-        const truckId = 'truck-' + (++truckIdCounter);
-        const truck = document.createElement('div');
-        truck.className = 'truck entering';
-        truck.id = truckId;
+        // Обновляем инфо
+        const info = document.getElementById('info-' + gateNum);
+        let recBadge = '';
+        if (data.recommendation === 'do') recBadge = `<span style="background: var(--success-light); color: var(--success); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-top: 4px; display: inline-block;">✅ ВЫГРУЖАТЬ</span>`;
+        else if (data.recommendation === 'no') recBadge = `<span style="background: var(--danger-light); color: var(--danger); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-top: 4px; display: inline-block;">❌ НЕ ВЫГРУЖАТЬ</span>`;
+        else recBadge = `<span style="background: var(--warning-light); color: var(--warning); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-top: 4px; display: inline-block;">⚠️ БЕЗ УКАЗАНИЯ</span>`;
 
-        const gateIdx = GATES.indexOf(gateNum);
-        const gateSpacing = 172;
-        const startX = 80 + gateIdx * gateSpacing;
-        const startY = 300;
+        info.innerHTML = `
+            <div class="gate-route">${data.route}</div>
+            <div class="gate-direction">${data.direction}</div>
+            <div class="gate-driver">👤 ${data.driver} · 🚛 ${data.vehicle}</div>
+            ${recBadge}
+        `;
 
-        truck.style.left = startX + 'px';
-        truck.style.top = startY + 'px';
-
-        const colorSet = CABIN_COLORS[Math.floor(Math.random() * CABIN_COLORS.length)];
-
-        truck.dataset.route = data.route;
-        truck.dataset.direction = data.direction;
-        truck.dataset.driver = data.driver;
-        truck.dataset.type = data.type;
-        truck.dataset.volume = data.volume;
-        truck.dataset.comment = data.comment;
-        truck.dataset.recommendation = data.recommendation;
-        truck.dataset.startTime = Date.now();
-        truck.dataset.gate = gateNum;
-        truck.dataset.loaded = 0;
-        truck.dataset.timerInterval = '';
-
-        // Плашка рекомендации
-        let recHtml = '';
-        if (data.recommendation === 'do') {
-            recHtml = `<div class="recommendation do-unload">✅ ВЫГРУЖАТЬ</div>`;
-        } else if (data.recommendation === 'no') {
-            recHtml = `<div class="recommendation no-unload">❌ НЕ ВЫГРУЖАТЬ</div>`;
-        } else {
-            recHtml = `<div class="recommendation no-info">⚠️ БЕЗ УКАЗАНИЯ</div>`;
-        }
-
-        truck.innerHTML = `
-            <div class="truck-shadow"></div>
-            <div class="truck-label">
-                <div class="route">${data.route}</div>
-                <div class="direction">${data.direction}</div>
-                <div class="timer" id="${truckId}-timer">00:00:00</div>
-                <div class="progress" id="${truckId}-progress">📦 0/${data.volume} ГМ</div>
-                ${recHtml}
-                ${data.comment ? `<div class="comment">💬 ${data.comment}</div>` : ''}
+        // Метрики (таймер, прогресс)
+        const metrics = document.getElementById('metrics-' + gateNum);
+        metrics.innerHTML = `
+            <div class="gate-metrics">
+                <div class="gate-timer" id="timer-${gateNum}">00:00:00</div>
+                <div class="gate-progress" id="progress-${gateNum}">📦 0/${data.volume} ГМ</div>
             </div>
-            ${generateTruckSVG(colorSet, data.route)}
+            <div class="gate-progress-bar">
+                <div class="gate-progress-bar-fill" id="progress-fill-${gateNum}" style="width: 0%;"></div>
+            </div>
         `;
 
-        document.getElementById('trucksContainer').appendChild(truck);
+        // Визуализация фуры
+        const visual = document.getElementById('visual-' + gateNum);
+        const colorSet = TRUCK_COLORS[Math.floor(Math.random() * TRUCK_COLORS.length)].cabin;
+        visual.innerHTML = generateTruckSVG(colorSet, data.route, data.vehicle);
+        visual.style.background = 'linear-gradient(135deg, #f6f8fa 0%, #e8ebef 100%)';
 
-        playEngine(2);
-        setTimeout(() => playReverseBeep(), 1400);
+        // Состояние
+        const truckId = 'truck-' + (++truckIdCounter);
+        gateStates[gateNum] = { active: true, truckId, data, startTime: Date.now() };
 
-        requestAnimationFrame(() => {
-            truck.classList.remove('entering');
-            truck.classList.add('entered');
-        });
+        // Звуки
+        playEngine(1.5);
+        setTimeout(() => playReverseBeep(), 1200);
 
-        gateStates[gateNum] = { active: true, truckId: truckId, data: data };
+        // Таймер
+        startTimer(gateNum);
 
-        setTimeout(() => startTruckTimer(truckId), 1000);
-    }
-
-    // ===== ОБНОВЛЕНИЕ БОКОВОЙ ПАНЕЛИ =====
-    function updateSidebarGate(gateNum, data) {
-        const item = document.getElementById('gate-item-' + gateNum);
-        if (!item) return;
-
-        item.classList.remove('free', 'loading', 'unloading', 'problem');
-        item.classList.add(data.type);
-
-        const statusEl = item.querySelector('.gate-item-status');
-        const detailsEl = document.getElementById('gate-item-details-' + gateNum);
-
-        statusEl.textContent = data.type === 'unloading' ? 'ВЫГРУЗКА' : 'ЗАГРУЗКА';
-
-        let recHtml = '';
-        if (data.recommendation === 'do') {
-            recHtml = `<div class="gate-item-recommendation do-unload">✅ ВЫГРУЖАТЬ</div>`;
-        } else if (data.recommendation === 'no') {
-            recHtml = `<div class="gate-item-recommendation no-unload">❌ НЕ ВЫГРУЖАТЬ</div>`;
-        } else {
-            recHtml = `<div class="gate-item-recommendation no-info">⚠️ БЕЗ УКАЗАНИЯ</div>`;
-        }
-
-        detailsEl.innerHTML = `
-            <div class="route">${data.route}</div>
-            <div>${data.direction}</div>
-            <div class="timer" id="sidebar-timer-${gateNum}">00:00:00</div>
-            <div style="font-size:10px; margin-top:4px;">📦 <span id="sidebar-progress-${gateNum}">0/${data.volume}</span> ГМ</div>
-            ${recHtml}
-            ${data.comment ? `<div class="gate-item-comment">💬 ${data.comment}</div>` : ''}
-        `;
-    }
-
-    function resetSidebarGate(gateNum) {
-        const item = document.getElementById('gate-item-' + gateNum);
-        if (!item) return;
-        item.classList.remove('loading', 'unloading', 'problem');
-        item.classList.add('free');
-        item.querySelector('.gate-item-status').textContent = 'СВОБОДНО';
-        document.getElementById('gate-item-details-' + gateNum).innerHTML = 'Готовы принять машину';
+        // Обновляем таблицы
+        updateTables();
     }
 
     // ===== ТАЙМЕР =====
-    function startTruckTimer(truckId) {
-        const truck = document.getElementById(truckId);
-        if (!truck) return;
+    function startTimer(gateNum) {
+        const interval = setInterval(() => {
+            const state = gateStates[gateNum];
+            if (!state.active) { clearInterval(interval); return; }
 
-        const timerInterval = setInterval(() => {
-            const truckEl = document.getElementById(truckId);
-            if (!truckEl) { clearInterval(timerInterval); return; }
-
-            const startTime = parseInt(truckEl.dataset.startTime);
-            const diff = Date.now() - startTime;
-            const timerEl = document.getElementById(truckId + '-timer');
-            const gateNum = parseInt(truckEl.dataset.gate);
-            const sidebarTimer = document.getElementById('sidebar-timer-' + gateNum);
-
-            const timeText = formatDuration(diff);
-            if (timerEl) timerEl.textContent = timeText;
-            if (sidebarTimer) sidebarTimer.textContent = timeText;
-
-            // Цвет
-            const isWarning = diff > 60 * 60 * 1000;
-            const isDanger = diff > 90 * 60 * 1000;
-
-            [timerEl, sidebarTimer].forEach(el => {
-                if (!el) return;
-                el.classList.remove('warning', 'danger');
-                if (isDanger) el.classList.add('danger');
-                else if (isWarning) el.classList.add('warning');
-            });
-
-            if (isDanger) {
-                document.getElementById('gate-' + gateNum).classList.add('problem');
-                document.getElementById('gate-item-' + gateNum).classList.add('problem');
-                if (!truckEl.dataset.lastAlert || Date.now() - parseInt(truckEl.dataset.lastAlert) > 30000) {
-                    playAlert();
-                    truckEl.dataset.lastAlert = Date.now();
+            const diff = Date.now() - state.startTime;
+            const timerEl = document.getElementById('timer-' + gateNum);
+            if (timerEl) {
+                timerEl.textContent = formatDuration(diff);
+                timerEl.classList.remove('warning', 'danger');
+                if (diff > 90 * 60 * 1000) {
+                    timerEl.classList.add('danger');
+                    document.getElementById('gate-card-' + gateNum).classList.add('problem');
+                    if (!state.lastAlert || Date.now() - state.lastAlert > 30000) {
+                        playAlert();
+                        state.lastAlert = Date.now();
+                    }
+                } else if (diff > 60 * 60 * 1000) {
+                    timerEl.classList.add('warning');
                 }
             }
 
             // Прогресс
-            const volume = parseInt(truckEl.dataset.volume) || 0;
-            const simulatedLoaded = Math.min(volume, Math.floor(diff / 15000));
-            if (simulatedLoaded !== parseInt(truckEl.dataset.loaded)) {
-                truckEl.dataset.loaded = simulatedLoaded;
-                const progressEl = document.getElementById(truckId + '-progress');
-                if (progressEl) progressEl.textContent = `📦 ${simulatedLoaded}/${volume} ГМ`;
-                const sidebarProgress = document.getElementById('sidebar-progress-' + gateNum);
-                if (sidebarProgress) sidebarProgress.textContent = `${simulatedLoaded}/${volume}`;
-            }
-        }, 1000);
+            const volume = state.data.volume || 0;
+            const loaded = Math.min(volume, Math.floor(diff / 15000));
+            const progressEl = document.getElementById('progress-' + gateNum);
+            const fillEl = document.getElementById('progress-fill-' + gateNum);
+            if (progressEl) progressEl.textContent = `📦 ${loaded}/${volume} ГМ`;
+            if (fillEl) fillEl.style.width = (loaded / volume * 100) + '%';
 
-        truck.dataset.timerInterval = timerInterval;
+            // Обновляем таблицу (для актуального таймера в статусе)
+            updateTables();
+        }, 1000);
     }
 
     function formatDuration(ms) {
@@ -1348,67 +1113,190 @@
         const state = gateStates[gateNum];
         if (!state.active) return;
 
-        const truck = document.getElementById(state.truckId);
-        if (truck) {
-            if (truck.dataset.timerInterval) clearInterval(parseInt(truck.dataset.timerInterval));
-            truck.classList.remove('entered');
-            truck.classList.add('entering');
-            truck.style.transform = 'translateX(700px) scale(0.5)';
-            setTimeout(() => truck.remove(), 1200);
-        }
+        const card = document.getElementById('gate-card-' + gateNum);
+        card.classList.remove('loading', 'unloading', 'problem');
+        card.classList.add('free');
 
-        const gateEl = document.getElementById('gate-' + gateNum);
-        gateEl.classList.remove('loading', 'unloading', 'problem');
-        gateEl.classList.add('free');
+        document.getElementById('status-' + gateNum).className = 'gate-status-badge free';
+        document.getElementById('status-' + gateNum).textContent = 'Свободно';
 
-        resetSidebarGate(gateNum);
+        document.getElementById('info-' + gateNum).innerHTML = '<div class="gate-empty">Готовы принять машину</div>';
+        document.getElementById('metrics-' + gateNum).innerHTML = '';
+
+        document.getElementById('visual-' + gateNum).innerHTML = `
+            <div class="gate-truck-empty">
+                <div class="gate-truck-empty-icon">🚪</div>
+                <div class="gate-truck-empty-text">СВОБОДНО</div>
+            </div>
+        `;
 
         gateStates[gateNum] = { active: false, truckId: null };
+        updateTables();
     }
 
-    // ===== ПАРКОВКА =====
-    function addToParking() {
-        playClick();
-        const route = prompt('Номер рейса:', '#999999');
-        if (!route) return;
-        const direction = prompt('Направление:', 'Москва → Казань');
-        if (!direction) return;
+    // ===== ОБНОВЛЕНИЕ ТАБЛИЦ =====
+    function updateTables() {
+        const incoming = [];
+        const outgoing = [];
 
-        const id = 'parking-' + (++truckIdCounter);
-        const truck = document.createElement('div');
-        truck.className = 'parking-truck';
-        truck.id = id;
-        truck.dataset.route = route;
-        truck.dataset.direction = direction;
-        truck.onclick = () => placeParkingTruckOnGate(id);
+        GATES.forEach(num => {
+            const state = gateStates[num];
+            if (!state.active) return;
+            const diff = Date.now() - state.startTime;
+            const item = {
+                gate: num,
+                route: state.data.route,
+                vehicle: state.data.vehicle,
+                direction: state.data.direction,
+                driver: state.data.driver,
+                volume: state.data.volume,
+                loaded: Math.min(state.data.volume, Math.floor(diff / 15000)),
+                timer: formatDuration(diff),
+                isWarning: diff > 60 * 60 * 1000,
+                isDanger: diff > 90 * 60 * 1000,
+                type: state.data.type
+            };
+            if (state.data.type === 'unloading') incoming.push(item);
+            else outgoing.push(item);
+        });
 
-        const colorSet = CABIN_COLORS[Math.floor(Math.random() * CABIN_COLORS.length)];
-        truck.innerHTML = generateTruckSVG(colorSet, route);
+        renderTable('incomingTableBody', incoming, 'incoming');
+        renderTable('outgoingTableBody', outgoing, 'outgoing');
 
-        document.getElementById('parkingContent').appendChild(truck);
+        document.getElementById('incomingCount').textContent = incoming.length + ' рейсов';
+        document.getElementById('outgoingCount').textContent = outgoing.length + ' рейсов';
     }
 
-    function placeParkingTruckOnGate(parkingId) {
-        playClick();
-        const parkingTruck = document.getElementById(parkingId);
-        if (!parkingTruck) return;
+    function renderTable(tbodyId, items, type) {
+        const tbody = document.getElementById(tbodyId);
+        if (items.length === 0) {
+            const cols = type === 'incoming' ? 8 : 9;
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}" class="empty-message">Нет ${type === 'incoming' ? 'входящих' : 'исходящих'} рейсов</td></tr>`;
+            return;
+        }
 
-        const free = GATES.filter(g => !gateStates[g].active);
-        if (free.length === 0) { alert('Все ворота заняты!'); return; }
+        tbody.innerHTML = items.map((item, i) => {
+            let statusClass = item.type;
+            let statusText = item.type === 'unloading' ? 'Выгрузка' : 'Загрузка';
+            if (item.isDanger) { statusClass = 'problem'; statusText = '⚠️ ПРОБЛЕМА'; }
+            else if (item.isWarning) { statusText = '⚠️ Затянулось'; }
 
-        const gateNum = free[0];
-        const data = {
-            route: parkingTruck.dataset.route,
-            type: 'loading',
-            direction: parkingTruck.dataset.direction,
-            driver: '—',
-            volume: 33,
-            comment: '',
-            recommendation: 'do'
-        };
+            const statusBadge = `<span class="status-badge ${statusClass}">${statusText}</span>`;
 
-        placeTruckOnGate(gateNum, data);
-        parkingTruck.remove();
+            if (type === 'incoming') {
+                return `
+                    <tr onclick="onGateClick(${item.gate})">
+                        <td>${i + 1}</td>
+                        <td><b>${item.gate}</b></td>
+                        <td class="dir-cell">${item.route}</td>
+                        <td>${item.vehicle}</td>
+                        <td>${item.direction}</td>
+                        <td>${item.driver}</td>
+                        <td>${statusBadge}</td>
+                        <td class="action-cell">
+                            <button class="action-btn end-action" onclick="event.stopPropagation(); completeOperation(${item.gate})">Завершить</button>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                return `
+                    <tr onclick="onGateClick(${item.gate})">
+                        <td>${i + 1}</td>
+                        <td><b>${item.gate}</b></td>
+                        <td class="dir-cell">${item.route}</td>
+                        <td>${item.vehicle}</td>
+                        <td>${item.direction}</td>
+                        <td>${item.driver}</td>
+                        <td><b>${item.loaded}/${item.volume}</b></td>
+                        <td>${statusBadge}</td>
+                        <td class="action-cell">
+                            <button class="action-btn end-action" onclick="event.stopPropagation(); completeOperation(${item.gate})">Завершить</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }).join('');
+    }
+
+    // ===== ЗВУК =====
+    function playClick() {
+        if (!soundActivated || isMuted || !audioContext) return;
+        try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.frequency.value = 1200;
+            osc.type = 'square';
+            gain.gain.setValueAtTime(0.04, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.06);
+            osc.start(); osc.stop(audioContext.currentTime + 0.06);
+        } catch(e) {}
+    }
+
+    function playEngine(duration = 2) {
+        if (!soundActivated || isMuted || !audioContext) return;
+        try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(60, audioContext.currentTime);
+            osc.frequency.linearRampToValueAtTime(90, audioContext.currentTime + duration);
+            osc.type = 'sawtooth';
+            gain.gain.setValueAtTime(0, audioContext.currentTime);
+            gain.gain.linearRampToValueAtTime(0.04, audioContext.currentTime + 0.4);
+            gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+            osc.start(); osc.stop(audioContext.currentTime + duration);
+        } catch(e) {}
+    }
+
+    function playReverseBeep() {
+        if (!soundActivated || isMuted || !audioContext) return;
+        let count = 0;
+        const interval = setInterval(() => {
+            if (count >= 3 || !audioContext) { clearInterval(interval); return; }
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain); gain.connect(audioContext.destination);
+                osc.frequency.value = 1500;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
+                osc.start(); osc.stop(audioContext.currentTime + 0.12);
+            } catch(e) {}
+            count++;
+        }, 220);
+    }
+
+    function playAlert() {
+        if (!soundActivated || isMuted || !audioContext) return;
+        try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(800, audioContext.currentTime);
+            osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.15);
+            osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.3);
+            osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.45);
+            osc.type = 'square';
+            gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.6);
+            osc.start(); osc.stop(audioContext.currentTime + 0.6);
+        } catch(e) {}
+    }
+
+    function toggleMute() {
+        isMuted = !isMuted;
+        document.getElementById('muteBtn').textContent = isMuted ? '🔇' : '🔊';
+        if (!soundActivated && !isMuted) activateSound();
+    }
+
+    function activateSound() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            soundActivated = true;
+            playClick();
+        } catch(e) {}
     }
 
     function resetAll() {
@@ -1416,11 +1304,14 @@
         location.reload();
     }
 
+    // Первая активация звука по клику
+    document.addEventListener('click', function initSound() {
+        if (!soundActivated) activateSound();
+        document.removeEventListener('click', initSound);
+    }, { once: true });
+
     // ===== СТАРТ =====
-    initGates();
-    setTimeout(() => {
-        if (!soundActivated) document.getElementById('soundHint').classList.remove('hidden');
-    }, 1000);
+    init();
 </script>
 
 </body>

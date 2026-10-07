@@ -3,30 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Диспетчерская склада</title>
+<title>Шпаргалка бригадира</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-        --bg: #f0f2f5;
+        --bg: #f5f7fa;
         --card: #ffffff;
         --card-hover: #fafbfc;
-        --border: #e1e4e8;
-        --border-strong: #d0d7de;
-        --text: #24292f;
-        --text-dim: #57606a;
-        --text-muted: #8b949e;
-        --accent: #0969da;
-        --accent-light: #ddf4ff;
-        --success: #1a7f37;
-        --success-light: #dafbe1;
-        --warning: #bf8700;
-        --warning-light: #fff8c5;
-        --danger: #cf222e;
-        --danger-light: #ffebe9;
+        --border: #e3e8ee;
+        --border-strong: #cbd5e1;
+        --text: #1e293b;
+        --text-dim: #64748b;
+        --text-muted: #94a3b8;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --success: #16a34a;
+        --success-light: #dcfce7;
+        --warning: #d97706;
+        --warning-light: #fef3c7;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+        --purple: #7c3aed;
+        --purple-light: #ede9fe;
         --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
         --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-        --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
     }
 
     body {
@@ -34,220 +36,365 @@
         background: var(--bg);
         color: var(--text);
         min-height: 100vh;
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
-    .app {
-        display: grid;
-        grid-template-columns: 1.15fr 1fr;
-        height: 100vh;
-        width: 100vw;
-    }
-
-    /* === ЛЕВАЯ ЧАСТЬ === */
-    .scene-panel {
-        background: linear-gradient(180deg, #e8ebef 0%, #d8dde3 100%);
-        border-right: 2px solid var(--border-strong);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .scene-header {
-        padding: 14px 20px;
+    /* === HEADER === */
+    .app-header {
         background: var(--card);
         border-bottom: 2px solid var(--border);
+        padding: 14px 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         box-shadow: var(--shadow-sm);
-        z-index: 10;
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
 
-    .scene-title {
-        font-size: 16px;
+    .app-logo {
+        font-size: 18px;
         font-weight: 900;
         color: var(--text);
-        letter-spacing: 1px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        letter-spacing: 0.5px;
     }
 
-    .scene-title::before {
-        content: '🏭';
-        font-size: 20px;
+    .app-logo-icon {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--accent), #1e40af);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
     }
 
     .clock {
-        font-size: 22px;
+        font-size: 18px;
         font-weight: 900;
         color: var(--accent);
         font-variant-numeric: tabular-nums;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
+        padding: 6px 14px;
+        background: var(--accent-light);
+        border-radius: 8px;
     }
 
-    /* === ОСНОВНАЯ ОБЛАСТЬ СЛЕВА — 3D СЦЕНА === */
-    .scene-area {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+    /* === ОБЩИЕ КНОПКИ === */
+    .btn {
+        padding: 9px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
     }
 
-    /* Игровое поле */
-    .gates-scene {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        position: relative;
-        background: 
-            radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 40%),
-            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.3) 0%, transparent 40%),
-            linear-gradient(180deg, #dfe3e8 0%, #cdd3da 100%);
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    .btn-secondary {
+        background: var(--card);
+        color: var(--text);
+        border: 1.5px solid var(--border-strong);
+    }
+    .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+    }
+    .btn-success:hover { background: #15803d; }
+
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+    .btn-danger:hover { background: #b91c1c; }
+
+    .btn-icon {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        justify-content: center;
+        font-size: 16px;
     }
 
-    .gates-scene::-webkit-scrollbar { width: 8px; }
-    .gates-scene::-webkit-scrollbar-track { background: transparent; }
-    .gates-scene::-webkit-scrollbar-thumb {
-        background: var(--border-strong);
-        border-radius: 4px;
+    /* === ОСНОВНАЯ СЕТКА === */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+        max-width: 1900px;
+        margin: 0 auto;
     }
 
-    /* === КАРТОЧКА ВОРОТ === */
-    .gate-card {
+    /* === БЛОКИ === */
+    .panel {
         background: var(--card);
         border-radius: 14px;
         box-shadow: var(--shadow-md);
         overflow: hidden;
-        transition: all 0.3s;
-        cursor: pointer;
-        position: relative;
+        border: 1px solid var(--border);
+    }
+
+    .panel-header {
+        padding: 14px 18px;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    }
+
+    .panel-title {
+        font-size: 14px;
+        font-weight: 900;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .panel-title-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: white;
+    }
+
+    .panel-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+    .panel-title-icon.green { background: linear-gradient(135deg, #22c55e, #15803d); }
+    .panel-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+    .panel-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
+
+    .panel-count {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-dim);
+        background: var(--bg);
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    /* === ВОРОТА (визуализация) === */
+    .gates-grid {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 620px;
+        overflow-y: auto;
+    }
+
+    .gates-grid::-webkit-scrollbar { width: 8px; }
+    .gates-grid::-webkit-scrollbar-track { background: transparent; }
+    .gates-grid::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+    /* Карточка ворот */
+    .gate-row {
         display: grid;
-        grid-template-columns: 1fr 200px;
-        min-height: 145px;
-        border-left: 6px solid var(--success);
+        grid-template-columns: 80px 1fr 200px;
+        gap: 0;
+        background: var(--card);
+        border-radius: 12px;
+        border: 2px solid var(--border);
+        overflow: hidden;
+        transition: all 0.25s;
+        cursor: pointer;
+        min-height: 110px;
     }
 
-    .gate-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
+    .gate-row:hover {
+        border-color: var(--accent);
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+        transform: translateX(2px);
     }
 
-    .gate-card.loading { border-left-color: var(--warning); }
-    .gate-card.unloading { border-left-color: var(--danger); }
-    .gate-card.problem {
-        border-left-color: var(--danger);
-        animation: pulse-card 1.5s infinite;
+    .gate-row.free { border-left: 6px solid var(--success); }
+    .gate-row.loading { border-left: 6px solid var(--warning); }
+    .gate-row.unloading { border-left: 6px solid var(--danger); }
+    .gate-row.problem {
+        border-left: 6px solid var(--danger);
+        animation: pulse-row 1.5s infinite;
     }
 
-    @keyframes pulse-card {
-        0%, 100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(207, 34, 46, 0.3); }
-        50% { box-shadow: var(--shadow-md), 0 0 0 8px rgba(207, 34, 46, 0); }
+    @keyframes pulse-row {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
+        50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    }
+
+    /* Номер ворот */
+    .gate-number-box {
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid var(--border);
+        gap: 4px;
+    }
+
+    .gate-number {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--text);
+        line-height: 1;
+        letter-spacing: -1px;
+    }
+
+    .gate-number-label {
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--text-muted);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .gate-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 8px var(--success);
+        margin-top: 4px;
+    }
+
+    .gate-row.loading .gate-dot { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+    .gate-row.unloading .gate-dot { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+    .gate-row.problem .gate-dot {
+        background: var(--danger);
+        box-shadow: 0 0 12px var(--danger);
+        animation: blink-dot 0.6s infinite;
+    }
+
+    @keyframes blink-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
     }
 
     /* Инфо-часть */
     .gate-info {
-        padding: 14px 18px;
+        padding: 12px 16px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 4px;
         min-width: 0;
     }
 
-    .gate-info-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 8px;
-        flex-wrap: wrap;
-    }
-
-    .gate-number {
-        font-size: 26px;
-        font-weight: 900;
-        color: var(--text);
-        letter-spacing: 1px;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .gate-number::before {
-        content: '';
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        background: linear-gradient(180deg, #495057 0%, #212529 100%);
-        border-radius: 3px;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        position: relative;
-    }
-
-    .gate-number::after {
-        content: '';
-        position: absolute;
-        width: 18px;
-        height: 3px;
-        background: repeating-linear-gradient(180deg, #adb5bd 0px, #adb5bd 2px, #6c757d 2px, #6c757d 3px);
-        border-radius: 3px 3px 0 0;
-        margin-top: -12px;
-    }
-
-    .gate-status-badge {
+    .gate-status {
         font-size: 10px;
         font-weight: 800;
-        padding: 4px 10px;
-        border-radius: 20px;
+        padding: 3px 10px;
+        border-radius: 12px;
         letter-spacing: 1px;
         text-transform: uppercase;
+        width: fit-content;
+        margin-bottom: 2px;
     }
 
-    .gate-status-badge.free { background: var(--success-light); color: var(--success); }
-    .gate-status-badge.loading { background: var(--warning-light); color: var(--warning); }
-    .gate-status-badge.unloading { background: var(--danger-light); color: var(--danger); }
-
-    .gate-route-info { display: flex; flex-direction: column; gap: 4px; }
+    .gate-status.free { background: var(--success-light); color: var(--success); }
+    .gate-status.loading { background: var(--warning-light); color: var(--warning); }
+    .gate-status.unloading { background: var(--danger-light); color: var(--danger); }
 
     .gate-route {
         font-size: 15px;
-        font-weight: 800;
-        color: var(--accent);
-        letter-spacing: 0.5px;
+        font-weight: 900;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .gate-direction {
         font-size: 12px;
         color: var(--text-dim);
-        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .gate-driver {
+    .gate-meta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
         font-size: 11px;
         color: var(--text-muted);
-        margin-top: 4px;
+        margin-top: 2px;
     }
 
-    .gate-empty {
-        font-size: 13px;
-        color: var(--text-muted);
-        font-style: italic;
-    }
-
-    .gate-metrics {
+    .gate-meta-item {
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-top: 8px;
-        flex-wrap: wrap;
+        gap: 3px;
+    }
+
+    /* Комментарий */
+    .gate-comment {
+        font-size: 11px;
+        padding: 5px 10px;
+        background: var(--warning-light);
+        border-left: 3px solid var(--warning);
+        border-radius: 4px;
+        color: #78350f;
+        font-style: italic;
+        margin-top: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .gate-comment.do { background: var(--success-light); border-left-color: var(--success); color: #14532d; }
+    .gate-comment.no { background: var(--danger-light); border-left-color: var(--danger); color: #7f1d1d; }
+
+    /* Таймер */
+    .gate-timer-box {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-left: 1px solid var(--border);
+        gap: 4px;
+        padding: 8px;
     }
 
     .gate-timer {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 900;
         color: var(--success);
         font-variant-numeric: tabular-nums;
@@ -257,537 +404,44 @@
     .gate-timer.warning { color: var(--warning); }
     .gate-timer.danger {
         color: var(--danger);
-        animation: timer-blink 1s infinite;
+        animation: blink-dot 1s infinite;
     }
 
-    @keyframes timer-blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
-
-    .gate-progress {
-        font-size: 12px;
+    .gate-progress-text {
+        font-size: 11px;
         color: var(--text-dim);
         font-weight: 700;
     }
 
-    .gate-progress-bar {
+    .gate-progress-mini {
         width: 100%;
-        height: 6px;
-        background: #e8ebef;
-        border-radius: 3px;
-        margin-top: 6px;
-        overflow: hidden;
-    }
-
-    .gate-progress-bar-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--accent), #58a6ff);
-        border-radius: 3px;
-        transition: width 0.3s ease;
-    }
-
-    /* === ПРАВАЯ ЧАСТЬ КАРТОЧКИ — ВИЗУАЛИЗАЦИЯ === */
-    .gate-truck-visual {
-        background: 
-            linear-gradient(180deg, #f6f8fa 0%, #e8ebef 60%, #d8dde3 100%);
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        padding: 0;
-        position: relative;
-        border-left: 1px solid var(--border);
-        overflow: hidden;
-    }
-
-    /* Складские ворота (фон) */
-    .gate-portal {
-        position: absolute;
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 130px;
-        height: 95px;
-        background: linear-gradient(180deg, #2a2e33 0%, #1a1d21 100%);
-        border-radius: 3px 3px 0 0;
-        box-shadow: 
-            inset 0 0 20px rgba(0,0,0,0.8),
-            0 4px 12px rgba(0,0,0,0.2);
-        overflow: hidden;
-    }
-
-    /* Роллетные полосы на воротах */
-    .gate-portal::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: repeating-linear-gradient(
-            180deg,
-            #3a3f47 0px,
-            #3a3f47 6px,
-            #2a2e33 6px,
-            #2a2e33 7px,
-            #4a5058 7px,
-            #4a5058 8px
-        );
-        border-radius: inherit;
-    }
-
-    /* Блик на воротах */
-    .gate-portal::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    /* Рамка ворот (металлическая) */
-    .gate-portal-frame {
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 142px;
-        height: 105px;
-        border: 3px solid #6c757d;
-        border-bottom: none;
-        border-radius: 4px 4px 0 0;
-        box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
-        pointer-events: none;
-    }
-
-    /* Направляющие рельсы */
-    .gate-portal-rail {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 4px;
-        height: 14px;
-        background: linear-gradient(180deg, #adb5bd, #495057);
-        box-shadow: 0 0 4px rgba(0,0,0,0.3);
-    }
-
-    /* Индикатор над воротами */
-    .gate-portal-indicator {
-        position: absolute;
-        top: 5px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 50px;
         height: 4px;
+        background: #e2e8f0;
         border-radius: 2px;
-        background: var(--success);
-        box-shadow: 0 0 12px var(--success);
-        z-index: 5;
+        overflow: hidden;
+        margin-top: 2px;
     }
 
-    .gate-card.loading .gate-portal-indicator { background: var(--warning); box-shadow: 0 0 12px var(--warning); }
-    .gate-card.unloading .gate-portal-indicator { background: var(--danger); box-shadow: 0 0 12px var(--danger); }
-    .gate-card.problem .gate-portal-indicator {
-        background: var(--danger);
-        box-shadow: 0 0 20px var(--danger);
-        animation: indicator-blink 0.5s infinite;
-    }
-
-    @keyframes indicator-blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
-
-    /* Фура (SVG) */
-    .truck-svg {
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25));
-        animation: truck-arrive 1.2s cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
-    }
-
-    @keyframes truck-arrive {
-        0% {
-            transform: translateX(calc(-50% + 250px)) scale(0.6);
-            opacity: 0;
-        }
-        60% {
-            transform: translateX(calc(-50% + 20px)) scale(1.05);
-            opacity: 1;
-        }
-        100% {
-            transform: translateX(-50%) scale(1);
-            opacity: 1;
-        }
-    }
-
-    /* Отъезд */
-    .truck-svg.departing {
-        animation: truck-depart 1s cubic-bezier(0.5, 0, 1, 1) forwards;
-    }
-
-    @keyframes truck-depart {
-        0% {
-            transform: translateX(-50%) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translateX(calc(-50% - 300px)) scale(0.5);
-            opacity: 0;
-        }
-    }
-
-    /* Пустые ворота */
-    .gate-truck-empty {
-        width: 100%;
+    .gate-progress-mini-fill {
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        color: var(--text-muted);
-        position: relative;
-        z-index: 2;
+        background: linear-gradient(90deg, var(--accent), #60a5fa);
+        transition: width 0.3s;
     }
 
-    .gate-truck-empty-icon {
-        font-size: 28px;
-        opacity: 0.35;
-    }
-
-    .gate-truck-empty-text {
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        opacity: 0.6;
-    }
-
-    /* === ПАРКОВКА === */
-    .parking-zone {
-        background: linear-gradient(180deg, #f0f2f5 0%, #dde1e6 100%);
-        border-top: 3px solid var(--border-strong);
-        padding: 12px 20px;
-        min-height: 130px;
-        max-height: 160px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        position: relative;
-    }
-
-    .parking-zone::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: repeating-linear-gradient(
-            90deg,
-            transparent 0px,
-            transparent 80px,
-            rgba(0,0,0,0.04) 80px,
-            rgba(0,0,0,0.04) 82px
-        );
-        pointer-events: none;
-    }
-
-    .parking-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        z-index: 2;
-    }
-
-    .parking-title {
-        font-size: 13px;
-        font-weight: 900;
-        letter-spacing: 1.5px;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .parking-title::before {
-        content: '🅿️';
-        font-size: 18px;
-    }
-
-    .parking-count {
-        font-size: 11px;
-        color: var(--text-muted);
-        font-weight: 700;
-        background: rgba(255,255,255,0.7);
-        padding: 3px 10px;
-        border-radius: 20px;
-    }
-
-    .parking-slots {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        padding: 4px 0;
-        position: relative;
-        z-index: 2;
-        min-height: 80px;
-        align-items: center;
-    }
-
-    .parking-slots::-webkit-scrollbar { height: 6px; }
-    .parking-slots::-webkit-scrollbar-track { background: transparent; }
-    .parking-slots::-webkit-scrollbar-thumb {
-        background: var(--border-strong);
-        border-radius: 3px;
-    }
-
-    .parking-empty {
-        color: var(--text-muted);
+    .gate-empty {
         font-size: 12px;
+        color: var(--text-muted);
         font-style: italic;
-        padding: 20px;
-        text-align: center;
-        width: 100%;
     }
 
-    /* Слот парковки */
-    .parking-slot {
-        flex-shrink: 0;
-        width: 160px;
-        background: var(--card);
-        border-radius: 10px;
-        padding: 8px 10px;
-        box-shadow: var(--shadow-sm);
-        border-left: 4px solid var(--accent);
-        cursor: pointer;
-        transition: all 0.2s;
-        position: relative;
-        display: grid;
-        grid-template-columns: 60px 1fr;
-        gap: 8px;
-        align-items: center;
-        animation: slot-arrive 0.5s ease;
-    }
-
-    @keyframes slot-arrive {
-        0% {
-            transform: translateX(-30px) scale(0.85);
-            opacity: 0;
-        }
-        100% {
-            transform: translateX(0) scale(1);
-            opacity: 1;
-        }
-    }
-
-    .parking-slot:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-
-    .parking-slot.departing {
-        animation: slot-depart 0.4s ease forwards;
-    }
-
-    @keyframes slot-depart {
-        0% {
-            transform: translateX(0) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translateX(50px) scale(0.7);
-            opacity: 0;
-        }
-    }
-
-    .parking-slot-truck {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .parking-slot-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 0;
-    }
-
-    .parking-slot-route {
-        font-size: 11px;
-        font-weight: 900;
-        color: var(--accent);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .parking-slot-direction {
-        font-size: 10px;
-        color: var(--text-dim);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .parking-slot-status {
-        font-size: 9px;
-        font-weight: 800;
-        padding: 2px 6px;
-        border-radius: 10px;
-        display: inline-block;
-        margin-top: 3px;
-        width: fit-content;
-        background: var(--accent-light);
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* === ПРАВАЯ ЧАСТЬ — ТАБЛИЦЫ === */
-    .tables-panel {
-        background: var(--bg);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .tables-header {
-        padding: 14px 20px;
-        background: var(--card);
-        border-bottom: 2px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .tables-title {
-        font-size: 16px;
-        font-weight: 900;
-        color: var(--text);
-        letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .tables-title::before {
-        content: '📊';
-        font-size: 20px;
-    }
-
-    .tables-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .btn {
-        padding: 8px 14px;
-        border: none;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.15s;
-        font-family: inherit;
-        letter-spacing: 0.5px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .btn:active { transform: scale(0.95); }
-
-    .btn-primary {
-        background: var(--accent);
-        color: white;
-        box-shadow: 0 2px 6px rgba(9, 105, 218, 0.3);
-    }
-    .btn-primary:hover { background: #0860c9; }
-
-    .btn-secondary {
-        background: var(--card);
-        color: var(--text);
-        border: 1px solid var(--border-strong);
-    }
-    .btn-secondary:hover { background: var(--card-hover); }
-
-    .btn-icon {
-        width: 36px;
-        height: 36px;
-        padding: 0;
-        justify-content: center;
-        font-size: 16px;
-    }
-
-    .btn-warning {
-        background: var(--warning);
-        color: white;
-        box-shadow: 0 2px 6px rgba(191, 135, 0, 0.3);
-    }
-    .btn-warning:hover { background: #a37500; }
-
-    .tables-scroll {
-        flex: 1;
+    /* === ТАБЛИЦА НАПРАВЛЕНИЙ === */
+    .table-wrap {
+        max-height: 400px;
         overflow-y: auto;
-        padding: 16px 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
     }
 
-    .tables-scroll::-webkit-scrollbar { width: 8px; }
-    .tables-scroll::-webkit-scrollbar-track { background: transparent; }
-    .tables-scroll::-webkit-scrollbar-thumb {
-        background: var(--border-strong);
-        border-radius: 4px;
-    }
-
-    .table-block {
-        background: var(--card);
-        border-radius: 12px;
-        box-shadow: var(--shadow-md);
-        overflow: hidden;
-    }
-
-    .table-block-header {
-        padding: 14px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid var(--border);
-        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
-    }
-
-    .table-block-title {
-        font-size: 14px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        text-transform: uppercase;
-    }
-
-    .table-block-title.incoming { color: var(--danger); }
-    .table-block-title.outgoing { color: var(--warning); }
-
-    .table-block-count {
-        font-size: 12px;
-        color: var(--text-dim);
-        font-weight: 700;
-        background: var(--bg);
-        padding: 4px 10px;
-        border-radius: 20px;
-    }
+    .table-wrap::-webkit-scrollbar { width: 8px; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
     table {
         width: 100%;
@@ -796,7 +450,9 @@
     }
 
     thead th {
-        background: #f6f8fa;
+        position: sticky;
+        top: 0;
+        background: #f8fafc;
         color: var(--text-dim);
         font-size: 10px;
         font-weight: 800;
@@ -804,67 +460,152 @@
         letter-spacing: 1px;
         padding: 10px 8px;
         text-align: left;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 2px solid var(--border);
         white-space: nowrap;
+        z-index: 2;
     }
 
     tbody td {
-        padding: 10px 8px;
+        padding: 8px;
         border-bottom: 1px solid var(--border);
         color: var(--text);
         font-weight: 600;
-        font-size: 12px;
-    }
-
-    tbody tr {
-        transition: background 0.15s;
-        cursor: pointer;
     }
 
     tbody tr:hover { background: var(--card-hover); }
     tbody tr:last-child td { border-bottom: none; }
-    tbody tr.empty-row { cursor: default; }
-    tbody tr.empty-row:hover { background: transparent; }
 
-    .empty-message {
-        text-align: center;
-        padding: 30px 20px;
-        color: var(--text-muted);
-        font-size: 13px;
-        font-style: italic;
+    .td-center { text-align: center; }
+    .td-right { text-align: right; }
+
+    .num-highlight {
+        font-weight: 900;
+        color: var(--text);
+        font-size: 14px;
     }
 
-    .status-badge {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: 12px;
-        font-size: 10px;
+    .need-ts {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-weight: 900;
+        font-size: 12px;
+    }
+    .need-ts.zero { background: var(--bg); color: var(--text-muted); }
+    .need-ts.one { background: var(--accent-light); color: var(--accent); }
+    .need-ts.many { background: var(--warning-light); color: var(--warning); }
+    .need-ts.urgent { background: var(--danger-light); color: var(--danger); }
+
+    .highlight-row {
+        background: rgba(254, 243, 199, 0.3) !important;
+    }
+
+    /* === СПИСОК РЕЙСОВ === */
+    .routes-list {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .routes-list::-webkit-scrollbar { width: 8px; }
+    .routes-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+    .route-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        transition: all 0.15s;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .route-card:hover {
+        border-color: var(--accent);
+        transform: translateX(2px);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .route-card.matched { border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(220, 252, 231, 0.4) 0%, var(--card) 40%); }
+    .route-card.unmatched { border-left: 4px solid var(--border-strong); opacity: 0.75; }
+    .route-card.parked { border-left: 4px solid var(--purple); background: linear-gradient(90deg, rgba(237, 233, 254, 0.4) 0%, var(--card) 40%); }
+
+    .route-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+
+    .route-card-number {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--accent);
+        letter-spacing: 0.5px;
+    }
+
+    .route-card-badges {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .route-badge {
+        font-size: 9px;
         font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 10px;
         letter-spacing: 0.5px;
         text-transform: uppercase;
-        white-space: nowrap;
     }
 
-    .status-badge.free { background: var(--success-light); color: var(--success); }
-    .status-badge.loading { background: var(--warning-light); color: var(--warning); }
-    .status-badge.unloading { background: var(--danger-light); color: var(--danger); }
-    .status-badge.problem { background: var(--danger); color: white; animation: timer-blink 0.8s infinite; }
-    .status-badge.parking { background: var(--accent-light); color: var(--accent); }
+    .route-badge.ours { background: var(--success-light); color: var(--success); }
+    .route-badge.wait-ffc { background: var(--warning-light); color: var(--warning); }
+    .route-badge.head { background: var(--accent-light); color: var(--accent); }
+    .route-badge.tail { background: var(--purple-light); color: var(--purple); }
 
-    .dir-cell {
-        color: var(--accent);
+    .route-card-direction {
+        font-size: 13px;
         font-weight: 800;
+        color: var(--text);
+        margin-bottom: 4px;
     }
 
-    .action-cell {
-        text-align: center;
+    .route-card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 11px;
+        color: var(--text-dim);
     }
 
-    .action-btn {
-        padding: 5px 10px;
+    .route-card-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .route-card-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border);
+    }
+
+    .route-action-btn {
+        flex: 1;
+        padding: 6px 10px;
         border: none;
         border-radius: 6px;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 800;
         cursor: pointer;
         transition: all 0.15s;
@@ -873,18 +614,39 @@
         text-transform: uppercase;
     }
 
-    .action-btn.end-action {
-        background: var(--danger-light);
-        color: var(--danger);
+    .route-action-btn.load-btn {
+        background: var(--success);
+        color: white;
     }
-    .action-btn.end-action:hover { background: var(--danger); color: white; }
+    .route-action-btn.load-btn:hover { background: #15803d; }
 
-    /* === МОДАЛКА === */
+    .route-action-btn.park-btn {
+        background: var(--purple);
+        color: white;
+    }
+    .route-action-btn.park-btn:hover { background: #6d28d9; }
+
+    /* === ПУСТОЙ БЛОК === */
+    .empty-block {
+        padding: 40px 20px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    .empty-block-icon {
+        font-size: 40px;
+        opacity: 0.3;
+        margin-bottom: 10px;
+    }
+
+    /* === МОДАЛКИ === */
     .modal-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(15, 23, 42, 0.5);
         backdrop-filter: blur(4px);
         z-index: 1000;
         align-items: center;
@@ -896,333 +658,419 @@
     .modal {
         background: var(--card);
         border-radius: 16px;
-        padding: 28px;
-        max-width: 500px;
+        padding: 24px;
+        max-width: 600px;
         width: 100%;
         max-height: 90vh;
         overflow-y: auto;
         box-shadow: var(--shadow-lg);
+        animation: modal-in 0.2s ease;
     }
 
-    .modal h3 {
-        color: var(--text);
-        margin-bottom: 20px;
-        font-size: 18px;
+    @keyframes modal-in {
+        0% { transform: scale(0.95); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .modal-title {
+        font-size: 17px;
         font-weight: 900;
+        color: var(--text);
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
-    .modal label {
-        display: block;
-        font-size: 11px;
+    .modal-close {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: var(--bg);
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
         color: var(--text-dim);
-        font-weight: 800;
-        margin-bottom: 6px;
-        margin-top: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--danger-light); color: var(--danger); }
+
+    .modal-desc {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-bottom: 12px;
+        line-height: 1.5;
+        padding: 10px 12px;
+        background: var(--accent-light);
+        border-radius: 8px;
+        border-left: 3px solid var(--accent);
     }
 
-    .modal input, .modal select, .modal textarea {
+    .modal textarea {
         width: 100%;
-        padding: 10px 12px;
-        background: #f6f8fa;
+        min-height: 200px;
+        padding: 12px;
         border: 1.5px solid var(--border-strong);
         border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 12px;
+        resize: vertical;
         color: var(--text);
-        font-size: 13px;
-        font-family: inherit;
-        font-weight: 600;
+        background: #f8fafc;
+        line-height: 1.5;
     }
 
-    .modal input:focus, .modal select:focus, .modal textarea:focus {
+    .modal textarea:focus {
         outline: none;
         border-color: var(--accent);
         background: white;
         box-shadow: 0 0 0 3px var(--accent-light);
     }
 
-    .recommendation-options {
+    .modal label {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        margin-top: 14px;
+    }
+
+    .modal input, .modal select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: inherit;
+        color: var(--text);
+        background: white;
+    }
+
+    .modal input:focus, .modal select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .modal-buttons button {
+        flex: 1;
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    /* === МОДАЛКА ПОСТАНОВКИ НА ВОРОТА === */
+    .gate-selector {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .gate-selector-item {
+        padding: 10px 4px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        font-weight: 900;
+        font-size: 14px;
+        color: var(--text);
+        background: white;
+        transition: all 0.15s;
+    }
+
+    .gate-selector-item:hover { border-color: var(--accent); }
+
+    .gate-selector-item.selected {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .gate-selector-item.disabled {
+        background: var(--bg);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    .rec-options {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 8px;
         margin-top: 6px;
     }
 
-    .recommendation-option {
+    .rec-option {
         padding: 10px 6px;
-        border: 2px solid var(--border-strong);
+        border: 2px solid var(--border);
         border-radius: 8px;
         text-align: center;
         cursor: pointer;
         font-size: 11px;
         font-weight: 800;
+        background: white;
         transition: all 0.15s;
         user-select: none;
-        background: white;
     }
 
-    .recommendation-option:hover { border-color: var(--accent); }
+    .rec-option:hover { border-color: var(--accent); }
 
-    .recommendation-option.selected-do {
-        background: var(--success-light);
-        border-color: var(--success);
-        color: var(--success);
-    }
-    .recommendation-option.selected-no {
-        background: var(--danger-light);
-        border-color: var(--danger);
-        color: var(--danger);
-    }
-    .recommendation-option.selected-none {
-        background: var(--warning-light);
-        border-color: var(--warning);
-        color: var(--warning);
-    }
+    .rec-option.selected.do { background: var(--success-light); border-color: var(--success); color: var(--success); }
+    .rec-option.selected.no { background: var(--danger-light); border-color: var(--danger); color: var(--danger); }
+    .rec-option.selected.wait { background: var(--warning-light); border-color: var(--warning); color: var(--warning); }
 
-    .modal-buttons {
+    /* === ТОСТ === */
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 2000;
         display: flex;
-        gap: 10px;
-        margin-top: 24px;
+        flex-direction: column;
+        gap: 8px;
     }
 
-    .modal-buttons button { flex: 1; padding: 12px; font-size: 13px; }
+    .toast {
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        box-shadow: var(--shadow-lg);
+        background: var(--card);
+        color: var(--text);
+        border-left: 4px solid var(--accent);
+        animation: toast-in 0.3s ease;
+        max-width: 320px;
+    }
+
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+
+    @keyframes toast-in {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
 
     @media (max-width: 1100px) {
-        .app { grid-template-columns: 1fr 1fr; }
-        .gate-card { grid-template-columns: 1fr 160px; }
-    }
-
-    @media (max-width: 800px) {
-        .app { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-        .scene-panel { border-right: none; border-bottom: 2px solid var(--border-strong); }
+        .main-grid { grid-template-columns: 1fr; }
+        .gate-row { grid-template-columns: 60px 1fr 140px; }
+        .gate-number { font-size: 20px; }
+        .gate-timer { font-size: 16px; }
     }
 </style>
 </head>
 <body>
 
-<div class="app">
-    <!-- === ЛЕВАЯ ЧАСТЬ === -->
-    <div class="scene-panel">
-        <div class="scene-header">
-            <div class="scene-title">ДИСПЕТЧЕРСКАЯ — ВИЗУАЛИЗАЦИЯ ВОРОТ</div>
-            <div class="clock" id="clock">--:--:--</div>
-        </div>
+<!-- === HEADER === -->
+<header class="app-header">
+    <div class="app-logo">
+        <div class="app-logo-icon">📋</div>
+        ШПАРГАЛКА БРИГАДИРА
+    </div>
+    <div class="header-actions">
+        <div class="clock" id="clock">--:--:--</div>
+        <button class="btn btn-secondary btn-icon" onclick="openImportBufferModal()" title="Импорт сводки">📊</button>
+        <button class="btn btn-secondary btn-icon" onclick="openImportRoutesModal()" title="Импорт рейсов">📋</button>
+        <button class="btn btn-secondary btn-icon" onclick="resetAll()" title="Сброс">🔄</button>
+    </div>
+</header>
 
-        <div class="scene-area">
-            <!-- Игровое поле с воротами -->
-            <div class="gates-scene" id="gatesScroll"></div>
+<!-- === ОСНОВНАЯ СЕТКА === -->
+<div class="main-grid">
 
-            <!-- Парковка -->
-            <div class="parking-zone">
-                <div class="parking-header">
-                    <div class="parking-title">Парковка — зона ожидания</div>
-                    <div class="parking-count" id="parkingCount">0 машин</div>
-                </div>
-                <div class="parking-slots" id="parkingSlots">
-                    <div class="parking-empty">Парковка пуста</div>
-                </div>
+    <!-- ЛЕВАЯ КОЛОНКА: ворота -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title">
+                <div class="panel-title-icon blue">🚪</div>
+                ВОРОТА 11–17
             </div>
+            <div class="panel-count" id="gatesCount">0 / 7 занято</div>
         </div>
+        <div class="gates-grid" id="gatesGrid"></div>
     </div>
 
-    <!-- === ПРАВАЯ ЧАСТЬ === -->
-    <div class="tables-panel">
-        <div class="tables-header">
-            <div class="tables-title">ПОТОКИ МАШИН</div>
-            <div class="tables-actions">
-                <button class="btn btn-primary" onclick="openModal()">➕ Поставить</button>
-                <button class="btn btn-warning" onclick="openParkingModal()">🅿️ На парковку</button>
-                <button class="btn btn-secondary btn-icon" onclick="toggleMute()" id="muteBtn" title="Звук">🔊</button>
-                <button class="btn btn-secondary btn-icon" onclick="resetAll()" title="Сброс">🔄</button>
+    <!-- ПРАВАЯ КОЛОНКА: 3 блока -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- БЛОК 1: Сводка направлений -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <div class="panel-title-icon orange">📊</div>
+                    ЧТО ВЕЗТИ (сводка)
+                </div>
+                <div class="panel-count" id="bufferCount">0 направлений</div>
+            </div>
+            <div class="table-wrap">
+                <table id="bufferTable">
+                    <thead>
+                        <tr>
+                            <th>Направление</th>
+                            <th class="td-center">Ст. Габ</th>
+                            <th class="td-center">Ст. Негаб</th>
+                            <th class="td-center">Нов. Габ</th>
+                            <th class="td-center">Нов. Негаб</th>
+                            <th class="td-center">Тотал</th>
+                            <th class="td-center">Потр. ТС</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bufferTableBody">
+                        <tr><td colspan="7" class="empty-block">
+                            <div class="empty-block-icon">📊</div>
+                            Нажми «📊» в шапке, чтобы загрузить сводку
+                        </td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="tables-scroll">
-            <!-- Входящий поток -->
-            <div class="table-block">
-                <div class="table-block-header">
-                    <div class="table-block-title incoming">📥 ВХОДЯЩИЙ ПОТОК — ВЫГРУЗКА</div>
-                    <div class="table-block-count" id="incomingCount">0 рейсов</div>
+        <!-- БЛОК 2: Список рейсов -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <div class="panel-title-icon purple">🚛</div>
+                    ЧЕМ ВЕЗТИ (рейсы)
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Вор.</th>
-                            <th>Рейс</th>
-                            <th>Номер ТС</th>
-                            <th>Направление</th>
-                            <th>Водитель</th>
-                            <th>Статус</th>
-                            <th>Действие</th>
-                        </tr>
-                    </thead>
-                    <tbody id="incomingTableBody">
-                        <tr class="empty-row"><td colspan="8" class="empty-message">Нет входящих рейсов</td></tr>
-                    </tbody>
-                </table>
+                <div class="panel-count" id="routesCount">0 рейсов</div>
             </div>
+            <div class="routes-list" id="routesList">
+                <div class="empty-block">
+                    <div class="empty-block-icon">📋</div>
+                    Нажми «📋» в шапке, чтобы вставить список рейсов из чата
+                </div>
+            </div>
+        </div>
 
-            <!-- Исходящий поток -->
-            <div class="table-block">
-                <div class="table-block-header">
-                    <div class="table-block-title outgoing">📤 ИСХОДЯЩИЙ ПОТОК — ЗАГРУЗКА</div>
-                    <div class="table-block-count" id="outgoingCount">0 рейсов</div>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Вор.</th>
-                            <th>Рейс</th>
-                            <th>Номер ТС</th>
-                            <th>Направление</th>
-                            <th>Водитель</th>
-                            <th>ГМ</th>
-                            <th>Статус</th>
-                            <th>Действие</th>
-                        </tr>
-                    </thead>
-                    <tbody id="outgoingTableBody">
-                        <tr class="empty-row"><td colspan="9" class="empty-message">Нет исходящих рейсов</td></tr>
-                    </tbody>
-                </table>
-            </div>
+    </div>
+</div>
+
+<!-- === МОДАЛКА ИМПОРТА СВОДКИ === -->
+<div class="modal-overlay" id="bufferModal" onclick="if(event.target===this) closeBufferModal()">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">📊 Импорт сводки по буферу</div>
+            <button class="modal-close" onclick="closeBufferModal()">✕</button>
+        </div>
+        <div class="modal-desc">
+            Вставь текст из Google Таблицы. Формат: <b>Направление | Старый Габ | Старый Негаб | Новый Габ | Новый Негаб</b>
+        </div>
+        <textarea id="bufferInput" placeholder="Ижевск	2	1	9	0
+Чебоксары	0	0	1	0
+Челны	0	0	8	0
+Киров	0	12	5	0
+Екатеринбург	0	3	1	0
+Самара	3	1	1	0
+..."></textarea>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeBufferModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="importBuffer()">✅ Загрузить</button>
         </div>
     </div>
 </div>
 
-<!-- === МОДАЛКА "ПОСТАВИТЬ НА ВОРОТА" === -->
-<div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
+<!-- === МОДАЛКА ИМПОРТА РЕЙСОВ === -->
+<div class="modal-overlay" id="routesModal" onclick="if(event.target===this) closeRoutesModal()">
     <div class="modal">
-        <h3>🚛 Поставить машину на ворота</h3>
+        <div class="modal-header">
+            <div class="modal-title">📋 Импорт рейсов из чата</div>
+            <button class="modal-close" onclick="closeRoutesModal()">✕</button>
+        </div>
+        <div class="modal-desc">
+            Вставь текст из Telegram как есть. Приложение само разберёт: рейс, направление, водителя, ТС, пометки.
+        </div>
+        <textarea id="routesInput" placeholder="Рейс #820239
+CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Киров
+ООО Веатон
+Водитель: Мороз Евгений Сергеевич
++79897344001
+Номер тягача: H008OY790
+Палетовместимость прицепа: 40
 
-        <label>Ворота</label>
-        <select id="modalGate"></select>
+Рейс #824787
+Пермь - Казань - Дзержинский
+..."></textarea>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeRoutesModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="importRoutes()">✅ Разобрать</button>
+        </div>
+    </div>
+</div>
 
-        <label>Номер рейса</label>
-        <input type="text" id="modalRoute" value="#821853">
+<!-- === МОДАЛКА ПОСТАНОВКИ НА ВОРОТА === -->
+<div class="modal-overlay" id="gateModal" onclick="if(event.target===this) closeGateModal()">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">🚛 Поставить на ворота</div>
+            <button class="modal-close" onclick="closeGateModal()">✕</button>
+        </div>
 
-        <label>Тип операции</label>
-        <select id="modalType">
-            <option value="unloading">🔴 Выгрузка (входящий)</option>
-            <option value="loading">🟡 Загрузка (исходящий)</option>
-        </select>
+        <label>Выбери ворота</label>
+        <div class="gate-selector" id="gateSelector"></div>
 
-        <label>Направление (откуда → куда)</label>
-        <input type="text" id="modalDirection" value="СЦ Екатеринбург → СЦ Казань">
+        <label>Рейс</label>
+        <input type="text" id="gateRoute" placeholder="#820239">
 
-        <label>Номер ТС</label>
-        <input type="text" id="modalVehicle" value="В568АМ790">
+        <label>Направление</label>
+        <input type="text" id="gateDirection" placeholder="Киров">
 
         <label>Водитель</label>
-        <input type="text" id="modalDriver" value="Бусыгин А.Н.">
+        <input type="text" id="gateDriver" placeholder="Мороз Е.С.">
+
+        <label>Номер ТС</label>
+        <input type="text" id="gateVehicle" placeholder="H008OY790">
 
         <label>Объём ГМ</label>
-        <input type="number" id="modalVolume" value="20" min="0">
+        <input type="number" id="gateVolume" value="20" min="0">
 
         <label>Рекомендация</label>
-        <div class="recommendation-options">
-            <div class="recommendation-option selected-do" data-rec="do" onclick="selectRec('do')">✅ Выгружать</div>
-            <div class="recommendation-option" data-rec="no" onclick="selectRec('no')">❌ Не выгружать</div>
-            <div class="recommendation-option" data-rec="none" onclick="selectRec('none')">⚠️ Без указания</div>
+        <div class="rec-options">
+            <div class="rec-option selected do" data-rec="do" onclick="selectRec('do')">✅ Грузить</div>
+            <div class="rec-option" data-rec="no" onclick="selectRec('no')">❌ Не грузить</div>
+            <div class="rec-option" data-rec="wait" onclick="selectRec('wait')">⏳ Ждать ФФЦ</div>
         </div>
 
         <label>Комментарий</label>
-        <textarea id="modalComment" rows="2" placeholder="Комментарий..."></textarea>
+        <input type="text" id="gateComment" placeholder="Например: ждём документы">
 
         <div class="modal-buttons">
-            <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+            <button class="btn btn-secondary" onclick="closeGateModal()">Отмена</button>
             <button class="btn btn-primary" onclick="startOperation()">✅ Поставить</button>
         </div>
     </div>
 </div>
 
-<!-- === МОДАЛКА "НА ПАРКОВКУ" === -->
-<div class="modal-overlay" id="parkingModal" onclick="if(event.target===this) closeParkingModal()">
-    <div class="modal">
-        <h3>🅿️ Отправить машину на парковку</h3>
-
-        <label>Номер рейса</label>
-        <input type="text" id="parkingRoute" value="#999999">
-
-        <label>Направление</label>
-        <input type="text" id="parkingDirection" value="Москва → Казань">
-
-        <label>Номер ТС</label>
-        <input type="text" id="parkingVehicle" value="А123БВ777">
-
-        <div class="modal-buttons">
-            <button class="btn btn-secondary" onclick="closeParkingModal()">Отмена</button>
-            <button class="btn btn-warning" onclick="startParking()">🅿️ На парковку</button>
-        </div>
-    </div>
-</div>
+<!-- === ТОСТЫ === -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
     // ===== КОНСТАНТЫ =====
     const GATES = [11, 12, 13, 14, 15, 16, 17];
 
-    const TRUCK_COLORS = [
-        { cabin: ['#2563eb', '#3b82f6', '#1d4ed8'] },
-        { cabin: ['#dc2626', '#ef4444', '#b91c1c'] },
-        { cabin: ['#16a34a', '#22c55e', '#15803d'] },
-        { cabin: ['#ea580c', '#f97316', '#c2410c'] },
-        { cabin: ['#7c3aed', '#a855f7', '#6d28d9'] },
-        { cabin: ['#475569', '#64748b', '#334155'] }
-    ];
+    let gateStates = {};       // { 11: {active, data, startTime}, ... }
+    let bufferData = [];       // [{direction, oldGab, oldNegab, newGab, newNegab, total, needTS}, ...]
+    let routes = [];           // [{id, route, direction, driver, phone, vehicle, pallets, marks, rec}]
 
-    let gateStates = {};
-    let parkingList = [];
-    let truckIdCounter = 0;
-    let isMuted = false;
-    let soundActivated = false;
-    let audioContext = null;
+    let selectedGate = null;
     let currentRec = 'do';
-
-    // ===== ИНИЦИАЛИЗАЦИЯ =====
-    function init() {
-        const scroll = document.getElementById('gatesScroll');
-        scroll.innerHTML = '';
-
-        GATES.forEach(num => {
-            const card = document.createElement('div');
-            card.className = 'gate-card free';
-            card.id = 'gate-card-' + num;
-            card.onclick = () => onGateClick(num);
-
-            card.innerHTML = `
-                <div class="gate-info">
-                    <div>
-                        <div class="gate-info-header">
-                            <div class="gate-number">${num}</div>
-                            <span class="gate-status-badge free" id="status-${num}">Свободно</span>
-                        </div>
-                        <div class="gate-route-info" id="info-${num}">
-                            <div class="gate-empty">Готовы принять машину</div>
-                        </div>
-                    </div>
-                    <div id="metrics-${num}"></div>
-                </div>
-                <div class="gate-truck-visual" id="visual-${num}">
-                    <div class="gate-portal-frame"></div>
-                    <div class="gate-portal">
-                        <div class="gate-portal-rail"></div>
-                    </div>
-                    <div class="gate-portal-indicator"></div>
-                    <div class="gate-truck-empty">
-                        <div class="gate-truck-empty-icon">🚛</div>
-                        <div class="gate-truck-empty-text">СВОБОДНО</div>
-                    </div>
-                </div>
-            `;
-            scroll.appendChild(card);
-            gateStates[num] = { active: false, truckId: null };
-        });
-    }
 
     // ===== ЧАСЫ =====
     setInterval(() => {
@@ -1230,216 +1078,184 @@
         document.getElementById('clock').textContent = now.toTimeString().slice(0,8);
     }, 1000);
 
-    // ===== SVG ФУРЫ (вид сбоку) =====
-    function generateTruckSVG(colorSet, route, size = 1) {
-        const [dark, mid, darker] = colorSet;
-        const routeShort = route.replace('#', '').slice(0, 6);
-        const w = 140 * size;
-        const h = 90 * size;
-        const id = 'truck-' + Math.random().toString(36).substr(2, 9);
-        return `
-        <svg viewBox="0 0 140 90" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="body-${id}" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#ffffff"/>
-                    <stop offset="50%" stop-color="#f1f3f5"/>
-                    <stop offset="100%" stop-color="#dee2e6"/>
-                </linearGradient>
-                <linearGradient id="cabin-${id}" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="${mid}"/>
-                    <stop offset="100%" stop-color="${darker}"/>
-                </linearGradient>
-                <linearGradient id="glass-${id}" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#334155"/>
-                    <stop offset="100%" stop-color="#1e293b"/>
-                </linearGradient>
-            </defs>
+    // ===== ИНИЦИАЛИЗАЦИЯ ВОРОТ =====
+    function initGates() {
+        const grid = document.getElementById('gatesGrid');
+        grid.innerHTML = '';
 
-            <!-- Кузов -->
-            <rect x="5" y="10" width="85" height="55" rx="4" fill="url(#body-${id})" stroke="#adb5bd" stroke-width="1.5"/>
-            <line x1="5" y1="25" x2="90" y2="25" stroke="#dee2e6" stroke-width="1"/>
-            <line x1="5" y1="40" x2="90" y2="40" stroke="#dee2e6" stroke-width="1"/>
-            <line x1="5" y1="55" x2="90" y2="55" stroke="#dee2e6" stroke-width="1"/>
-            <rect x="5" y="58" width="85" height="6" fill="${mid}" opacity="0.75"/>
-            <text x="47" y="44" font-family="Arial, sans-serif" font-size="12" font-weight="900" fill="#495057" text-anchor="middle">${routeShort}</text>
+        GATES.forEach(num => {
+            const row = document.createElement('div');
+            row.className = 'gate-row free';
+            row.id = 'gate-row-' + num;
+            row.onclick = () => onGateClick(num);
 
-            <!-- Кабина -->
-            <path d="M 90 15 L 125 15 Q 130 15 130 20 L 130 65 Q 130 70 125 70 L 90 70 Z"
-                  fill="url(#cabin-${id})" stroke="${darker}" stroke-width="1.5"/>
-            <path d="M 95 22 L 122 22 L 122 36 L 95 36 Z" fill="url(#glass-${id})" stroke="#0f172a" stroke-width="1"/>
-            <path d="M 97 24 L 108 24 L 105 34 L 97 34 Z" fill="rgba(255,255,255,0.15)"/>
-            <line x1="105" y1="36" x2="105" y2="65" stroke="${darker}" stroke-width="1"/>
-            <circle cx="103" cy="50" r="1.5" fill="${darker}"/>
-            <circle cx="127" cy="60" r="3" fill="#fef3c7" stroke="#92400e" stroke-width="0.8"/>
+            row.innerHTML = `
+                <div class="gate-number-box">
+                    <div class="gate-number-label">ВОРОТА</div>
+                    <div class="gate-number">${num}</div>
+                    <div class="gate-dot"></div>
+                </div>
+                <div class="gate-info" id="gate-info-${num}">
+                    <div class="gate-status free">Свободно</div>
+                    <div class="gate-empty">Готово к постановке</div>
+                </div>
+                <div class="gate-timer-box" id="gate-timer-${num}"></div>
+            `;
+            grid.appendChild(row);
+            gateStates[num] = { active: false, data: null };
+        });
 
-            <!-- Колёса -->
-            <ellipse cx="20" cy="70" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
-            <ellipse cx="20" cy="70" rx="2.5" ry="2" fill="#6b7280"/>
-            <ellipse cx="45" cy="70" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
-            <ellipse cx="45" cy="70" rx="2.5" ry="2" fill="#6b7280"/>
-            <ellipse cx="70" cy="70" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
-            <ellipse cx="70" cy="70" rx="2.5" ry="2" fill="#6b7280"/>
-            <ellipse cx="105" cy="70" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
-            <ellipse cx="105" cy="70" rx="2.5" ry="2" fill="#6b7280"/>
-            <ellipse cx="122" cy="70" rx="6" ry="5" fill="#1f2937" stroke="#0f172a" stroke-width="1"/>
-            <ellipse cx="122" cy="70" rx="2.5" ry="2" fill="#6b7280"/>
+        updateGatesCount();
+    }
 
-            <!-- Габаритные огни -->
-            <circle cx="8" cy="13" r="1.5" fill="#dc2626"/>
-        </svg>
-        `;
+    function updateGatesCount() {
+        const busy = GATES.filter(g => gateStates[g].active).length;
+        document.getElementById('gatesCount').textContent = busy + ' / 7 занято';
     }
 
     // ===== КЛИК ПО ВОРОТАМ =====
     function onGateClick(num) {
-        playClick();
         if (gateStates[num].active) {
             const state = gateStates[num];
-            if (confirm(`🚪 Ворота ${num}\n\n📋 Рейс: ${state.data.route}\n📍 ${state.data.direction}\n👤 ${state.data.driver}\n\nЗавершить операцию?`)) {
+            if (confirm(`Ворота ${num}\n\nРейс: ${state.data.route}\nНаправление: ${state.data.direction}\nВодитель: ${state.data.driver}\n\nЗавершить?`)) {
                 completeOperation(num);
             }
         } else {
-            document.getElementById('modalGate').value = num;
-            openModal();
+            openGateModal(num);
         }
     }
 
-    // ===== МОДАЛКА =====
-    function openModal() {
-        playClick();
-        const free = GATES.filter(g => !gateStates[g].active);
-        if (free.length === 0) { alert('Все ворота заняты!'); return; }
-        const select = document.getElementById('modalGate');
-        select.innerHTML = free.map(g => `<option value="${g}">Ворота ${g}</option>`).join('');
-        document.getElementById('modal').classList.add('active');
+    // ===== МОДАЛКА ПОСТАНОВКИ =====
+    function openGateModal(num) {
+        selectedGate = num;
+        currentRec = 'do';
+
+        const selector = document.getElementById('gateSelector');
+        selector.innerHTML = GATES.map(g => {
+            const busy = gateStates[g].active;
+            return `<div class="gate-selector-item ${busy ? 'disabled' : ''} ${g === num ? 'selected' : ''}" 
+                        onclick="${busy ? '' : `selectGate(${g})`}">${g}</div>`;
+        }).join('');
+
+        // Очищаем поля
+        document.getElementById('gateRoute').value = '';
+        document.getElementById('gateDirection').value = '';
+        document.getElementById('gateDriver').value = '';
+        document.getElementById('gateVehicle').value = '';
+        document.getElementById('gateVolume').value = '20';
+        document.getElementById('gateComment').value = '';
+
+        // Сброс рекомендации
+        document.querySelectorAll('.rec-option').forEach(el => el.classList.remove('selected'));
+        document.querySelector('.rec-option[data-rec="do"]').classList.add('selected');
+
+        document.getElementById('gateModal').classList.add('active');
     }
 
-    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+    function closeGateModal() {
+        document.getElementById('gateModal').classList.remove('active');
+        selectedGate = null;
+    }
+
+    function selectGate(g) {
+        selectedGate = g;
+        document.querySelectorAll('.gate-selector-item').forEach(el => {
+            el.classList.toggle('selected', parseInt(el.textContent) === g);
+        });
+    }
 
     function selectRec(rec) {
         currentRec = rec;
-        document.querySelectorAll('.recommendation-option').forEach(el => el.classList.remove('selected-do', 'selected-no', 'selected-none'));
-        const el = document.querySelector(`.recommendation-option[data-rec="${rec}"]`);
-        if (rec === 'do') el.classList.add('selected-do');
-        else if (rec === 'no') el.classList.add('selected-no');
-        else el.classList.add('selected-none');
+        document.querySelectorAll('.rec-option').forEach(el => el.classList.remove('selected'));
+        document.querySelector(`.rec-option[data-rec="${rec}"]`).classList.add('selected');
     }
 
-    // ===== СТАРТ =====
+    // ===== СТАРТ ОПЕРАЦИИ =====
     function startOperation() {
-        playClick();
-        const gateNum = parseInt(document.getElementById('modalGate').value);
-        const route = document.getElementById('modalRoute').value.trim();
-        const type = document.getElementById('modalType').value;
-        const direction = document.getElementById('modalDirection').value.trim();
-        const vehicle = document.getElementById('modalVehicle').value.trim();
-        const driver = document.getElementById('modalDriver').value.trim();
-        const volume = parseInt(document.getElementById('modalVolume').value) || 0;
-        const comment = document.getElementById('modalComment').value.trim();
+        if (!selectedGate) { showToast('Выбери ворота', 'warning'); return; }
+        if (gateStates[selectedGate].active) { showToast('Ворота заняты', 'warning'); return; }
 
-        if (!route) { alert('Введите номер рейса'); return; }
-        if (gateStates[gateNum].active) { alert('Ворота заняты!'); return; }
+        const route = document.getElementById('gateRoute').value.trim();
+        const direction = document.getElementById('gateDirection').value.trim();
+        const driver = document.getElementById('gateDriver').value.trim();
+        const vehicle = document.getElementById('gateVehicle').value.trim();
+        const volume = parseInt(document.getElementById('gateVolume').value) || 0;
+        const comment = document.getElementById('gateComment').value.trim();
 
-        placeTruckOnGate(gateNum, { route, type, direction, vehicle, driver, volume, comment, recommendation: currentRec });
-        closeModal();
+        if (!route) { showToast('Введи номер рейса', 'warning'); return; }
+
+        placeTruckOnGate(selectedGate, {
+            route, direction, driver, vehicle, volume, comment, rec: currentRec
+        });
+
+        closeGateModal();
+        showToast(`Рейс ${route} поставлен на ворота ${selectedGate}`, 'success');
     }
 
-    // ===== ПОСТАВИТЬ ФУРУ НА ВОРОТА =====
-    function placeTruckOnGate(gateNum, data) {
-        const card = document.getElementById('gate-card-' + gateNum);
-        card.classList.remove('free', 'loading', 'unloading', 'problem');
-        card.classList.add(data.type);
+    function placeTruckOnGate(num, data) {
+        const row = document.getElementById('gate-row-' + num);
+        row.classList.remove('free');
+        row.classList.add(data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading');
 
-        const statusBadge = document.getElementById('status-' + gateNum);
-        statusBadge.className = 'gate-status-badge ' + data.type;
-        statusBadge.textContent = data.type === 'unloading' ? 'Выгрузка' : 'Загрузка';
+        const recText = data.rec === 'do' ? 'Загрузка' : data.rec === 'no' ? 'Не грузить' : 'Ждать ФФЦ';
+        const recClass = data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading';
 
-        const info = document.getElementById('info-' + gateNum);
-        let recBadge = '';
-        if (data.recommendation === 'do') recBadge = `<span style="background: var(--success-light); color: var(--success); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-top: 4px; display: inline-block;">✅ ВЫГРУЖАТЬ</span>`;
-        else if (data.recommendation === 'no') recBadge = `<span style="background: var(--danger-light); color: var(--danger); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-top: 4px; display: inline-block;">❌ НЕ ВЫГРУЖАТЬ</span>`;
-        else recBadge = `<span style="background: var(--warning-light); color: var(--warning); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; margin-top: 4px; display: inline-block;">⚠️ БЕЗ УКАЗАНИЯ</span>`;
+        let commentHtml = '';
+        if (data.comment) {
+            const commentClass = data.rec === 'do' ? 'do' : data.rec === 'no' ? 'no' : '';
+            commentHtml = `<div class="gate-comment ${commentClass}">💬 ${data.comment}</div>`;
+        }
 
-        info.innerHTML = `
+        document.getElementById('gate-info-' + num).innerHTML = `
+            <div class="gate-status ${recClass}">${recText}</div>
             <div class="gate-route">${data.route}</div>
             <div class="gate-direction">${data.direction}</div>
-            <div class="gate-driver">👤 ${data.driver} · 🚛 ${data.vehicle}</div>
-            ${recBadge}
+            <div class="gate-meta">
+                <div class="gate-meta-item">👤 ${data.driver || '—'}</div>
+                <div class="gate-meta-item">🚛 ${data.vehicle || '—'}</div>
+            </div>
+            ${commentHtml}
         `;
 
-        const metrics = document.getElementById('metrics-' + gateNum);
-        metrics.innerHTML = `
-            <div class="gate-metrics">
-                <div class="gate-timer" id="timer-${gateNum}">00:00:00</div>
-                <div class="gate-progress" id="progress-${gateNum}">📦 0/${data.volume} ГМ</div>
-            </div>
-            <div class="gate-progress-bar">
-                <div class="gate-progress-bar-fill" id="progress-fill-${gateNum}" style="width: 0%;"></div>
-            </div>
-        `;
-
-        // Визуализация: ворота + фура
-        const visual = document.getElementById('visual-' + gateNum);
-        const colorSet = TRUCK_COLORS[Math.floor(Math.random() * TRUCK_COLORS.length)].cabin;
-
-        // Оставляем ворота на фоне, добавляем SVG-фуру с анимацией
-        visual.innerHTML = `
-            <div class="gate-portal-frame"></div>
-            <div class="gate-portal">
-                <div class="gate-portal-rail"></div>
-            </div>
-            <div class="gate-portal-indicator"></div>
-            <div class="truck-svg" id="truck-visual-${gateNum}">
-                ${generateTruckSVG(colorSet, data.route)}
+        document.getElementById('gate-timer-' + num).innerHTML = `
+            <div class="gate-timer" id="timer-${num}">00:00:00</div>
+            <div class="gate-progress-text" id="progress-${num}">📦 0/${data.volume} ГМ</div>
+            <div class="gate-progress-mini">
+                <div class="gate-progress-mini-fill" id="progress-fill-${num}" style="width:0%"></div>
             </div>
         `;
 
-        // Состояние
-        const truckId = 'truck-' + (++truckIdCounter);
-        gateStates[gateNum] = { active: true, truckId, data, startTime: Date.now() };
-
-        // Звуки заезда
-        playEngine(1.8);
-        setTimeout(() => playBrake(), 1400);
-        setTimeout(() => playReverseBeep(), 1600);
-
-        // Таймер
-        startTimer(gateNum);
-
-        updateTables();
+        gateStates[num] = { active: true, data, startTime: Date.now() };
+        updateGatesCount();
+        startTimer(num);
     }
 
     // ===== ТАЙМЕР =====
-    function startTimer(gateNum) {
+    function startTimer(num) {
         const interval = setInterval(() => {
-            const state = gateStates[gateNum];
+            const state = gateStates[num];
             if (!state.active) { clearInterval(interval); return; }
 
             const diff = Date.now() - state.startTime;
-            const timerEl = document.getElementById('timer-' + gateNum);
-            if (timerEl) {
-                timerEl.textContent = formatDuration(diff);
-                timerEl.classList.remove('warning', 'danger');
-                if (diff > 90 * 60 * 1000) {
-                    timerEl.classList.add('danger');
-                    document.getElementById('gate-card-' + gateNum).classList.add('problem');
-                    if (!state.lastAlert || Date.now() - state.lastAlert > 30000) {
-                        playAlert();
-                        state.lastAlert = Date.now();
-                    }
-                } else if (diff > 60 * 60 * 1000) {
-                    timerEl.classList.add('warning');
-                }
+            const timerEl = document.getElementById('timer-' + num);
+            if (!timerEl) { clearInterval(interval); return; }
+
+            timerEl.textContent = formatDuration(diff);
+            timerEl.classList.remove('warning', 'danger');
+
+            if (diff > 90 * 60 * 1000) {
+                timerEl.classList.add('danger');
+                document.getElementById('gate-row-' + num).classList.add('problem');
+            } else if (diff > 60 * 60 * 1000) {
+                timerEl.classList.add('warning');
             }
 
             const volume = state.data.volume || 0;
             const loaded = Math.min(volume, Math.floor(diff / 15000));
-            const progressEl = document.getElementById('progress-' + gateNum);
-            const fillEl = document.getElementById('progress-fill-' + gateNum);
+            const progressEl = document.getElementById('progress-' + num);
+            const fillEl = document.getElementById('progress-fill-' + num);
             if (progressEl) progressEl.textContent = `📦 ${loaded}/${volume} ГМ`;
             if (fillEl) fillEl.style.width = (loaded / volume * 100) + '%';
-
-            updateTables();
         }, 1000);
     }
 
@@ -1451,353 +1267,340 @@
         return `${h}:${m}:${s}`;
     }
 
-    // ===== ЗАВЕРШЕНИЕ (с анимацией отъезда) =====
-    function completeOperation(gateNum) {
-        const state = gateStates[gateNum];
-        if (!state.active) return;
+    // ===== ЗАВЕРШЕНИЕ =====
+    function completeOperation(num) {
+        const row = document.getElementById('gate-row-' + num);
+        row.classList.remove('loading', 'unloading', 'problem');
+        row.classList.add('free');
 
-        // Анимация отъезда
-        const truckEl = document.getElementById('truck-visual-' + gateNum);
-        if (truckEl) {
-            truckEl.classList.add('departing');
+        document.getElementById('gate-info-' + num).innerHTML = `
+            <div class="gate-status free">Свободно</div>
+            <div class="gate-empty">Готово к постановке</div>
+        `;
+        document.getElementById('gate-timer-' + num).innerHTML = '';
+
+        gateStates[num] = { active: false, data: null };
+        updateGatesCount();
+        showToast(`Ворота ${num} освобождены`, 'success');
+    }
+
+    // ===== ИМПОРТ СВОДКИ =====
+    function openImportBufferModal() {
+        document.getElementById('bufferModal').classList.add('active');
+    }
+    function closeBufferModal() {
+        document.getElementById('bufferModal').classList.remove('active');
+    }
+
+    function importBuffer() {
+        const text = document.getElementById('bufferInput').value.trim();
+        if (!text) { showToast('Вставь текст сводки', 'warning'); return; }
+
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+        bufferData = [];
+
+        lines.forEach(line => {
+            // Разбиваем по табу или множественным пробелам
+            const parts = line.split(/\t+|\s{2,}/).filter(p => p.trim());
+            if (parts.length < 2) return;
+
+            const direction = parts[0].trim();
+            const nums = parts.slice(1).map(p => parseInt(p) || 0);
+
+            const oldGab = nums[0] || 0;
+            const oldNegab = nums[1] || 0;
+            const newGab = nums[2] || 0;
+            const newNegab = nums[3] || 0;
+            const total = oldGab + oldNegab + newGab + newNegab;
+
+            // Потребность ТС: только по старому сорту, формула ОКРВВЕРХ((Ст.Габ + Ст.Негаб × 1.5) / 33)
+            const needTS = Math.ceil((oldGab + oldNegab * 1.5) / 33);
+
+            bufferData.push({ direction, oldGab, oldNegab, newGab, newNegab, total, needTS });
+        });
+
+        renderBufferTable();
+        closeBufferModal();
+        showToast(`Загружено ${bufferData.length} направлений`, 'success');
+    }
+
+    function renderBufferTable() {
+        const tbody = document.getElementById('bufferTableBody');
+        document.getElementById('bufferCount').textContent = bufferData.length + ' направлений';
+
+        if (bufferData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-block"><div class="empty-block-icon">📊</div>Нажми «📊» в шапке, чтобы загрузить сводку</td></tr>';
+            return;
         }
 
-        playEngine(1);
-        playReverseBeep();
+        // Сортируем: сначала с потребностью >0, потом по алфавиту
+        const sorted = [...bufferData].sort((a, b) => {
+            if (b.needTS !== a.needTS) return b.needTS - a.needTS;
+            return a.direction.localeCompare(b.direction);
+        });
 
-        setTimeout(() => {
-            const card = document.getElementById('gate-card-' + gateNum);
-            card.classList.remove('loading', 'unloading', 'problem');
-            card.classList.add('free');
+        tbody.innerHTML = sorted.map(row => {
+            let needClass = 'zero';
+            if (row.needTS === 1) needClass = 'one';
+            else if (row.needTS >= 2 && row.needTS <= 3) needClass = 'many';
+            else if (row.needTS > 3) needClass = 'urgent';
 
-            document.getElementById('status-' + gateNum).className = 'gate-status-badge free';
-            document.getElementById('status-' + gateNum).textContent = 'Свободно';
+            const highlight = row.needTS > 0 ? 'highlight-row' : '';
 
-            document.getElementById('info-' + gateNum).innerHTML = '<div class="gate-empty">Готовы принять машину</div>';
-            document.getElementById('metrics-' + gateNum).innerHTML = '';
-
-            document.getElementById('visual-' + gateNum).innerHTML = `
-                <div class="gate-portal-frame"></div>
-                <div class="gate-portal"><div class="gate-portal-rail"></div></div>
-                <div class="gate-portal-indicator"></div>
-                <div class="gate-truck-empty">
-                    <div class="gate-truck-empty-icon">🚛</div>
-                    <div class="gate-truck-empty-text">СВОБОДНО</div>
-                </div>
+            return `
+                <tr class="${highlight}">
+                    <td><b>${row.direction}</b></td>
+                    <td class="td-center">${row.oldGab || '—'}</td>
+                    <td class="td-center">${row.oldNegab || '—'}</td>
+                    <td class="td-center">${row.newGab || '—'}</td>
+                    <td class="td-center">${row.newNegab || '—'}</td>
+                    <td class="td-center num-highlight">${row.total}</td>
+                    <td class="td-center"><span class="need-ts ${needClass}">${row.needTS}</span></td>
+                </tr>
             `;
-
-            gateStates[gateNum] = { active: false, truckId: null };
-            updateTables();
-        }, 1000);
-    }
-
-    // ===== ПАРКОВКА =====
-    function openParkingModal() {
-        playClick();
-        document.getElementById('parkingModal').classList.add('active');
-    }
-
-    function closeParkingModal() {
-        document.getElementById('parkingModal').classList.remove('active');
-    }
-
-    function startParking() {
-        playClick();
-        const route = document.getElementById('parkingRoute').value.trim();
-        const direction = document.getElementById('parkingDirection').value.trim();
-        const vehicle = document.getElementById('parkingVehicle').value.trim();
-
-        if (!route) { alert('Введите номер рейса'); return; }
-
-        const id = 'parking-' + (++truckIdCounter);
-        const colorSet = TRUCK_COLORS[Math.floor(Math.random() * TRUCK_COLORS.length)].cabin;
-
-        parkingList.push({ id, route, direction, vehicle, colorSet, startTime: Date.now() });
-
-        renderParking();
-        closeParkingModal();
-        updateTables();
-
-        playEngine(0.8);
-        setTimeout(() => playBrake(), 700);
-    }
-
-    function renderParking() {
-        const container = document.getElementById('parkingSlots');
-        const countEl = document.getElementById('parkingCount');
-
-        countEl.textContent = parkingList.length + ' машин' + (parkingList.length === 1 ? 'а' : '');
-
-        if (parkingList.length === 0) {
-            container.innerHTML = '<div class="parking-empty">Парковка пуста</div>';
-            return;
-        }
-
-        container.innerHTML = parkingList.map(p => `
-            <div class="parking-slot" id="slot-${p.id}" onclick="putOnGate('${p.id}')" title="Клик — поставить на свободные ворота">
-                <div class="parking-slot-truck">
-                    ${generateTruckSVG(p.colorSet, p.route, 0.6)}
-                </div>
-                <div class="parking-slot-info">
-                    <div class="parking-slot-route">${p.route}</div>
-                    <div class="parking-slot-direction">${p.direction}</div>
-                    <div class="parking-slot-status">${p.vehicle}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function putOnGate(parkingId) {
-        playClick();
-        const parking = parkingList.find(p => p.id === parkingId);
-        if (!parking) return;
-
-        const free = GATES.filter(g => !gateStates[g].active);
-        if (free.length === 0) {
-            alert('Все ворота заняты!');
-            return;
-        }
-
-        const gateNum = free[0];
-        const data = {
-            route: parking.route,
-            type: 'loading',
-            direction: parking.direction,
-            vehicle: parking.vehicle,
-            driver: '—',
-            volume: 33,
-            comment: '',
-            recommendation: 'do'
-        };
-
-        // Анимация ухода с парковки
-        const slotEl = document.getElementById('slot-' + parkingId);
-        if (slotEl) slotEl.classList.add('departing');
-
-        setTimeout(() => {
-            parkingList = parkingList.filter(p => p.id !== parkingId);
-            renderParking();
-            placeTruckOnGate(gateNum, data);
-        }, 400);
-    }
-
-    // ===== ОБНОВЛЕНИЕ ТАБЛИЦ =====
-    function updateTables() {
-        const incoming = [];
-        const outgoing = [];
-
-        GATES.forEach(num => {
-            const state = gateStates[num];
-            if (!state.active) return;
-            const diff = Date.now() - state.startTime;
-            const item = {
-                gate: num,
-                route: state.data.route,
-                vehicle: state.data.vehicle,
-                direction: state.data.direction,
-                driver: state.data.driver,
-                volume: state.data.volume,
-                loaded: Math.min(state.data.volume, Math.floor(diff / 15000)),
-                isWarning: diff > 60 * 60 * 1000,
-                isDanger: diff > 90 * 60 * 1000,
-                type: state.data.type
-            };
-            if (state.data.type === 'unloading') incoming.push(item);
-            else outgoing.push(item);
-        });
-
-        // Добавляем парковку в таблицы как «Ожидает»
-        parkingList.forEach(p => {
-            incoming.push({
-                gate: '🅿️',
-                route: p.route,
-                vehicle: p.vehicle,
-                direction: p.direction,
-                driver: '—',
-                volume: 0,
-                loaded: 0,
-                isParking: true,
-                type: 'incoming'
-            });
-        });
-
-        renderTable('incomingTableBody', incoming, 'incoming');
-        renderTable('outgoingTableBody', outgoing, 'outgoing');
-
-        document.getElementById('incomingCount').textContent = incoming.length + ' рейсов';
-        document.getElementById('outgoingCount').textContent = outgoing.length + ' рейсов';
-    }
-
-    function renderTable(tbodyId, items, type) {
-        const tbody = document.getElementById(tbodyId);
-        if (items.length === 0) {
-            const cols = type === 'incoming' ? 8 : 9;
-            tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}" class="empty-message">Нет ${type === 'incoming' ? 'входящих' : 'исходящих'} рейсов</td></tr>`;
-            return;
-        }
-
-        tbody.innerHTML = items.map((item, i) => {
-            let statusClass = item.type;
-            let statusText = item.type === 'unloading' ? 'Выгрузка' : 'Загрузка';
-
-            if (item.isParking) {
-                statusClass = 'parking';
-                statusText = 'На парковке';
-            } else if (item.isDanger) {
-                statusClass = 'problem';
-                statusText = '⚠️ ПРОБЛЕМА';
-            } else if (item.isWarning) {
-                statusText = '⚠️ Затянулось';
-            }
-
-            const statusBadge = `<span class="status-badge ${statusClass}">${statusText}</span>`;
-
-            if (type === 'incoming') {
-                return `
-                    <tr onclick="${item.isParking ? '' : `onGateClick(${item.gate})`}">
-                        <td>${i + 1}</td>
-                        <td><b>${item.gate}</b></td>
-                        <td class="dir-cell">${item.route}</td>
-                        <td>${item.vehicle}</td>
-                        <td>${item.direction}</td>
-                        <td>${item.driver}</td>
-                        <td>${statusBadge}</td>
-                        <td class="action-cell">
-                            ${item.isParking ? '<span style="font-size:10px;color:#8b949e;">—</span>' : `<button class="action-btn end-action" onclick="event.stopPropagation(); completeOperation(${item.gate})">Завершить</button>`}
-                        </td>
-                    </tr>
-                `;
-            } else {
-                return `
-                    <tr onclick="${item.isParking ? '' : `onGateClick(${item.gate})`}">
-                        <td>${i + 1}</td>
-                        <td><b>${item.gate}</b></td>
-                        <td class="dir-cell">${item.route}</td>
-                        <td>${item.vehicle}</td>
-                        <td>${item.direction}</td>
-                        <td>${item.driver}</td>
-                        <td><b>${item.loaded}/${item.volume}</b></td>
-                        <td>${statusBadge}</td>
-                        <td class="action-cell">
-                            <button class="action-btn end-action" onclick="event.stopPropagation(); completeOperation(${item.gate})">Завершить</button>
-                        </td>
-                    </tr>
-                `;
-            }
         }).join('');
     }
 
-    // ===== ЗВУКИ =====
-    function playClick() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        try {
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain); gain.connect(audioContext.destination);
-            osc.frequency.value = 1200;
-            osc.type = 'square';
-            gain.gain.setValueAtTime(0.04, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.06);
-            osc.start(); osc.stop(audioContext.currentTime + 0.06);
-        } catch(e) {}
+    // ===== ИМПОРТ РЕЙСОВ =====
+    function openImportRoutesModal() {
+        document.getElementById('routesModal').classList.add('active');
+    }
+    function closeRoutesModal() {
+        document.getElementById('routesModal').classList.remove('active');
     }
 
-    function playEngine(duration = 2) {
-        if (!soundActivated || isMuted || !audioContext) return;
-        try {
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain); gain.connect(audioContext.destination);
-            osc.frequency.setValueAtTime(55, audioContext.currentTime);
-            osc.frequency.linearRampToValueAtTime(85, audioContext.currentTime + duration);
-            osc.type = 'sawtooth';
-            gain.gain.setValueAtTime(0, audioContext.currentTime);
-            gain.gain.linearRampToValueAtTime(0.04, audioContext.currentTime + 0.3);
-            gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
-            osc.start(); osc.stop(audioContext.currentTime + duration);
-        } catch(e) {}
+    function importRoutes() {
+        const text = document.getElementById('routesInput').value.trim();
+        if (!text) { showToast('Вставь текст с рейсами', 'warning'); return; }
+
+        // Разбиваем по пустым строкам
+        const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
+
+        routes = [];
+
+        blocks.forEach((block, idx) => {
+            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) return;
+
+            const routeObj = parseRouteBlock(lines, idx);
+            if (routeObj) routes.push(routeObj);
+        });
+
+        renderRoutes();
+        closeRoutesModal();
+        showToast(`Разобрано ${routes.length} рейсов`, 'success');
     }
 
-    function playBrake() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        try {
-            // Скрип тормозов — короткий высокий звук
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain); gain.connect(audioContext.destination);
-            osc.frequency.setValueAtTime(2000, audioContext.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.3);
-            osc.type = 'sawtooth';
-            gain.gain.setValueAtTime(0.03, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
-            osc.start(); osc.stop(audioContext.currentTime + 0.3);
-        } catch(e) {}
+    function parseRouteBlock(lines, idx) {
+        let route = '', direction = '', company = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [];
+
+        lines.forEach(line => {
+            // Номер рейса
+            const routeMatch = line.match(/[Рр]ейс\s*#?(\d+)/i);
+            if (routeMatch) {
+                route = '#' + routeMatch[1];
+                return;
+            }
+
+            // Водитель
+            const driverMatch = line.match(/[Вв]одитель[:\s]+(.+)/i);
+            if (driverMatch) {
+                driver = driverMatch[1].trim();
+                return;
+            }
+
+            // Телефон
+            const phoneMatch = line.match(/\+?\d{10,12}/);
+            if (phoneMatch) {
+                phone = phoneMatch[0];
+                return;
+            }
+
+            // Номер ТС (тягач / машина)
+            const vehicleMatch = line.match(/[Нн]омер\s+(?:тягача|машины|ТС)[:\s]+([А-ЯA-Z0-9]+)/i);
+            if (vehicleMatch) {
+                vehicle = vehicleMatch[1].trim();
+                return;
+            }
+
+            // Паллетовместимость
+            const palletsMatch = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
+            if (palletsMatch) {
+                pallets = parseInt(palletsMatch[1]) || 0;
+                return;
+            }
+
+            // Направление (маршрут)
+            const hasDash = line.includes(' - ') || line.includes(' — ') || line.includes('→');
+            const hasC = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
+            if (hasDash && hasC && !route) {
+                // Если ещё нет рейса в этой строке — это направление
+                const firstCity = line.split(' - ')[0] || line.split('—')[0] || '';
+                // Определяем основное направление — последний или предпоследний город
+                const cities = line.split(/\s*[-—→]\s*/).map(c => c.trim()).filter(c => c);
+                if (cities.length > 0) {
+                    // Берём последний осмысленный город (не возврат)
+                    direction = cities[cities.length - 1] || cities[0];
+                }
+                return;
+            }
+
+            // Пометки
+            if (/ваш|обе ваши|наша/i.test(line)) marks.push('ours');
+            if (/ФФЦ/i.test(line) && /сначала|потом|берёт|берет/i.test(line)) marks.push('wait-ffc');
+            if (/голова/i.test(line)) marks.push('head');
+            if (/хвост/i.test(line)) marks.push('tail');
+
+            // Название компании (ООО, ИП, ТК)
+            if (/ООО|ИП\s|ТК\s|Логистик|Транс|Веатон|Делко|Фаст/i.test(line) && !company) {
+                company = line;
+            }
+        });
+
+        if (!route) return null;
+
+        // Нормализуем направление — берём только город
+        const normalizedDirection = normalizeDirection(direction);
+
+        return {
+            id: 'route-' + idx,
+            route,
+            direction: normalizedDirection,
+            fullDirection: direction,
+            company,
+            driver,
+            phone,
+            vehicle,
+            pallets,
+            marks: [...new Set(marks)],
+            rec: marks.includes('wait-ffc') ? 'wait' : marks.includes('ours') ? 'do' : 'do'
+        };
     }
 
-    function playReverseBeep() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        let count = 0;
-        const interval = setInterval(() => {
-            if (count >= 3 || !audioContext) { clearInterval(interval); return; }
-            try {
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain); gain.connect(audioContext.destination);
-                osc.frequency.value = 1500;
-                osc.type = 'sine';
-                gain.gain.setValueAtTime(0.08, audioContext.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
-                osc.start(); osc.stop(audioContext.currentTime + 0.12);
-            } catch(e) {}
-            count++;
-        }, 220);
+    function normalizeDirection(dir) {
+        if (!dir) return 'Не указано';
+        // Убираем префиксы СЦ, ПСЦ, ФФЦ, МК
+        let cleaned = dir.replace(/\b(СЦ|ПСЦ|ФФЦ|МК|ВП)\b/gi, '').trim();
+        // Если есть выбор — берём последнее слово
+        const parts = cleaned.split(/\s+/).filter(p => p);
+        return parts[parts.length - 1] || cleaned || 'Не указано';
     }
 
-    function playAlert() {
-        if (!soundActivated || isMuted || !audioContext) return;
-        try {
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain); gain.connect(audioContext.destination);
-            osc.frequency.setValueAtTime(800, audioContext.currentTime);
-            osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.15);
-            osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.3);
-            osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.45);
-            osc.type = 'square';
-            gain.gain.setValueAtTime(0.08, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.6);
-            osc.start(); osc.stop(audioContext.currentTime + 0.6);
-        } catch(e) {}
+    function renderRoutes() {
+        const container = document.getElementById('routesList');
+        document.getElementById('routesCount').textContent = routes.length + ' рейсов';
+
+        if (routes.length === 0) {
+            container.innerHTML = '<div class="empty-block"><div class="empty-block-icon">📋</div>Нажми «📋» в шапке, чтобы вставить список рейсов из чата</div>';
+            return;
+        }
+
+        // Сопоставляем с bufferData
+        const bufferDirs = bufferData.map(b => b.direction.toLowerCase());
+        routes.forEach(r => {
+            const dir = r.direction.toLowerCase();
+            r.matched = bufferDirs.some(b => b.includes(dir) || dir.includes(b));
+        });
+
+        // Сортировка: сначала сопоставленные
+        const sorted = [...routes].sort((a, b) => (b.matched ? 1 : 0) - (a.matched ? 1 : 0));
+
+        container.innerHTML = sorted.map(r => {
+            // Пометки-бейджи
+            const badges = [];
+            if (r.marks.includes('ours')) badges.push('<span class="route-badge ours">✅ ВАШ</span>');
+            if (r.marks.includes('wait-ffc')) badges.push('<span class="route-badge wait-ffc">⏳ ЖДЁТ ФФЦ</span>');
+            if (r.marks.includes('head')) badges.push('<span class="route-badge head">📦 ГОЛОВА</span>');
+            if (r.marks.includes('tail')) badges.push('<span class="route-badge tail">📦 ХВОСТ</span>');
+
+            const cardClass = r.matched ? 'matched' : 'unmatched';
+
+            return `
+                <div class="route-card ${cardClass}" id="route-${r.id}">
+                    <div class="route-card-header">
+                        <div class="route-card-number">${r.route}</div>
+                        <div class="route-card-badges">${badges.join('')}</div>
+                    </div>
+                    <div class="route-card-direction">📍 ${r.fullDirection || r.direction}</div>
+                    <div class="route-card-meta">
+                        ${r.driver ? `<div class="route-card-meta-item">👤 ${r.driver}</div>` : ''}
+                        ${r.vehicle ? `<div class="route-card-meta-item">🚛 ${r.vehicle}</div>` : ''}
+                        ${r.pallets ? `<div class="route-card-meta-item">📦 ${r.pallets} паллет</div>` : ''}
+                        ${r.phone ? `<div class="route-card-meta-item">📞 ${r.phone}</div>` : ''}
+                    </div>
+                    <div class="route-card-actions">
+                        <button class="route-action-btn load-btn" onclick="event.stopPropagation(); openGateModalForRoute('${r.id}')">🚪 Поставить</button>
+                        <button class="route-action-btn park-btn" onclick="event.stopPropagation(); markParked('${r.id}')">🅿️ На парковку</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
-    function toggleMute() {
-        isMuted = !isMuted;
-        document.getElementById('muteBtn').textContent = isMuted ? '🔇' : '🔊';
-        if (!soundActivated && !isMuted) activateSound();
+    function markParked(id) {
+        const card = document.getElementById('route-' + id);
+        if (card) card.classList.add('parked');
+        const r = routes.find(rt => rt.id === id);
+        showToast(`Рейс ${r.route} отмечен как «на парковке»`, 'warning');
     }
 
-    function activateSound() {
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            soundActivated = true;
-            playClick();
-        } catch(e) {}
+    // ===== ОТКРЫТИЕ МОДАЛКИ С ДАННЫМИ РЕЙСА =====
+    function openGateModalForRoute(id) {
+        const r = routes.find(rt => rt.id === id);
+        if (!r) return;
+
+        // Свободные ворота
+        const freeGates = GATES.filter(g => !gateStates[g].active);
+        if (freeGates.length === 0) {
+            showToast('Все ворота заняты!', 'warning');
+            return;
+        }
+
+        openGateModal(freeGates[0]);
+
+        // Заполняем поля
+        document.getElementById('gateRoute').value = r.route;
+        document.getElementById('gateDirection').value = r.fullDirection || r.direction;
+        document.getElementById('gateDriver').value = r.driver || '';
+        document.getElementById('gateVehicle').value = r.vehicle || '';
+        document.getElementById('gateVolume').value = r.pallets || 20;
+
+        // Рекомендация из пометок
+        if (r.rec === 'wait') selectRec('wait');
+        else if (r.marks.includes('no')) selectRec('no');
+        else selectRec('do');
+    }
+
+    // ===== УТИЛИТЫ =====
+    function showToast(text, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        toast.textContent = text;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(400px)';
+            toast.style.transition = 'all 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     function resetAll() {
-        if (!confirm('Сбросить всё?')) return;
-        location.reload();
+        if (!confirm('Сбросить всё? Данные будут потеряны.')) return;
+        bufferData = [];
+        routes = [];
+        gateStates = {};
+        initGates();
+        renderBufferTable();
+        renderRoutes();
+        showToast('Всё сброшено', 'success');
     }
 
-    // Активация звука при первом клике
-    document.addEventListener('click', function initSound() {
-        if (!soundActivated) activateSound();
-        document.removeEventListener('click', initSound);
-    }, { once: true });
-
     // ===== СТАРТ =====
-    init();
-    renderParking();
+    initGates();
+    renderBufferTable();
+    renderRoutes();
 </script>
 
 </body>

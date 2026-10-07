@@ -1,726 +1,1166 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Визуализация ворот — прототип</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #1a1d21;
-            color: #e4e6eb;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Склад — изометрия (прототип v2)</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: radial-gradient(ellipse at center, #2a2d33 0%, #0f1114 100%);
+        color: #e4e6eb;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        overflow-x: hidden;
+    }
 
-        h1 {
-            color: #4fc3f7;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
+    /* === HEADER === */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1300px;
+        margin-bottom: 20px;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
 
-        /* === ВИД СВЕРХУ НА СКЛАД === */
-        .warehouse {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            height: 500px;
-            background: linear-gradient(135deg, #2d333b 0%, #1e2227 100%);
-            border: 3px solid #353b44;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
+    h1 {
+        color: #4fc3f7;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+    }
 
-        /* Крыша / фон склада */
-        .warehouse::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 40%;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 40px,
-                rgba(255,255,255,0.02) 40px,
-                rgba(255,255,255,0.02) 80px
-            );
-            pointer-events: none;
-        }
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
 
-        /* === СТЕНА С ВОРОТАМИ === */
-        .wall {
-            position: absolute;
-            top: 60px;
-            left: 40px;
-            right: 40px;
-            height: 120px;
-            background: #3a4048;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            gap: 10px;
-            padding: 10px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
-        }
+    .current-time {
+        font-size: 26px;
+        font-weight: 900;
+        color: #4fc3f7;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 2px;
+        text-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+    }
 
-        /* === ВОРОТА === */
-        .gate {
-            flex: 1;
-            background: linear-gradient(180deg, #1e2227 0%, #0f1215 100%);
-            border: 2px solid #4a5058;
-            border-radius: 4px;
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
+    .mute-btn {
+        width: 44px;
+        height: 44px;
+        background: #252a31;
+        border: 2px solid #353b44;
+        border-radius: 10px;
+        color: #4fc3f7;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
 
-        .gate:hover {
-            border-color: #4fc3f7;
-            background: linear-gradient(180deg, #2a3038 0%, #1a1e23 100%);
-        }
+    .mute-btn:hover { background: #2d333b; border-color: #4fc3f7; }
+    .mute-btn.muted { color: #ef5350; border-color: #ef5350; }
 
-        .gate-number {
-            position: absolute;
-            top: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: #6c757d;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+    /* === ИГРОВОЕ ПОЛЕ (обёртка для 3D-сцены) === */
+    .scene-wrapper {
+        width: 100%;
+        max-width: 1300px;
+        height: 700px;
+        perspective: 2000px;
+        perspective-origin: 50% 30%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        background: linear-gradient(180deg, #1a1d21 0%, #0a0c0f 100%);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.8), inset 0 0 200px rgba(0,0,0,0.5);
+        border: 3px solid #353b44;
+    }
 
-        .gate-label {
-            font-size: 12px;
-            font-weight: 700;
-            color: #4fc3f7;
-            text-align: center;
-        }
+    /* 3D-сцена */
+    .scene {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1100px;
+        height: 700px;
+        transform: translate(-50%, -50%) rotateX(55deg) rotateZ(-30deg);
+        transform-style: preserve-3d;
+        transition: transform 0.5s ease;
+    }
 
-        /* Статусы ворот */
-        .gate.free {
-            background: linear-gradient(180deg, #1a3d2a 0%, #0f2418 100%);
-            border-color: #2e7d32;
-        }
-        .gate.free .gate-label { color: #4caf50; }
+    /* === АСФАЛЬТ === */
+    .ground {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            repeating-linear-gradient(45deg, #2a2d33 0px, #2a2d33 3px, #26292e 3px, #26292e 6px),
+            linear-gradient(180deg, #2a2d33 0%, #1f2227 100%);
+        border-radius: 10px;
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.6);
+    }
 
-        .gate.loading {
-            background: linear-gradient(180deg, #3d3a1a 0%, #241f0f 100%);
-            border-color: #f57c00;
-            animation: pulse-yellow 2s infinite;
-        }
-        .gate.loading .gate-label { color: #ffc107; }
+    /* Разметка на асфальте */
+    .ground::before {
+        content: '';
+        position: absolute;
+        top: 220px;
+        left: 0; right: 0;
+        height: 3px;
+        background: repeating-linear-gradient(90deg, #f5c542 0px, #f5c542 30px, transparent 30px, transparent 60px);
+        opacity: 0.6;
+    }
 
-        .gate.unloading {
-            background: linear-gradient(180deg, #3d1a1a 0%, #240f0f 100%);
-            border-color: #dc3545;
-        }
-        .gate.unloading .gate-label { color: #ff6b6b; }
+    /* === ЗДАНИЕ СКЛАДА === */
+    .warehouse {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 200px;
+        transform-style: preserve-3d;
+    }
 
-        .gate.problem {
-            animation: pulse-red 1s infinite;
-        }
+    /* Передняя стена */
+    .warehouse-front {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(180deg, #4a5058 0%, #3a4048 100%);
+        border-bottom: 4px solid #1a1d21;
+        box-shadow: inset 0 -20px 40px rgba(0,0,0,0.4);
+    }
 
-        @keyframes pulse-yellow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
-            50% { box-shadow: 0 0 0 12px rgba(255, 193, 7, 0); }
-        }
+    /* Крыша */
+    .warehouse-roof {
+        position: absolute;
+        top: -180px;
+        left: 0;
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(180deg, #5a6068 0%, #4a5058 100%);
+        transform-origin: bottom;
+        transform: rotateX(-90deg) translateY(-100%);
+        box-shadow: inset 0 0 60px rgba(0,0,0,0.3);
+    }
 
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: inset 0 0 0 0 rgba(220, 53, 69, 0.5); }
-            50% { box-shadow: inset 0 0 0 20px rgba(220, 53, 69, 0); }
-        }
+    /* Детали крыши — вентиляции, антенны */
+    .roof-vent {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, #6a7078 0%, #3a4048 100%);
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 -4px 8px rgba(0,0,0,0.3);
+    }
+    .roof-vent::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px; height: 20px;
+        background: #2a2d33;
+        border-radius: 50%;
+    }
 
-        /* === МАШИНА === */
-        .truck {
-            position: absolute;
-            bottom: -140px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.8);
-            width: 160px;
-            height: 180px;
-            opacity: 0;
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
-            z-index: 10;
-        }
+    .roof-antenna {
+        position: absolute;
+        width: 4px;
+        height: 60px;
+        background: linear-gradient(180deg, #888 0%, #444 100%);
+        box-shadow: 0 0 8px rgba(255,255,255,0.2);
+    }
+    .roof-antenna::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 12px;
+        height: 12px;
+        background: #ff1744;
+        border-radius: 50%;
+        box-shadow: 0 0 15px #ff1744;
+        animation: blink-light 2s infinite;
+    }
 
-        .truck.active {
-            bottom: -150px;
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-            pointer-events: auto;
-        }
+    @keyframes blink-light {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
 
-        /* Кузов машины */
-        .truck-body {
-            width: 160px;
-            height: 120px;
-            background: linear-gradient(180deg, #e0e0e0 0%, #a0a0a0 100%);
-            border-radius: 8px 8px 4px 4px;
-            position: relative;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5), inset 0 -5px 10px rgba(0,0,0,0.2);
-        }
+    /* Окна на стене */
+    .warehouse-window {
+        position: absolute;
+        width: 60px;
+        height: 30px;
+        background: linear-gradient(180deg, #4a5a6a 0%, #2a3a4a 100%);
+        border: 2px solid #2a2d33;
+        border-radius: 2px;
+        box-shadow: inset 0 0 20px rgba(100, 180, 255, 0.3);
+    }
+    .warehouse-window::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    }
 
-        /* Кабина */
-        .truck-cabin {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 130px;
-            height: 50px;
-            background: linear-gradient(180deg, #4fc3f7 0%, #0288d1 100%);
-            border-radius: 6px 6px 0 0;
-            border: 2px solid #333;
-        }
+    /* === ВОРОТА === */
+    .gates-row {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        height: 120px;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        padding: 0 30px;
+        gap: 10px;
+        z-index: 10;
+    }
 
-        /* Стёкла */
-        .truck-window {
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 22px;
-            background: linear-gradient(180deg, #263238 0%, #37474f 100%);
-            border-radius: 4px;
-            border: 1px solid #222;
-        }
+    .gate {
+        position: relative;
+        width: 100px;
+        height: 120px;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        transition: transform 0.2s;
+    }
 
-        /* Колёса */
-        .truck-wheel {
-            position: absolute;
-            bottom: -8px;
-            width: 24px;
-            height: 24px;
-            background: #1a1a1a;
-            border: 3px solid #444;
-            border-radius: 50%;
-            box-shadow: inset 0 0 4px rgba(255,255,255,0.2);
-        }
-        .truck-wheel.left { left: 15px; }
-        .truck-wheel.right { right: 15px; }
+    .gate:hover { transform: translateZ(5px); }
 
-        /* Информация о машине */
-        .truck-info {
-            position: absolute;
-            bottom: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid #4fc3f7;
-            border-radius: 8px;
-            padding: 8px 12px;
-            min-width: 180px;
-            text-align: center;
-            white-space: nowrap;
-            backdrop-filter: blur(4px);
-        }
+    /* Сама дверь ворот */
+    .gate-door {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #3a3f47 0%, #25292e 100%);
+        border: 3px solid #4a5058;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        overflow: hidden;
+        box-shadow: inset 0 10px 30px rgba(0,0,0,0.5);
+    }
 
-        .truck-route {
-            font-size: 12px;
-            font-weight: 800;
-            color: #4fc3f7;
-            margin-bottom: 4px;
-        }
+    /* Полоски роллетной двери */
+    .gate-door::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            transparent 8px,
+            rgba(255,255,255,0.08) 8px,
+            rgba(255,255,255,0.08) 9px
+        );
+    }
 
-        .truck-direction {
-            font-size: 11px;
-            color: #e4e6eb;
-            margin-bottom: 6px;
-        }
+    /* Номер ворот — светящийся */
+    .gate-number {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 22px;
+        font-weight: 900;
+        color: #4fc3f7;
+        text-shadow: 0 0 15px #4fc3f7, 0 0 30px #4fc3f7;
+        letter-spacing: 2px;
+        z-index: 15;
+    }
 
-        .truck-timer {
-            font-size: 20px;
-            font-weight: 800;
-            font-variant-numeric: tabular-nums;
-            color: #4caf50;
-            margin-bottom: 4px;
-            letter-spacing: 1px;
-        }
+    /* Индикатор над воротами */
+    .gate-indicator {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 6px;
+        border-radius: 3px;
+        background: #4caf50;
+        box-shadow: 0 0 20px #4caf50;
+        transition: all 0.3s;
+        z-index: 12;
+    }
 
-        .truck-timer.warning { color: #ffc107; }
-        .truck-timer.danger {
-            color: #ff6b6b;
-            animation: timer-pulse 1s infinite;
-        }
+    /* Статусы */
+    .gate.free .gate-indicator { background: #4caf50; box-shadow: 0 0 20px #4caf50; }
+    .gate.free .gate-door { background: linear-gradient(180deg, #2a3a30 0%, #1a2a20 100%); border-color: #2e7d32; }
 
-        @keyframes timer-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+    .gate.loading .gate-indicator { background: #ffc107; box-shadow: 0 0 25px #ffc107; animation: pulse-light 1.5s infinite; }
+    .gate.loading .gate-door { background: linear-gradient(180deg, #3a3520 0%, #2a2510 100%); border-color: #f57c00; }
 
-        .truck-progress {
-            font-size: 12px;
-            color: #9aa0a6;
-            margin-bottom: 4px;
-        }
+    .gate.unloading .gate-indicator { background: #ef5350; box-shadow: 0 0 25px #ef5350; }
+    .gate.unloading .gate-door { background: linear-gradient(180deg, #3a2020 0%, #2a1010 100%); border-color: #c62828; }
 
-        .truck-comment {
-            font-size: 10px;
-            color: #ffc107;
-            font-style: italic;
-            max-width: 200px;
-            white-space: normal;
-            line-height: 1.2;
-        }
+    .gate.problem .gate-indicator {
+        background: #ff1744;
+        box-shadow: 0 0 40px #ff1744;
+        animation: blink-light 0.4s infinite;
+    }
 
-        /* === ЗОНА ОЖИДАНИЯ === */
-        .waiting-zone {
-            position: absolute;
-            bottom: 20px;
-            left: 40px;
-            right: 40px;
-            height: 100px;
-            background: rgba(255,255,255,0.03);
-            border: 2px dashed #4a5058;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            gap: 15px;
-        }
+    @keyframes pulse-light {
+        0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        50% { transform: translateX(-50%) scale(1.3); opacity: 0.7; }
+    }
 
-        .waiting-zone::before {
-            content: '🅿️ ЗОНА ОЖИДАНИЯ';
-            position: absolute;
-            top: -10px;
-            left: 15px;
-            background: #1a1d21;
-            padding: 0 8px;
-            font-size: 10px;
-            color: #6c757d;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+    /* === ФУРА (SVG, вид сверху) === */
+    .truck {
+        position: absolute;
+        width: 70px;
+        height: 160px;
+        transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 20;
+        filter: drop-shadow(6px 12px 12px rgba(0,0,0,0.7));
+        transform-style: preserve-3d;
+    }
 
-        .waiting-truck {
-            width: 60px;
-            height: 40px;
-            background: linear-gradient(180deg, #666 0%, #444 100%);
-            border-radius: 4px;
-            position: relative;
-            opacity: 0.4;
-        }
+    /* Появление фуры — выезжает сбоку */
+    .truck.entering {
+        transform: translateX(-500px) scale(0.7);
+        opacity: 0;
+    }
+    .truck.entered {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
 
-        /* === ПАНЕЛЬ УПРАВЛЕНИЯ === */
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+    /* === ИНФО-ПАНЕЛЬ НАД ФУРОЙ === */
+    .truck-label {
+        position: absolute;
+        top: -95px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(15, 18, 21, 0.95);
+        border: 2px solid #4fc3f7;
+        border-radius: 8px;
+        padding: 8px 12px;
+        min-width: 180px;
+        text-align: center;
+        font-size: 11px;
+        white-space: nowrap;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.6), 0 0 20px rgba(79, 195, 247, 0.3);
+        pointer-events: none;
+        z-index: 30;
+    }
 
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-        }
-        button:active { transform: scale(0.95); }
+    .truck-label .route {
+        font-size: 14px;
+        font-weight: 900;
+        color: #4fc3f7;
+        margin-bottom: 3px;
+        letter-spacing: 0.5px;
+    }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #4fc3f7, #0288d1);
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
-        }
+    .truck-label .direction {
+        color: #e4e6eb;
+        font-size: 10px;
+        margin-bottom: 5px;
+        white-space: normal;
+        line-height: 1.2;
+        max-width: 200px;
+    }
 
-        .btn-success {
-            background: linear-gradient(135deg, #66bb6a, #2e7d32);
-            color: white;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
-        }
+    .truck-label .timer {
+        font-size: 18px;
+        font-weight: 900;
+        color: #4caf50;
+        font-variant-numeric: tabular-nums;
+        margin-bottom: 3px;
+        letter-spacing: 1px;
+    }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #ef5350, #c62828);
-            color: white;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-        }
+    .truck-label .timer.warning { color: #ffc107; }
+    .truck-label .timer.danger {
+        color: #ff5252;
+        animation: timer-blink 1s infinite;
+    }
 
-        /* === МОДАЛКА === */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.active { display: flex; }
+    @keyframes timer-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
 
-        .modal {
-            background: #252a31;
-            border: 1px solid #353b44;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 420px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-        }
+    .truck-label .progress {
+        font-size: 11px;
+        color: #9aa0a6;
+    }
 
-        .modal h3 {
-            color: #4fc3f7;
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
+    .truck-label .comment {
+        font-size: 10px;
+        color: #ffc107;
+        font-style: italic;
+        max-width: 200px;
+        white-space: normal;
+        line-height: 1.2;
+        margin-top: 5px;
+        padding-top: 5px;
+        border-top: 1px dashed #4a5058;
+    }
 
-        .modal label {
-            display: block;
-            font-size: 12px;
-            color: #9aa0a6;
-            font-weight: 600;
-            margin-bottom: 4px;
-            margin-top: 12px;
-        }
+    /* === ЗОНА ПАРКОВКИ === */
+    .parking-zone {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        height: 130px;
+        border: 3px dashed #4a5058;
+        border-radius: 12px;
+        background: rgba(0,0,0,0.4);
+        z-index: 3;
+        padding: 10px;
+    }
 
-        .modal input, .modal select, .modal textarea {
-            width: 100%;
-            padding: 10px 12px;
-            background: #1e2227;
-            border: 1px solid #353b44;
-            border-radius: 8px;
-            color: #e4e6eb;
-            font-size: 14px;
-            font-family: inherit;
-        }
+    .parking-zone::before {
+        content: '🅿️ ПАРКОВКА';
+        position: absolute;
+        top: -14px;
+        left: 20px;
+        background: #1a1d21;
+        padding: 0 12px;
+        font-size: 12px;
+        color: #6c757d;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
 
-        .modal input:focus, .modal select:focus, .modal textarea:focus {
-            outline: none;
-            border-color: #4fc3f7;
-        }
+    .parking-zone-content {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 10px;
+        height: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
 
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
+    /* Фуры в парковке */
+    .parking-truck {
+        position: relative;
+        width: 50px;
+        height: 110px;
+        opacity: 0.7;
+        cursor: pointer;
+        transition: all 0.3s;
+        filter: grayscale(0.4) drop-shadow(3px 6px 6px rgba(0,0,0,0.5));
+    }
 
-        .modal-buttons button { flex: 1; }
+    .parking-truck:hover {
+        opacity: 1;
+        filter: grayscale(0) drop-shadow(4px 8px 12px rgba(0,0,0,0.7));
+        transform: scale(1.1);
+    }
 
-        /* Таймер сверху */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            max-width: 900px;
-            margin-bottom: 12px;
-        }
+    /* === ПАНЕЛЬ УПРАВЛЕНИЯ === */
+    .controls {
+        margin-top: 25px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-        .current-time {
-            font-size: 24px;
-            font-weight: 800;
-            color: #4fc3f7;
-            font-variant-numeric: tabular-nums;
-        }
-    </style>
+    button {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    button:active { transform: scale(0.95); }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #4fc3f7, #0288d1);
+        color: white;
+        box-shadow: 0 6px 20px rgba(79, 195, 247, 0.5);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 30px rgba(79, 195, 247, 0.8); }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef5350, #c62828);
+        color: white;
+        box-shadow: 0 6px 20px rgba(239, 83, 80, 0.5);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: white;
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+
+    /* === МОДАЛКА === */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+        background: linear-gradient(180deg, #2a2f37 0%, #1e2227 100%);
+        border: 2px solid #4fc3f7;
+        border-radius: 20px;
+        padding: 28px;
+        max-width: 480px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 60px rgba(79, 195, 247, 0.2);
+    }
+
+    .modal h3 {
+        color: #4fc3f7;
+        margin-bottom: 20px;
+        font-size: 20px;
+        font-weight: 900;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .modal label {
+        display: block;
+        font-size: 11px;
+        color: #9aa0a6;
+        font-weight: 700;
+        margin-bottom: 6px;
+        margin-top: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .modal input, .modal select, .modal textarea {
+        width: 100%;
+        padding: 12px 14px;
+        background: #1e2227;
+        border: 2px solid #353b44;
+        border-radius: 10px;
+        color: #e4e6eb;
+        font-size: 14px;
+        font-family: inherit;
+        font-weight: 600;
+    }
+
+    .modal input:focus, .modal select:focus, .modal textarea:focus {
+        outline: none;
+        border-color: #4fc3f7;
+        box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .modal-buttons button { flex: 1; }
+
+    /* === ИНСТРУКЦИЯ ПО ЗВУКУ === */
+    .sound-hint {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(79, 195, 247, 0.95);
+        color: #0a0c0f;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-weight: 800;
+        font-size: 14px;
+        box-shadow: 0 8px 30px rgba(79, 195, 247, 0.5);
+        z-index: 9999;
+        cursor: pointer;
+        animation: bounce 2s infinite;
+        letter-spacing: 0.5px;
+    }
+
+    .sound-hint.hidden { display: none; }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-5px); }
+    }
+</style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🎮 Визуализация ворот — прототип</h1>
+<div class="header">
+    <h1>🏭 СКЛАД — ИЗОМЕТРИЯ v2</h1>
+    <div class="header-right">
         <div class="current-time" id="currentTime">--:--:--</div>
+        <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Звук вкл/выкл">🔊</button>
     </div>
+</div>
 
-    <!-- === СКЛАД === -->
-    <div class="warehouse">
-        <!-- Стена с воротами -->
-        <div class="wall">
-            <div class="gate free" id="gate14" data-gate="14" onclick="onGateClick(14)">
-                <div class="gate-number">ВОРОТА 14</div>
-                <div class="gate-label">СВОБОДНО</div>
+<!-- === ИГРОВАЯ СЦЕНА === -->
+<div class="scene-wrapper">
+    <div class="scene" id="scene">
+        <!-- Асфальт -->
+        <div class="ground"></div>
+
+        <!-- Здание -->
+        <div class="warehouse">
+            <div class="warehouse-front">
+                <!-- Окна -->
+                <div class="warehouse-window" style="top: 20px; left: 30px;"></div>
+                <div class="warehouse-window" style="top: 20px; right: 30px;"></div>
+                <div class="warehouse-window" style="top: 20px; left: 50%; transform: translateX(-50%);"></div>
             </div>
-            <div class="gate free" id="gate15" data-gate="15" onclick="onGateClick(15)">
-                <div class="gate-number">ВОРОТА 15</div>
-                <div class="gate-label">СВОБОДНО</div>
-            </div>
-            <div class="gate free" id="gate16" data-gate="16" onclick="onGateClick(16)">
-                <div class="gate-number">ВОРОТА 16</div>
-                <div class="gate-label">СВОБОДНО</div>
-            </div>
-            <div class="gate free" id="gate17" data-gate="17" onclick="onGateClick(17)">
-                <div class="gate-number">ВОРОТА 17</div>
-                <div class="gate-label">СВОБОДНО</div>
+            <div class="warehouse-roof">
+                <!-- Вентиляции -->
+                <div class="roof-vent" style="top: 30px; left: 100px;"></div>
+                <div class="roof-vent" style="top: 30px; right: 100px;"></div>
+                <div class="roof-vent" style="top: 100px; left: 50%; transform: translateX(-50%);"></div>
+                <!-- Антенны -->
+                <div class="roof-antenna" style="top: 20px; left: 200px;"></div>
+                <div class="roof-antenna" style="top: 20px; right: 200px;"></div>
             </div>
         </div>
 
-        <!-- Зона ожидания -->
-        <div class="waiting-zone" id="waitingZone">
-            <!-- сюда будут добавляться ожидающие машины -->
+        <!-- Ворота 11-17 -->
+        <div class="gates-row" id="gatesRow"></div>
+
+        <!-- Зона парковки -->
+        <div class="parking-zone">
+            <div class="parking-zone-content" id="parkingContent"></div>
         </div>
 
-        <!-- Машина (одна, для прототипа) -->
-        <div class="truck" id="truck">
-            <div class="truck-body">
-                <div class="truck-cabin">
-                    <div class="truck-window"></div>
-                </div>
-            </div>
-            <div class="truck-wheel left"></div>
-            <div class="truck-wheel right"></div>
-            <div class="truck-info" id="truckInfo" style="display:none;">
-                <div class="truck-route" id="truckRoute">#-----</div>
-                <div class="truck-direction" id="truckDirection">—</div>
-                <div class="truck-timer" id="truckTimer">00:00:00</div>
-                <div class="truck-progress" id="truckProgress">📦 0/0 ГМ</div>
-                <div class="truck-comment" id="truckComment"></div>
-            </div>
+        <!-- Фуры -->
+        <div id="trucksContainer"></div>
+    </div>
+</div>
+
+<!-- === ПАНЕЛЬ УПРАВЛЕНИЯ === -->
+<div class="controls">
+    <button class="btn-primary" onclick="openModal()">➕ Поставить машину</button>
+    <button class="btn-secondary" onclick="addToParking()">🅿️ На парковку</button>
+    <button class="btn-danger" onclick="resetAll()">🔄 Сброс</button>
+</div>
+
+<!-- === МОДАЛКА === -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
+    <div class="modal">
+        <h3 id="modalTitle">🚛 Поставить машину на ворота</h3>
+
+        <label>Ворота</label>
+        <select id="modalGate"></select>
+
+        <label>Номер рейса</label>
+        <input type="text" id="modalRoute" placeholder="#821853" value="#821853">
+
+        <label>Тип операции</label>
+        <select id="modalType">
+            <option value="unloading">🔴 Выгрузка (входящий)</option>
+            <option value="loading">🟡 Загрузка (исходящий)</option>
+        </select>
+
+        <label>Направление (откуда → куда)</label>
+        <input type="text" id="modalDirection" placeholder="СЦ Екатеринбург → СЦ Казань" value="СЦ Екатеринбург → СЦ Казань">
+
+        <label>Водитель</label>
+        <input type="text" id="modalDriver" placeholder="Бусыгин А.Н." value="Бусыгин А.Н.">
+
+        <label>Плановый объём ГМ</label>
+        <input type="number" id="modalVolume" value="20" min="0">
+
+        <label>Комментарий</label>
+        <textarea id="modalComment" rows="2" placeholder="Комментарий..."></textarea>
+
+        <div class="modal-buttons">
+            <button class="btn-secondary" onclick="closeModal()">Отмена</button>
+            <button class="btn-primary" onclick="startOperation()">✅ Поставить</button>
         </div>
     </div>
+</div>
 
-    <!-- === ПАНЕЛЬ УПРАВЛЕНИЯ === -->
-    <div class="controls">
-        <button class="btn-primary" onclick="openModal()">➕ Поставить машину на ворота</button>
-        <button class="btn-success" onclick="completeLoading()">✅ Завершить операцию</button>
-        <button class="btn-danger" onclick="resetAll()">🔄 Сброс</button>
-    </div>
+<!-- === ПОДСКАЗКА О ЗВУКЕ === -->
+<div class="sound-hint" id="soundHint" onclick="activateSound()">
+    🔊 Нажми, чтобы включить звук
+</div>
 
-    <!-- === МОДАЛКА === -->
-    <div class="modal-overlay" id="modal" onclick="if(event.target===this) closeModal()">
-        <div class="modal">
-            <h3>🚛 Поставить машину на ворота</h3>
+<script>
+    // ===== КОНСТАНТЫ =====
+    const GATES = [11, 12, 13, 14, 15, 16, 17];
+    const CABIN_COLORS = [
+        ['#1976d2', '#42a5f5', '#0d47a1'], // синий
+        ['#c62828', '#ef5350', '#8e0000'], // красный
+        ['#2e7d32', '#66bb6a', '#1b5e20'], // зелёный
+        ['#f57c00', '#ffa726', '#e65100'], // оранжевый
+        ['#6a1b9a', '#9c27b0', '#4a148c'], // фиолетовый
+        ['#455a64', '#78909c', '#263238']  // серый
+    ];
 
-            <label>Выберите ворота</label>
-            <select id="modalGate">
-                <option value="14">Ворота 14</option>
-                <option value="15">Ворота 15</option>
-                <option value="16">Ворота 16</option>
-                <option value="17">Ворота 17</option>
-            </select>
+    let gateStates = {};
+    let parkingTrucks = [];
+    let truckIdCounter = 0;
+    let isMuted = false;
+    let soundActivated = false;
+    let audioContext = null;
 
-            <label>Номер рейса</label>
-            <input type="text" id="modalRoute" placeholder="например, #821853" value="#821853">
+    // ===== ИНИЦИАЛИЗАЦИЯ ВОРОТ =====
+    function initGates() {
+        const row = document.getElementById('gatesRow');
+        row.innerHTML = '';
+        GATES.forEach(num => {
+            const gate = document.createElement('div');
+            gate.className = 'gate free';
+            gate.id = 'gate-' + num;
+            gate.dataset.gate = num;
+            gate.onclick = () => onGateClick(num);
+            gate.innerHTML = `
+                <div class="gate-indicator"></div>
+                <div class="gate-number">${num}</div>
+                <div class="gate-door"></div>
+            `;
+            row.appendChild(gate);
+            gateStates[num] = { active: false, truckId: null };
+        });
+    }
 
-            <label>Тип операции</label>
-            <select id="modalType">
-                <option value="unloading">🔴 Выгрузка (входящий)</option>
-                <option value="loading">🟡 Загрузка (исходящий)</option>
-            </select>
+    // ===== ЧАСЫ =====
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('currentTime').textContent = now.toTimeString().slice(0,8);
+    }, 1000);
 
-            <label>Направление (откуда / куда)</label>
-            <input type="text" id="modalDirection" placeholder="СЦ Екатеринбург → СЦ Казань" value="СЦ Екатеринбург → СЦ Казань">
+    // ===== ЗВУК =====
+    function activateSound() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            soundActivated = true;
+            document.getElementById('soundHint').classList.add('hidden');
+            playClick();
+        } catch(e) {
+            console.error('Ошибка звука:', e);
+        }
+    }
 
-            <label>Водитель</label>
-            <input type="text" id="modalDriver" placeholder="Фёдоров Александр" value="Бусыгин А.Н.">
+    function toggleMute() {
+        isMuted = !isMuted;
+        document.getElementById('muteBtn').textContent = isMuted ? '🔇' : '🔊';
+        document.getElementById('muteBtn').classList.toggle('muted', isMuted);
+    }
 
-            <label>Плановый объём ГМ</label>
-            <input type="number" id="modalVolume" placeholder="20" value="20" min="0">
+    // Звук клика
+    function playClick() {
+        if (!soundActivated || isMuted || !audioContext) return;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.frequency.value = 1200;
+        osc.type = 'square';
+        gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.08);
+    }
 
-            <label>Комментарий</label>
-            <textarea id="modalComment" rows="2" placeholder="Проблема в загруженности воротной зоны..."></textarea>
+    // Звук двигателя (гул)
+    function playEngine(duration = 2) {
+        if (!soundActivated || isMuted || !audioContext) return;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.frequency.setValueAtTime(60, audioContext.currentTime);
+        osc.frequency.linearRampToValueAtTime(90, audioContext.currentTime + duration);
+        osc.type = 'sawtooth';
+        gain.gain.setValueAtTime(0, audioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(0.08, audioContext.currentTime + 0.5);
+        gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + duration);
+    }
 
-            <div class="modal-buttons">
-                <button class="btn-danger" onclick="closeModal()">Отмена</button>
-                <button class="btn-success" onclick="startOperation()">✅ Поставить</button>
+    // Звук заднего хода (пищалка)
+    function playReverseBeep() {
+        if (!soundActivated || isMuted || !audioContext) return;
+        let count = 0;
+        const interval = setInterval(() => {
+            if (count >= 3 || !audioContext) { clearInterval(interval); return; }
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.frequency.value = 1500;
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+            count++;
+        }, 250);
+    }
+
+    // Звук тревоги
+    function playAlert() {
+        if (!soundActivated || isMuted || !audioContext) return;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.frequency.setValueAtTime(800, audioContext.currentTime);
+        osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.15);
+        osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.3);
+        osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.45);
+        osc.type = 'square';
+        gain.gain.setValueAtTime(0.12, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.6);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.6);
+    }
+
+    // ===== ГЕНЕРАЦИЯ SVG ФУРЫ =====
+    function generateTruckSVG(colorSet, route) {
+        const [dark, mid, darker] = colorSet;
+        return `
+        <svg viewBox="0 0 70 160" width="70" height="160" xmlns="http://www.w3.org/2000/svg">
+            <!-- Тень -->
+            <ellipse cx="35" cy="152" rx="30" ry="6" fill="rgba(0,0,0,0.5)"/>
+            
+            <!-- Кузов (прицеп) -->
+            <rect x="3" y="5" width="64" height="100" rx="3" fill="#e8e8e8" stroke="#888" stroke-width="2"/>
+            
+            <!-- Рёбра жёсткости кузова -->
+            <line x1="3" y1="25" x2="67" y2="25" stroke="#c0c0c0" stroke-width="1"/>
+            <line x1="3" y1="45" x2="67" y2="45" stroke="#c0c0c0" stroke-width="1"/>
+            <line x1="3" y1="65" x2="67" y2="65" stroke="#c0c0c0" stroke-width="1"/>
+            <line x1="3" y1="85" x2="67" y2="85" stroke="#c0c0c0" stroke-width="1"/>
+            
+            <!-- Номер на кузове -->
+            <text x="35" y="60" font-family="Arial" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">${route.replace('#','')}</text>
+            
+            <!-- Логотип (полоски) -->
+            <rect x="3" y="90" width="64" height="12" fill="${mid}" opacity="0.7"/>
+            
+            <!-- Кабина -->
+            <path d="M 5 105 L 65 105 L 65 145 Q 65 150 60 150 L 10 150 Q 5 150 5 145 Z" fill="${mid}" stroke="${darker}" stroke-width="2"/>
+            
+            <!-- Лобовое стекло -->
+            <path d="M 12 110 L 58 110 L 55 122 L 15 122 Z" fill="#1a2632" stroke="#0a1015" stroke-width="1"/>
+            
+            <!-- Блик на стекле -->
+            <path d="M 15 112 L 30 112 L 28 120 L 17 120 Z" fill="rgba(255,255,255,0.15)"/>
+            
+            <!-- Фары -->
+            <circle cx="14" cy="143" r="4" fill="#fff8b0" stroke="#333" stroke-width="1"/>
+            <circle cx="56" cy="143" r="4" fill="#fff8b0" stroke="#333" stroke-width="1"/>
+            
+            <!-- Зеркала -->
+            <rect x="2" y="115" width="4" height="8" fill="${darker}"/>
+            <rect x="64" y="115" width="4" height="8" fill="${darker}"/>
+            
+            <!-- Колёса кузова -->
+            <ellipse cx="14" cy="100" rx="5" ry="3" fill="#1a1a1a"/>
+            <ellipse cx="56" cy="100" rx="5" ry="3" fill="#1a1a1a"/>
+            
+            <!-- Колёса кабины -->
+            <ellipse cx="14" cy="140" rx="5" ry="3" fill="#1a1a1a"/>
+            <ellipse cx="56" cy="140" rx="5" ry="3" fill="#1a1a1a"/>
+            
+            <!-- Красные габаритные огни -->
+            <circle cx="8" cy="8" r="2" fill="#ff1744"/>
+            <circle cx="62" cy="8" r="2" fill="#ff1744"/>
+        </svg>
+        `;
+    }
+
+    // ===== КЛИК ПО ВОРОТАМ =====
+    function onGateClick(num) {
+        playClick();
+        if (gateStates[num].active) {
+            const truck = document.getElementById(gateStates[num].truckId);
+            if (truck) {
+                const info = truck.dataset;
+                if (confirm(`Ворота ${num}\n\nРейс: ${info.route}\nНаправление: ${info.direction}\nВодитель: ${info.driver}\n\nЗавершить операцию?`)) {
+                    completeOperation(num);
+                }
+            }
+        } else {
+            document.getElementById('modalGate').value = num;
+            openModal();
+        }
+    }
+
+    // ===== МОДАЛКА =====
+    function openModal() {
+        playClick();
+        const free = GATES.filter(g => !gateStates[g].active);
+        if (free.length === 0) {
+            alert('Все ворота заняты!');
+            return;
+        }
+        const select = document.getElementById('modalGate');
+        select.innerHTML = free.map(g => `<option value="${g}">Ворота ${g}</option>`).join('');
+        document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+
+    // ===== СТАРТ ОПЕРАЦИИ =====
+    function startOperation() {
+        playClick();
+        const gateNum = parseInt(document.getElementById('modalGate').value);
+        const route = document.getElementById('modalRoute').value.trim();
+        const type = document.getElementById('modalType').value;
+        const direction = document.getElementById('modalDirection').value.trim();
+        const driver = document.getElementById('modalDriver').value.trim();
+        const volume = parseInt(document.getElementById('modalVolume').value) || 0;
+        const comment = document.getElementById('modalComment').value.trim();
+
+        if (!route) { alert('Введите номер рейса'); return; }
+        if (gateStates[gateNum].active) { alert('Эти ворота уже заняты!'); return; }
+
+        placeTruckOnGate(gateNum, { route, type, direction, driver, volume, comment });
+        closeModal();
+    }
+
+    // ===== ПОСТАВИТЬ ФУРУ НА ВОРОТА =====
+    function placeTruckOnGate(gateNum, data) {
+        const gateEl = document.getElementById('gate-' + gateNum);
+        gateEl.classList.remove('free', 'loading', 'unloading', 'problem');
+        gateEl.classList.add(data.type);
+
+        const truckId = 'truck-' + (++truckIdCounter);
+        const truck = document.createElement('div');
+        truck.className = 'truck entering';
+        truck.id = truckId;
+
+        // Позиция фуры под воротами (в изометрии)
+        const gateIdx = GATES.indexOf(gateNum);
+        const gateSpacing = 152; // ширина между воротами
+        const startX = 30 + gateIdx * gateSpacing;
+        const startY = 240;
+
+        truck.style.left = startX + 'px';
+        truck.style.top = startY + 'px';
+
+        // Случайный цвет кабины
+        const colorSet = CABIN_COLORS[Math.floor(Math.random() * CABIN_COLORS.length)];
+
+        // Данные
+        truck.dataset.route = data.route;
+        truck.dataset.direction = data.direction;
+        truck.dataset.driver = data.driver;
+        truck.dataset.type = data.type;
+        truck.dataset.volume = data.volume;
+        truck.dataset.comment = data.comment;
+        truck.dataset.startTime = Date.now();
+        truck.dataset.gate = gateNum;
+        truck.dataset.loaded = 0;
+        truck.dataset.timerInterval = '';
+
+        // Контент
+        truck.innerHTML = `
+            <div class="truck-label">
+                <div class="route">${data.route}</div>
+                <div class="direction">${data.direction}</div>
+                <div class="timer" id="${truckId}-timer">00:00:00</div>
+                <div class="progress" id="${truckId}-progress">📦 0/${data.volume} ГМ</div>
+                ${data.comment ? `<div class="comment">${data.comment}</div>` : ''}
             </div>
-        </div>
-    </div>
+            ${generateTruckSVG(colorSet, data.route)}
+        `;
 
-    <script>
-        // === СОСТОЯНИЕ ===
-        let activeTruck = {
-            active: false,
-            gate: null,
-            route: null,
-            type: null,
-            direction: null,
-            driver: null,
-            volume: 0,
-            loaded: 0,
-            comment: '',
-            startTime: null,
-            timerInterval: null,
-            beepInterval: null
-        };
+        document.getElementById('trucksContainer').appendChild(truck);
 
-        // === ЧАСЫ ===
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('currentTime').textContent = now.toTimeString().slice(0,8);
+        // Звуки заезда
+        playEngine(2);
+        setTimeout(() => playReverseBeep(), 1200);
+
+        // Анимация заезда
+        requestAnimationFrame(() => {
+            truck.classList.remove('entering');
+            truck.classList.add('entered');
+        });
+
+        gateStates[gateNum] = { active: true, truckId: truckId, data: data };
+
+        // Запускаем таймер через 1 секунду (после заезда)
+        setTimeout(() => startTruckTimer(truckId), 1000);
+    }
+
+    // ===== ТАЙМЕР ФУРЫ =====
+    function startTruckTimer(truckId) {
+        const truck = document.getElementById(truckId);
+        if (!truck) return;
+
+        const timerInterval = setInterval(() => {
+            const truckEl = document.getElementById(truckId);
+            if (!truckEl) { clearInterval(timerInterval); return; }
+
+            const startTime = parseInt(truckEl.dataset.startTime);
+            const diff = Date.now() - startTime;
+            const timerEl = document.getElementById(truckId + '-timer');
+
+            if (timerEl) {
+                timerEl.textContent = formatDuration(diff);
+
+                timerEl.classList.remove('warning', 'danger');
+                if (diff > 90 * 60 * 1000) {
+                    timerEl.classList.add('danger');
+                    const gateNum = parseInt(truckEl.dataset.gate);
+                    document.getElementById('gate-' + gateNum).classList.add('problem');
+
+                    // Тревога каждые 30 сек
+                    if (!truckEl.dataset.lastAlert || Date.now() - parseInt(truckEl.dataset.lastAlert) > 30000) {
+                        playAlert();
+                        truckEl.dataset.lastAlert = Date.now();
+                    }
+                } else if (diff > 60 * 60 * 1000) {
+                    timerEl.classList.add('warning');
+                }
+            }
+
+            // Симуляция загрузки (1 ГМ каждые 15 сек)
+            const volume = parseInt(truckEl.dataset.volume) || 0;
+            const simulatedLoaded = Math.min(volume, Math.floor(diff / 15000));
+            if (simulatedLoaded !== parseInt(truckEl.dataset.loaded)) {
+                truckEl.dataset.loaded = simulatedLoaded;
+                const progressEl = document.getElementById(truckId + '-progress');
+                if (progressEl) {
+                    progressEl.textContent = `📦 ${simulatedLoaded}/${volume} ГМ`;
+                }
+            }
         }, 1000);
 
-        // === ОТКРЫТИЕ МОДАЛКИ ===
-        function openModal() {
-            // Проверяем, свободны ли ворота
-            const freeGates = [14, 15, 16, 17].filter(g => !isGateOccupied(g));
-            if (freeGates.length === 0) {
-                alert('Все ворота заняты!');
-                return;
+        truck.dataset.timerInterval = timerInterval;
+    }
+
+    function formatDuration(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSec % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
+    // ===== ЗАВЕРШЕНИЕ =====
+    function completeOperation(gateNum) {
+        playReverseBeep();
+        const state = gateStates[gateNum];
+        if (!state.active) return;
+
+        const truck = document.getElementById(state.truckId);
+        if (truck) {
+            if (truck.dataset.timerInterval) {
+                clearInterval(parseInt(truck.dataset.timerInterval));
             }
-            document.getElementById('modal').classList.add('active');
+            // Анимация отъезда — вправо
+            truck.classList.remove('entered');
+            truck.classList.add('entering');
+            truck.style.transform = 'translateX(600px) scale(0.7)';
+            setTimeout(() => truck.remove(), 1000);
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
+        const gateEl = document.getElementById('gate-' + gateNum);
+        gateEl.classList.remove('loading', 'unloading', 'problem');
+        gateEl.classList.add('free');
+
+        gateStates[gateNum] = { active: false, truckId: null };
+    }
+
+    // ===== ПАРКОВКА =====
+    function addToParking() {
+        playClick();
+        const route = prompt('Номер рейса:', '#999999');
+        if (!route) return;
+        const direction = prompt('Направление:', 'Москва → Казань');
+        if (!direction) return;
+
+        const id = 'parking-' + (++truckIdCounter);
+        const truck = document.createElement('div');
+        truck.className = 'parking-truck';
+        truck.id = id;
+        truck.dataset.route = route;
+        truck.dataset.direction = direction;
+        truck.onclick = () => placeParkingTruckOnGate(id);
+
+        const colorSet = CABIN_COLORS[Math.floor(Math.random() * CABIN_COLORS.length)];
+        truck.innerHTML = generateTruckSVG(colorSet, route);
+
+        document.getElementById('parkingContent').appendChild(truck);
+        parkingTrucks.push({ id, route, direction });
+    }
+
+    function placeParkingTruckOnGate(parkingId) {
+        playClick();
+        const parkingTruck = document.getElementById(parkingId);
+        if (!parkingTruck) return;
+
+        const free = GATES.filter(g => !gateStates[g].active);
+        if (free.length === 0) {
+            alert('Все ворота заняты!');
+            return;
         }
 
-        function isGateOccupied(gateNum) {
-            return activeTruck.active && activeTruck.gate === gateNum;
+        const gateNum = free[0];
+        const data = {
+            route: parkingTruck.dataset.route,
+            type: 'loading',
+            direction: parkingTruck.dataset.direction,
+            driver: '—',
+            volume: 33,
+            comment: ''
+        };
+
+        placeTruckOnGate(gateNum, data);
+        parkingTruck.remove();
+        parkingTrucks = parkingTrucks.filter(t => t.id !== parkingId);
+    }
+
+    // ===== СБРОС =====
+    function resetAll() {
+        if (!confirm('Сбросить всё?')) return;
+        location.reload();
+    }
+
+    // ===== СТАРТ =====
+    initGates();
+
+    // Показать подсказку о звуке
+    setTimeout(() => {
+        if (!soundActivated) {
+            document.getElementById('soundHint').classList.remove('hidden');
         }
-
-        // === СТАРТ ОПЕРАЦИИ ===
-        function startOperation() {
-            const gate = parseInt(document.getElementById('modalGate').value);
-            const route = document.getElementById('modalRoute').value.trim();
-            const type = document.getElementById('modalType').value;
-            const direction = document.getElementById('modalDirection').value.trim();
-            const driver = document.getElementById('modalDriver').value.trim();
-            const volume = parseInt(document.getElementById('modalVolume').value) || 0;
-            const comment = document.getElementById('modalComment').value.trim();
-
-            if (!route) { alert('Введите номер рейса'); return; }
-            if (isGateOccupied(gate)) { alert('Эти ворота уже заняты!'); return; }
-
-            activeTruck = {
-                active: true,
-                gate: gate,
-                route: route,
-                type: type,
-                direction: direction,
-                driver: driver,
-                volume: volume,
-                loaded: 0,
-                comment: comment,
-                startTime: Date.now(),
-                timerInterval: null,
-                beepInterval: null
-            };
-
-            // Обновляем ворота
-            const gateEl = document.getElementById('gate' + gate);
-            gateEl.classList.remove('free', 'loading', 'unloading', 'problem');
-            gateEl.classList.add(type);
-            gateEl.querySelector('.gate-label').textContent = type === 'unloading' ? 'ВЫГРУЗКА' : 'ЗАГРУЗКА';
-
-            // Показываем машину
-            const truck = document.getElementById('truck');
-            truck.classList.add('active');
-            document.getElementById('truckInfo').style.display = 'block';
-            document.getElementById('truckRoute').textContent = route;
-            document.getElementById('truckDirection').textContent = direction;
-            document.getElementById('truckProgress').textContent = `📦 0/${volume} ГМ`;
-            document.getElementById('truckComment').textContent = comment;
-
-            // Запускаем таймер
-            startTimer();
-
-            closeModal();
-        }
-
-        // === ТАЙМЕР ===
-        function startTimer() {
-            if (activeTruck.timerInterval) clearInterval(activeTruck.timerInterval);
-            activeTruck.timerInterval = setInterval(updateTimer, 1000);
-            updateTimer();
-        }
-
-        function updateTimer() {
-            if (!activeTruck.active || !activeTruck.startTime) return;
-            const diff = Date.now() - activeTruck.startTime;
-            const timerEl = document.getElementById('truckTimer');
-            timerEl.textContent = formatDuration(diff);
-
-            // Цвет по времени
-            timerEl.classList.remove('warning', 'danger');
-            if (diff > 90 * 60 * 1000) {
-                timerEl.classList.add('danger');
-                if (!activeTruck.beepInterval) {
-                    playBeep();
-                    activeTruck.beepInterval = setInterval(playBeep, 30000);
-                }
-            } else if (diff > 60 * 60 * 1000) {
-                timerEl.classList.add('warning');
-            }
-
-            // Обновляем прогресс (демо: +1 ГМ каждые 10 секунд)
-            const simulatedLoaded = Math.min(activeTruck.volume, Math.floor(diff / 10000));
-            if (simulatedLoaded !== activeTruck.loaded) {
-                activeTruck.loaded = simulatedLoaded;
-                document.getElementById('truckProgress').textContent = `📦 ${activeTruck.loaded}/${activeTruck.volume} ГМ`;
-            }
-        }
-
-        function formatDuration(ms) {
-            const totalSec = Math.floor(ms / 1000);
-            const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
-            const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
-            const s = String(totalSec % 60).padStart(2, '0');
-            return `${h}:${m}:${s}`;
-        }
-
-        // === ЗВУК ===
-        function playBeep() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.frequency.value = 800;
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.4);
-            } catch(e) {}
-        }
-
-        // === ЗАВЕРШЕНИЕ ===
-        function completeLoading() {
-            if (!activeTruck.active) {
-                alert('Нет активной операции');
-                return;
-            }
-            const gate = activeTruck.gate;
-            const gateEl = document.getElementById('gate' + gate);
-            gateEl.classList.remove('loading', 'unloading', 'problem');
-            gateEl.classList.add('free');
-            gateEl.querySelector('.gate-label').textContent = 'СВОБОДНО';
-
-            const truck = document.getElementById('truck');
-            truck.classList.remove('active');
-            document.getElementById('truckInfo').style.display = 'none';
-
-            if (activeTruck.timerInterval) clearInterval(activeTruck.timerInterval);
-            if (activeTruck.beepInterval) clearInterval(activeTruck.beepInterval);
-
-            activeTruck = { active: false, gate: null, timerInterval: null, beepInterval: null };
-        }
-
-        // === КЛИК ПО ВОРОТАМ ===
-        function onGateClick(gateNum) {
-            if (isGateOccupied(gateNum)) {
-                // Показать детали
-                alert(`Ворота ${gateNum}\nРейс: ${activeTruck.route}\nНаправление: ${activeTruck.direction}\nВодитель: ${activeTruck.driver}`);
-            } else {
-                // Открыть модалку с этими воротами
-                document.getElementById('modalGate').value = gateNum;
-                openModal();
-            }
-        }
-
-        // === СБРОС ===
-        function resetAll() {
-            if (!confirm('Сбросить всё?')) return;
-            location.reload();
-        }
-    </script>
+    }, 1000);
+</script>
 
 </body>
 </html>

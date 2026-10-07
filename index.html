@@ -1,18 +1,1397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шпаргалка бригадира</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --bg: #f5f7fa;
+        --card: #ffffff;
+        --card-hover: #fafbfc;
+        --border: #e3e8ee;
+        --border-strong: #cbd5e1;
+        --text: #1e293b;
+        --text-dim: #64748b;
+        --text-muted: #94a3b8;
+        --accent: #2563eb;
+        --accent-light: #dbeafe;
+        --success: #16a34a;
+        --success-light: #dcfce7;
+        --warning: #d97706;
+        --warning-light: #fef3c7;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+        --purple: #7c3aed;
+        --purple-light: #ede9fe;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* === HEADER === */
+    .app-header {
+        background: var(--card);
+        border-bottom: 2px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .app-logo {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.5px;
+    }
+
+    .app-logo-icon {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--accent), #1e40af);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .clock {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 1px;
+        padding: 6px 14px;
+        background: var(--accent-light);
+        border-radius: 8px;
+    }
+
+    /* === ОБЩИЕ КНОПКИ === */
+    .btn {
+        padding: 9px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    .btn-secondary {
+        background: var(--card);
+        color: var(--text);
+        border: 1.5px solid var(--border-strong);
+    }
+    .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+    }
+    .btn-success:hover { background: #15803d; }
+
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+    .btn-danger:hover { background: #b91c1c; }
+
+    .btn-icon {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    /* === ОСНОВНАЯ СЕТКА === */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+        max-width: 1900px;
+        margin: 0 auto;
+    }
+
+    /* === БЛОКИ === */
+    .panel {
+        background: var(--card);
+        border-radius: 14px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    .panel-header {
+        padding: 14px 18px;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    }
+
+    .panel-title {
+        font-size: 14px;
+        font-weight: 900;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .panel-title-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: white;
+    }
+
+    .panel-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+    .panel-title-icon.green { background: linear-gradient(135deg, #22c55e, #15803d); }
+    .panel-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+    .panel-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
+
+    .panel-count {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-dim);
+        background: var(--bg);
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    /* === ВОРОТА === */
+    .gates-grid {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 900px;
+        overflow-y: auto;
+    }
+
+    .gates-grid::-webkit-scrollbar { width: 8px; }
+    .gates-grid::-webkit-scrollbar-track { background: transparent; }
+    .gates-grid::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+    .gate-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 180px;
+        gap: 0;
+        background: var(--card);
+        border-radius: 12px;
+        border: 2px solid var(--border);
+        overflow: hidden;
+        transition: all 0.25s;
+        cursor: pointer;
+        min-height: 110px;
+    }
+
+    .gate-row:hover {
+        border-color: var(--accent);
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+        transform: translateX(2px);
+    }
+
+    .gate-row.free { border-left: 6px solid var(--success); }
+    .gate-row.loading { border-left: 6px solid var(--warning); }
+    .gate-row.unloading { border-left: 6px solid var(--danger); }
+    .gate-row.problem {
+        border-left: 6px solid var(--danger);
+        animation: pulse-row 1.5s infinite;
+    }
+
+    @keyframes pulse-row {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
+        50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    }
+
+    .gate-number-box {
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid var(--border);
+        gap: 4px;
+    }
+
+    .gate-number {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--text);
+        line-height: 1;
+        letter-spacing: -1px;
+    }
+
+    .gate-number-label {
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--text-muted);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .gate-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 8px var(--success);
+        margin-top: 4px;
+    }
+
+    .gate-row.loading .gate-dot { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+    .gate-row.unloading .gate-dot { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+    .gate-row.problem .gate-dot {
+        background: var(--danger);
+        box-shadow: 0 0 12px var(--danger);
+        animation: blink-dot 0.6s infinite;
+    }
+
+    @keyframes blink-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    .gate-info {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .gate-status {
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        width: fit-content;
+        margin-bottom: 2px;
+    }
+
+    .gate-status.free { background: var(--success-light); color: var(--success); }
+    .gate-status.loading { background: var(--warning-light); color: var(--warning); }
+    .gate-status.unloading { background: var(--danger-light); color: var(--danger); }
+
+    .gate-route {
+        font-size: 15px;
+        font-weight: 900;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .gate-direction {
+        font-size: 12px;
+        color: var(--text-dim);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .gate-meta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .gate-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .gate-comment {
+        font-size: 11px;
+        padding: 5px 10px;
+        background: var(--warning-light);
+        border-left: 3px solid var(--warning);
+        border-radius: 4px;
+        color: #78350f;
+        font-style: italic;
+        margin-top: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .gate-comment.do { background: var(--success-light); border-left-color: var(--success); color: #14532d; }
+    .gate-comment.no { background: var(--danger-light); border-left-color: var(--danger); color: #7f1d1d; }
+
+    .gate-timer-box {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-left: 1px solid var(--border);
+        gap: 4px;
+        padding: 8px;
+    }
+
+    .gate-timer {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--success);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 1px;
+    }
+
+    .gate-timer.warning { color: var(--warning); }
+    .gate-timer.danger {
+        color: var(--danger);
+        animation: blink-dot 1s infinite;
+    }
+
+    .gate-progress-text {
+        font-size: 11px;
+        color: var(--text-dim);
+        font-weight: 700;
+    }
+
+    .gate-progress-mini {
+        width: 100%;
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 2px;
+    }
+
+    .gate-progress-mini-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), #60a5fa);
+        transition: width 0.3s;
+    }
+
+    .gate-empty {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    /* === ТАБЛИЦА БУФЕРА === */
+    .table-wrap {
+        max-height: 480px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #f8fafc;
+        color: var(--text-dim);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 8px 6px;
+        text-align: left;
+        border-bottom: 2px solid var(--border);
+        white-space: nowrap;
+        z-index: 2;
+    }
+
+    tbody td {
+        padding: 7px 6px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    tbody tr:hover { background: var(--card-hover); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .td-center { text-align: center; }
+
+    .num-highlight {
+        font-weight: 900;
+        color: var(--text);
+        font-size: 13px;
+    }
+
+    .need-ts {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-weight: 900;
+        font-size: 12px;
+    }
+    .need-ts.zero { background: var(--bg); color: var(--text-muted); }
+    .need-ts.one { background: var(--accent-light); color: var(--accent); }
+    .need-ts.many { background: var(--warning-light); color: var(--warning); }
+    .need-ts.urgent { background: var(--danger-light); color: var(--danger); }
+
+    .highlight-row {
+        background: rgba(254, 243, 199, 0.3) !important;
+    }
+
+    /* === СПИСОК РЕЙСОВ === */
+    .routes-list {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .routes-list::-webkit-scrollbar { width: 8px; }
+    .routes-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+    .route-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        transition: all 0.15s;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .route-card:hover {
+        border-color: var(--accent);
+        transform: translateX(2px);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .route-card.matched { border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(220, 252, 231, 0.4) 0%, var(--card) 40%); }
+    .route-card.unmatched { border-left: 4px solid var(--border-strong); opacity: 0.75; }
+    .route-card.parked { border-left: 4px solid var(--purple); background: linear-gradient(90deg, rgba(237, 233, 254, 0.4) 0%, var(--card) 40%); }
+
+    .route-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+
+    .route-card-number {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--accent);
+        letter-spacing: 0.5px;
+    }
+
+    .route-card-badges {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .route-badge {
+        font-size: 9px;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .route-badge.ours { background: var(--success-light); color: var(--success); }
+    .route-badge.wait-ffc { background: var(--warning-light); color: var(--warning); }
+    .route-badge.head { background: var(--accent-light); color: var(--accent); }
+    .route-badge.tail { background: var(--purple-light); color: var(--purple); }
+
+    .route-card-direction {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 4px;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .route-card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 11px;
+        color: var(--text-dim);
+    }
+
+    .route-card-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .route-card-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border);
+    }
+
+    .route-action-btn {
+        flex: 1;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .route-action-btn.load-btn {
+        background: var(--success);
+        color: white;
+    }
+    .route-action-btn.load-btn:hover { background: #15803d; }
+
+    .route-action-btn.park-btn {
+        background: var(--purple);
+        color: white;
+    }
+    .route-action-btn.park-btn:hover { background: #6d28d9; }
+
+    /* === ПУСТОЙ БЛОК === */
+    .empty-block {
+        padding: 40px 20px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    .empty-block-icon {
+        font-size: 40px;
+        opacity: 0.3;
+        margin-bottom: 10px;
+    }
+
+    /* === МОДАЛКИ === */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 620px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+        animation: modal-in 0.2s ease;
+    }
+
+    @keyframes modal-in {
+        0% { transform: scale(0.95); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .modal-title {
+        font-size: 17px;
+        font-weight: 900;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .modal-close {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: var(--bg);
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        color: var(--text-dim);
+        transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--danger-light); color: var(--danger); }
+
+    .modal-desc {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-bottom: 12px;
+        line-height: 1.5;
+        padding: 10px 12px;
+        background: var(--accent-light);
+        border-radius: 8px;
+        border-left: 3px solid var(--accent);
+    }
+
+    .modal textarea {
+        width: 100%;
+        min-height: 220px;
+        padding: 12px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 12px;
+        resize: vertical;
+        color: var(--text);
+        background: #f8fafc;
+        line-height: 1.5;
+        white-space: pre;
+        overflow: auto;
+    }
+
+    .modal textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: white;
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .modal label {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        margin-top: 14px;
+    }
+
+    .modal input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: inherit;
+        color: var(--text);
+        background: white;
+    }
+
+    .modal input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .modal-buttons button {
+        flex: 1;
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    /* === СЕЛЕКТОР ВОРОТ === */
+    .gate-selector {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .gate-selector-item {
+        padding: 10px 4px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        font-weight: 900;
+        font-size: 14px;
+        color: var(--text);
+        background: white;
+        transition: all 0.15s;
+    }
+
+    .gate-selector-item:hover { border-color: var(--accent); }
+
+    .gate-selector-item.selected {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .gate-selector-item.disabled {
+        background: var(--bg);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    .rec-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .rec-option {
+        padding: 10px 6px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 800;
+        background: white;
+        transition: all 0.15s;
+        user-select: none;
+    }
+
+    .rec-option:hover { border-color: var(--accent); }
+
+    .rec-option.selected.do { background: var(--success-light); border-color: var(--success); color: var(--success); }
+    .rec-option.selected.no { background: var(--danger-light); border-color: var(--danger); color: var(--danger); }
+    .rec-option.selected.wait { background: var(--warning-light); border-color: var(--warning); color: var(--warning); }
+
+    /* === ТОСТ === */
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .toast {
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        box-shadow: var(--shadow-lg);
+        background: var(--card);
+        color: var(--text);
+        border-left: 4px solid var(--accent);
+        animation: toast-in 0.3s ease;
+        max-width: 320px;
+    }
+
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+
+    @keyframes toast-in {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @media (max-width: 1100px) {
+        .main-grid { grid-template-columns: 1fr; }
+        .gate-row { grid-template-columns: 60px 1fr 140px; }
+        .gate-number { font-size: 20px; }
+        .gate-timer { font-size: 16px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- === HEADER === -->
+<header class="app-header">
+    <div class="app-logo">
+        <div class="app-logo-icon">📋</div>
+        ШПАРГАЛКА БРИГАДИРА
+    </div>
+    <div class="header-actions">
+        <div class="clock" id="clock">--:--:--</div>
+        <button class="btn btn-secondary btn-icon" onclick="openImportBufferModal()" title="Импорт среза по буферу">📊</button>
+        <button class="btn btn-secondary btn-icon" onclick="openImportRoutesModal()" title="Импорт рейсов">📋</button>
+        <button class="btn btn-secondary btn-icon" onclick="resetAll()" title="Сброс">🔄</button>
+    </div>
+</header>
+
+<!-- === ОСНОВНАЯ СЕТКА === -->
+<div class="main-grid">
+
+    <!-- ЛЕВАЯ КОЛОНКА: ворота -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title">
+                <div class="panel-title-icon blue">🚪</div>
+                ВОРОТА 11–17
+            </div>
+            <div class="panel-count" id="gatesCount">0 / 7 занято</div>
+        </div>
+        <div class="gates-grid" id="gatesGrid"></div>
+    </div>
+
+    <!-- ПРАВАЯ КОЛОНКА -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- БЛОК 1: Срез по буферу -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <div class="panel-title-icon orange">📊</div>
+                    СРЕЗ ПО БУФЕРУ
+                </div>
+                <div class="panel-count" id="bufferCount">0 направлений</div>
+            </div>
+            <div class="table-wrap">
+                <table id="bufferTable">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="text-align: left; vertical-align: bottom; min-width: 130px;">Направления</th>
+                            <th colspan="2" style="text-align: center; background: #fef3c7; color: #78350f;">Старый сорт</th>
+                            <th colspan="2" style="text-align: center; background: #dbeafe; color: #1e40af;">Новый сорт</th>
+                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">Тотал</th>
+                            <th rowspan="2" class="td-center" style="vertical-align: bottom; background: #fecaca; color: #991b1b;">Потребность ТС</th>
+                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">Есть ТС</th>
+                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">X-dok</th>
+                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">ВП</th>
+                        </tr>
+                        <tr>
+                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
+                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
+                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
+                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bufferTableBody">
+                        <tr><td colspan="10" class="empty-block">
+                            <div class="empty-block-icon">📊</div>
+                            Нажми «📊» в шапке, чтобы загрузить срез по буферу
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- БЛОК 2: Список рейсов -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <div class="panel-title-icon purple">🚛</div>
+                    ЧЕМ ВЕЗТИ (рейсы)
+                </div>
+                <div class="panel-count" id="routesCount">0 рейсов</div>
+            </div>
+            <div class="routes-list" id="routesList">
+                <div class="empty-block">
+                    <div class="empty-block-icon">📋</div>
+                    Нажми «📋» в шапке, чтобы вставить список рейсов из чата
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- === МОДАЛКА ИМПОРТА СРЕЗА === -->
+<div class="modal-overlay" id="bufferModal" onclick="if(event.target===this) closeBufferModal()">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">📊 Импорт среза по буферу</div>
+            <button class="modal-close" onclick="closeBufferModal()">✕</button>
+        </div>
+        <div class="modal-desc">
+            Скопируй из Google Таблицы <b>как есть</b> (с шапкой) и вставь сюда. Приложение само разберёт столбцы.
+        </div>
+        <textarea id="bufferInput" placeholder="Направления	Старый сорт		Новый сорт		Тотал	Потребность ТС
+	Габарит	Негабарит	Габарит	Негабарит		
+Ижевск	2	1	9	0	12	1
+Чебоксары	0	0	1	0	1	0
+Челны	0	0	8	0	8	0
+Киров	0	12	5	0	17	1
+Екатеринбург	0	3	1	0	4	1
+Самара	3	1	1	0	5	1
+Самара Возврат	0	0	0	0	0	0
+Уфа	2	2	0	0	4	1
+Ростов	3	13	0	0	16	1
+Ульяновск	1	7	0	0	8	1
+Оренбург	1	2	1	0	4	1
+Нижний Новгород	7	12	1	0	20	1
+Пенза	1	1	1	0	3	1
+Саратов	2	2	0	0	4	1
+Дзержинский	0	0	3	0	3	0
+Возвраты
+DPD	18	0	0	0	18	0
+X5	10	0	0	0	10	0
+Софьино 3.1	0	0	0	0	0	0
+Софьино КГТ	0	0	0	0	0	0
+Домодедово	19	7	0	0	26	0
+Казань ВП	184	28	0	0	212	0
+ДМД ЕВСЦ	2	32	0	0	34	0"></textarea>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeBufferModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="importBuffer()">✅ Загрузить</button>
+        </div>
+    </div>
+</div>
+
+<!-- === МОДАЛКА ИМПОРТА РЕЙСОВ === -->
+<div class="modal-overlay" id="routesModal" onclick="if(event.target===this) closeRoutesModal()">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">📋 Импорт рейсов из чата</div>
+            <button class="modal-close" onclick="closeRoutesModal()">✕</button>
+        </div>
+        <div class="modal-desc">
+            Вставь текст из Telegram как есть. Приложение само разберёт: рейс, направление, водителя, ТС, пометки.
+        </div>
+        <textarea id="routesInput" placeholder="Дзерж
+
+обе ваши тс
+Рейс #820239
+CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Киров - СЦ Казань - ФФЦ Казань - СЦ Дзержинский
+ООО Веатон
+Водитель: Мороз Евгений Сергеевич
++79897344001
+Номер тягача: H008OY790
+Номер прицепа: KE997150
+Палетовместимость прицепа: 40
+
+Рейс #824787
+Пермь - Казань - Дзержинский
+ТА-Транс
+Водитель: Шелехов Сергей Константинович
++79313067080
+Номер тягача: O862CT198
+Палетовместимость прицепа: 33"></textarea>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeRoutesModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="importRoutes()">✅ Разобрать</button>
+        </div>
+    </div>
+</div>
+
+<!-- === МОДАЛКА ПОСТАНОВКИ НА ВОРОТА === -->
+<div class="modal-overlay" id="gateModal" onclick="if(event.target===this) closeGateModal()">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">🚛 Поставить на ворота</div>
+            <button class="modal-close" onclick="closeGateModal()">✕</button>
+        </div>
+
+        <label>Выбери ворота</label>
+        <div class="gate-selector" id="gateSelector"></div>
+
+        <label>Рейс</label>
+        <input type="text" id="gateRoute" placeholder="#820239">
+
+        <label>Направление</label>
+        <input type="text" id="gateDirection" placeholder="Киров">
+
+        <label>Водитель</label>
+        <input type="text" id="gateDriver" placeholder="Мороз Е.С.">
+
+        <label>Номер ТС</label>
+        <input type="text" id="gateVehicle" placeholder="H008OY790">
+
+        <label>Объём ГМ</label>
+        <input type="number" id="gateVolume" value="20" min="0">
+
+        <label>Рекомендация</label>
+        <div class="rec-options">
+            <div class="rec-option selected do" data-rec="do" onclick="selectRec('do')">✅ Грузить</div>
+            <div class="rec-option" data-rec="no" onclick="selectRec('no')">❌ Не грузить</div>
+            <div class="rec-option" data-rec="wait" onclick="selectRec('wait')">⏳ Ждать ФФЦ</div>
+        </div>
+
+        <label>Комментарий</label>
+        <input type="text" id="gateComment" placeholder="Например: ждём документы">
+
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeGateModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="startOperation()">✅ Поставить</button>
+        </div>
+    </div>
+</div>
+
+<!-- === ТОСТЫ === -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    // ===== КОНСТАНТЫ =====
+    const GATES = [11, 12, 13, 14, 15, 16, 17];
+
+    let gateStates = {};
+    let bufferData = [];
+    let routes = [];
+
+    let selectedGate = null;
+    let currentRec = 'do';
+
+    // ===== ЧАСЫ =====
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toTimeString().slice(0,8);
+    }, 1000);
+
+    // ===== ИНИЦИАЛИЗАЦИЯ ВОРОТ =====
+    function initGates() {
+        const grid = document.getElementById('gatesGrid');
+        grid.innerHTML = '';
+
+        GATES.forEach(num => {
+            const row = document.createElement('div');
+            row.className = 'gate-row free';
+            row.id = 'gate-row-' + num;
+            row.onclick = () => onGateClick(num);
+
+            row.innerHTML = `
+                <div class="gate-number-box">
+                    <div class="gate-number-label">ВОРОТА</div>
+                    <div class="gate-number">${num}</div>
+                    <div class="gate-dot"></div>
+                </div>
+                <div class="gate-info" id="gate-info-${num}">
+                    <div class="gate-status free">Свободно</div>
+                    <div class="gate-empty">Готово к постановке</div>
+                </div>
+                <div class="gate-timer-box" id="gate-timer-${num}"></div>
+            `;
+            grid.appendChild(row);
+            gateStates[num] = { active: false, data: null };
+        });
+
+        updateGatesCount();
+    }
+
+    function updateGatesCount() {
+        const busy = GATES.filter(g => gateStates[g].active).length;
+        document.getElementById('gatesCount').textContent = busy + ' / 7 занято';
+    }
+
+    // ===== КЛИК ПО ВОРОТАМ =====
+    function onGateClick(num) {
+        if (gateStates[num].active) {
+            const state = gateStates[num];
+            if (confirm(`Ворота ${num}\n\nРейс: ${state.data.route}\nНаправление: ${state.data.direction}\nВодитель: ${state.data.driver}\n\nЗавершить?`)) {
+                completeOperation(num);
+            }
+        } else {
+            openGateModal(num);
+        }
+    }
+
+    // ===== МОДАЛКА ПОСТАНОВКИ =====
+    function openGateModal(num) {
+        selectedGate = num;
+        currentRec = 'do';
+
+        const selector = document.getElementById('gateSelector');
+        selector.innerHTML = GATES.map(g => {
+            const busy = gateStates[g].active;
+            return `<div class="gate-selector-item ${busy ? 'disabled' : ''} ${g === num ? 'selected' : ''}" 
+                        onclick="${busy ? '' : `selectGate(${g})`}">${g}</div>`;
+        }).join('');
+
+        document.getElementById('gateRoute').value = '';
+        document.getElementById('gateDirection').value = '';
+        document.getElementById('gateDriver').value = '';
+        document.getElementById('gateVehicle').value = '';
+        document.getElementById('gateVolume').value = '20';
+        document.getElementById('gateComment').value = '';
+
+        document.querySelectorAll('.rec-option').forEach(el => el.classList.remove('selected'));
+        document.querySelector('.rec-option[data-rec="do"]').classList.add('selected');
+
+        document.getElementById('gateModal').classList.add('active');
+    }
+
+    function closeGateModal() {
+        document.getElementById('gateModal').classList.remove('active');
+        selectedGate = null;
+    }
+
+    function selectGate(g) {
+        selectedGate = g;
+        document.querySelectorAll('.gate-selector-item').forEach(el => {
+            el.classList.toggle('selected', parseInt(el.textContent) === g);
+        });
+    }
+
+    function selectRec(rec) {
+        currentRec = rec;
+        document.querySelectorAll('.rec-option').forEach(el => el.classList.remove('selected'));
+        document.querySelector(`.rec-option[data-rec="${rec}"]`).classList.add('selected');
+    }
+
+    // ===== СТАРТ ОПЕРАЦИИ =====
+    function startOperation() {
+        if (!selectedGate) { showToast('Выбери ворота', 'warning'); return; }
+        if (gateStates[selectedGate].active) { showToast('Ворота заняты', 'warning'); return; }
+
+        const route = document.getElementById('gateRoute').value.trim();
+        const direction = document.getElementById('gateDirection').value.trim();
+        const driver = document.getElementById('gateDriver').value.trim();
+        const vehicle = document.getElementById('gateVehicle').value.trim();
+        const volume = parseInt(document.getElementById('gateVolume').value) || 0;
+        const comment = document.getElementById('gateComment').value.trim();
+
+        if (!route) { showToast('Введи номер рейса', 'warning'); return; }
+
+        placeTruckOnGate(selectedGate, {
+            route, direction, driver, vehicle, volume, comment, rec: currentRec
+        });
+
+        closeGateModal();
+        showToast(`Рейс ${route} → ворота ${selectedGate}`, 'success');
+    }
+
+    function placeTruckOnGate(num, data) {
+        const row = document.getElementById('gate-row-' + num);
+        row.classList.remove('free');
+        row.classList.add(data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading');
+
+        const recText = data.rec === 'do' ? 'Загрузка' : data.rec === 'no' ? 'Не грузить' : 'Ждать ФФЦ';
+        const recClass = data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading';
+
+        let commentHtml = '';
+        if (data.comment) {
+            const commentClass = data.rec === 'do' ? 'do' : data.rec === 'no' ? 'no' : '';
+            commentHtml = `<div class="gate-comment ${commentClass}">💬 ${data.comment}</div>`;
+        }
+
+        document.getElementById('gate-info-' + num).innerHTML = `
+            <div class="gate-status ${recClass}">${recText}</div>
+            <div class="gate-route">${data.route}</div>
+            <div class="gate-direction">${data.direction}</div>
+            <div class="gate-meta">
+                <div class="gate-meta-item">👤 ${data.driver || '—'}</div>
+                <div class="gate-meta-item">🚛 ${data.vehicle || '—'}</div>
+            </div>
+            ${commentHtml}
+        `;
+
+        document.getElementById('gate-timer-' + num).innerHTML = `
+            <div class="gate-timer" id="timer-${num}">00:00:00</div>
+            <div class="gate-progress-text" id="progress-${num}">📦 0/${data.volume} ГМ</div>
+            <div class="gate-progress-mini">
+                <div class="gate-progress-mini-fill" id="progress-fill-${num}" style="width:0%"></div>
+            </div>
+        `;
+
+        gateStates[num] = { active: true, data, startTime: Date.now() };
+        updateGatesCount();
+        startTimer(num);
+    }
+
+    // ===== ТАЙМЕР =====
+    function startTimer(num) {
+        const interval = setInterval(() => {
+            const state = gateStates[num];
+            if (!state.active) { clearInterval(interval); return; }
+
+            const diff = Date.now() - state.startTime;
+            const timerEl = document.getElementById('timer-' + num);
+            if (!timerEl) { clearInterval(interval); return; }
+
+            timerEl.textContent = formatDuration(diff);
+            timerEl.classList.remove('warning', 'danger');
+
+            if (diff > 90 * 60 * 1000) {
+                timerEl.classList.add('danger');
+                document.getElementById('gate-row-' + num).classList.add('problem');
+            } else if (diff > 60 * 60 * 1000) {
+                timerEl.classList.add('warning');
+            }
+
+            const volume = state.data.volume || 0;
+            const loaded = Math.min(volume, Math.floor(diff / 15000));
+            const progressEl = document.getElementById('progress-' + num);
+            const fillEl = document.getElementById('progress-fill-' + num);
+            if (progressEl) progressEl.textContent = `📦 ${loaded}/${volume} ГМ`;
+            if (fillEl) fillEl.style.width = (loaded / volume * 100) + '%';
+        }, 1000);
+    }
+
+    function formatDuration(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSec % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
+    // ===== ЗАВЕРШЕНИЕ =====
+    function completeOperation(num) {
+        const row = document.getElementById('gate-row-' + num);
+        row.classList.remove('loading', 'unloading', 'problem');
+        row.classList.add('free');
+
+        document.getElementById('gate-info-' + num).innerHTML = `
+            <div class="gate-status free">Свободно</div>
+            <div class="gate-empty">Готово к постановке</div>
+        `;
+        document.getElementById('gate-timer-' + num).innerHTML = '';
+
+        gateStates[num] = { active: false, data: null };
+        updateGatesCount();
+        showToast(`Ворота ${num} освобождены`, 'success');
+    }
+
+    // ===== ИМПОРТ СРЕЗА ПО БУФЕРУ =====
+    function openImportBufferModal() {
+        document.getElementById('bufferModal').classList.add('active');
+    }
+    function closeBufferModal() {
+        document.getElementById('bufferModal').classList.remove('active');
+    }
+
+    function importBuffer() {
+        const text = document.getElementById('bufferInput').value.trim();
+        if (!text) { showToast('Вставь текст среза', 'warning'); return; }
+
+        const lines = text.split('\n').map(l => l.replace(/\r$/, ''));
+        bufferData = [];
+        let inReturns = false;
+
+        lines.forEach((line) => {
+            if (!line.trim()) return;
+
+            // Разделитель "Возвраты"
+            if (/^\s*Возвраты\s*$/i.test(line.trim())) {
+                inReturns = true;
+                return;
+            }
+
+            // Разбираем строку по табу
+            const parts = line.split('\t').map(p => p.trim());
+
+            // Пропускаем шапки — первая часть не должна быть числом и должна быть осмысленной
+            const firstPart = parts[0] || '';
+            if (/^(Направления?|Габарит|Старый сорт|Новый сорт|Тотал|Потребность|Возвраты)/i.test(firstPart)) {
+                return;
+            }
+            if (!firstPart || /^\d+$/.test(firstPart)) return;
+
+            const direction = firstPart;
+            const nums = parts.slice(1).map(p => {
+                const n = parseInt(p);
+                return isNaN(n) ? 0 : n;
+            });
+
+            const oldGab = nums[0] || 0;
+            const oldNegab = nums[1] || 0;
+            const newGab = nums[2] || 0;
+            const newNegab = nums[3] || 0;
+            const total = oldGab + oldNegab + newGab + newNegab;
+
+            // Формула: ОКРВВЕРХ((Старый Габ + Старый Негаб × 1.5) / 33)
+            const needTS = Math.ceil((oldGab + oldNegab * 1.5) / 33);
+
+            bufferData.push({
+                direction,
+                oldGab, oldNegab, newGab, newNegab,
+                total, needTS,
+                isReturn: inReturns
+            });
+        });
+
+        renderBufferTable();
+        closeBufferModal();
+        showToast(`Загружено ${bufferData.length} направлений`, 'success');
+    }
+
     function renderBufferTable() {
         const tbody = document.getElementById('bufferTableBody');
-        const directions = bufferData.filter(b => b.type === 'direction');
-        document.getElementById('bufferCount').textContent = directions.length + ' направлений';
+        document.getElementById('bufferCount').textContent = bufferData.length + ' направлений';
 
-        if (directions.length === 0) {
+        if (bufferData.length === 0) {
             tbody.innerHTML = '<tr><td colspan="10" class="empty-block"><div class="empty-block-icon">📊</div>Нажми «📊» в шапке, чтобы загрузить срез</td></tr>';
             return;
         }
 
         let html = '';
-        let mainRows = bufferData.filter(b => b.type === 'direction' && !b.isReturn);
-        let returnRows = bufferData.filter(b => b.type === 'direction' && b.isReturn);
+        let mainRows = bufferData.filter(b => !b.isReturn);
+        let returnRows = bufferData.filter(b => b.isReturn);
 
-        // Сортировка: сначала с потребностью >0
+        // Сортировка: сначала с потребностью >0, потом по алфавиту
         mainRows.sort((a, b) => {
             if (b.needTS !== a.needTS) return b.needTS - a.needTS;
             return a.direction.localeCompare(b.direction);
@@ -73,3 +1452,243 @@
 
         tbody.innerHTML = html;
     }
+
+    // ===== ИМПОРТ РЕЙСОВ =====
+    function openImportRoutesModal() {
+        document.getElementById('routesModal').classList.add('active');
+    }
+    function closeRoutesModal() {
+        document.getElementById('routesModal').classList.remove('active');
+    }
+
+    function importRoutes() {
+        const text = document.getElementById('routesInput').value.trim();
+        if (!text) { showToast('Вставь текст с рейсами', 'warning'); return; }
+
+        // Разбиваем по пустым строкам
+        const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
+        routes = [];
+
+        blocks.forEach((block, idx) => {
+            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) return;
+
+            const routeObj = parseRouteBlock(lines, idx);
+            if (routeObj) routes.push(routeObj);
+        });
+
+        renderRoutes();
+        closeRoutesModal();
+        showToast(`Разобрано ${routes.length} рейсов`, 'success');
+    }
+
+    function parseRouteBlock(lines, idx) {
+        let route = '', direction = '', company = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [];
+
+        lines.forEach(line => {
+            // Номер рейса
+            const routeMatch = line.match(/[Рр]ейс\s*#?(\d+)/i);
+            if (routeMatch) {
+                route = '#' + routeMatch[1];
+                return;
+            }
+
+            // Водитель
+            const driverMatch = line.match(/[Вв]одитель[:\s]+(.+)/i);
+            if (driverMatch) {
+                driver = driverMatch[1].trim();
+                return;
+            }
+
+            // Телефон
+            const phoneMatch = line.match(/\+?\d{10,12}/);
+            if (phoneMatch && !phone) {
+                phone = phoneMatch[0];
+                return;
+            }
+
+            // Номер ТС (тягач / машина)
+            const vehicleMatch = line.match(/[Нн]омер\s+(?:тягача|машины|ТС|прицепа)[:\s]+([А-ЯA-Z0-9]+)/i);
+            if (vehicleMatch && !vehicle) {
+                vehicle = vehicleMatch[1].trim();
+                return;
+            }
+
+            // Паллетовместимость
+            const palletsMatch = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
+            if (palletsMatch) {
+                pallets = parseInt(palletsMatch[1]) || 0;
+                return;
+            }
+
+            // Направление (маршрут)
+            const hasDash = / [-—] /.test(line) || line.includes(' - ') || line.includes(' — ');
+            const hasCities = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
+            if (hasDash && hasCities && !direction) {
+                direction = line.trim();
+                return;
+            }
+
+            // Пометки
+            if (/обе ваши|ваш\b|наша/i.test(line)) marks.push('ours');
+            if (/ФФЦ/i.test(line) && /сначала|потом|берёт|берет|берут/i.test(line)) marks.push('wait-ffc');
+            if (/голова/i.test(line)) marks.push('head');
+            if (/хвост/i.test(line)) marks.push('tail');
+
+            // Название компании
+            if (/ООО|ИП\s|ТК\s|Логистик|Транс|Веатон|Делко|Фаст|К2/i.test(line) && !company) {
+                company = line;
+            }
+        });
+
+        // Если не нашли рейс — пропускаем блок
+        if (!route && !direction) return null;
+
+        // Нормализуем направление — берём последний город
+        const normalizedDirection = normalizeDirection(direction);
+
+        return {
+            id: 'route-' + idx,
+            route: route || '(без номера)',
+            direction: normalizedDirection,
+            fullDirection: direction,
+            company,
+            driver,
+            phone,
+            vehicle,
+            pallets,
+            marks: [...new Set(marks)],
+            rec: marks.includes('wait-ffc') ? 'wait' : 'do'
+        };
+    }
+
+    function normalizeDirection(dir) {
+        if (!dir) return 'Не указано';
+        // Убираем префиксы
+        let cleaned = dir.replace(/\b(СЦ|ПСЦ|ФФЦ|МК|ВП)\b/gi, '').trim();
+        // Берём последний осмысленный город
+        const parts = cleaned.split(/\s*[-—→]\s*/).map(p => p.trim()).filter(p => p);
+        if (parts.length === 0) return 'Не указано';
+        // Последний город
+        let last = parts[parts.length - 1].trim();
+        // Если последний содержит пробелы, берём последнее слово
+        if (last.includes(' ')) {
+            const words = last.split(/\s+/);
+            last = words[words.length - 1];
+        }
+        return last || cleaned || 'Не указано';
+    }
+
+    function renderRoutes() {
+        const container = document.getElementById('routesList');
+        document.getElementById('routesCount').textContent = routes.length + ' рейсов';
+
+        if (routes.length === 0) {
+            container.innerHTML = '<div class="empty-block"><div class="empty-block-icon">📋</div>Нажми «📋» в шапке, чтобы вставить список рейсов из чата</div>';
+            return;
+        }
+
+        // Сопоставление с bufferData
+        const bufferDirs = bufferData.filter(b => !b.isReturn).map(b => b.direction.toLowerCase());
+        routes.forEach(r => {
+            const dir = r.direction.toLowerCase();
+            r.matched = bufferDirs.some(b => b.includes(dir) || dir.includes(b));
+        });
+
+        // Сортировка: сначала сопоставленные, потом остальные
+        const sorted = [...routes].sort((a, b) => (b.matched ? 1 : 0) - (a.matched ? 1 : 0));
+
+        container.innerHTML = sorted.map(r => {
+            const badges = [];
+            if (r.marks.includes('ours')) badges.push('<span class="route-badge ours">✅ ВАШ</span>');
+            if (r.marks.includes('wait-ffc')) badges.push('<span class="route-badge wait-ffc">⏳ ЖДЁТ ФФЦ</span>');
+            if (r.marks.includes('head')) badges.push('<span class="route-badge head">📦 ГОЛОВА</span>');
+            if (r.marks.includes('tail')) badges.push('<span class="route-badge tail">📦 ХВОСТ</span>');
+
+            const cardClass = r.matched ? 'matched' : 'unmatched';
+
+            return `
+                <div class="route-card ${cardClass}" id="route-${r.id}">
+                    <div class="route-card-header">
+                        <div class="route-card-number">${r.route}</div>
+                        <div class="route-card-badges">${badges.join('')}</div>
+                    </div>
+                    <div class="route-card-direction">📍 ${r.fullDirection || r.direction}</div>
+                    <div class="route-card-meta">
+                        ${r.driver ? `<div class="route-card-meta-item">👤 ${r.driver}</div>` : ''}
+                        ${r.vehicle ? `<div class="route-card-meta-item">🚛 ${r.vehicle}</div>` : ''}
+                        ${r.pallets ? `<div class="route-card-meta-item">📦 ${r.pallets} паллет</div>` : ''}
+                        ${r.phone ? `<div class="route-card-meta-item">📞 ${r.phone}</div>` : ''}
+                    </div>
+                    <div class="route-card-actions">
+                        <button class="route-action-btn load-btn" onclick="event.stopPropagation(); openGateModalForRoute('${r.id}')">🚪 Поставить</button>
+                        <button class="route-action-btn park-btn" onclick="event.stopPropagation(); markParked('${r.id}')">🅿️ На парковку</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function markParked(id) {
+        const card = document.getElementById('route-' + id);
+        if (card) card.classList.add('parked');
+        const r = routes.find(rt => rt.id === id);
+        if (r) showToast(`Рейс ${r.route} → на парковке`, 'warning');
+    }
+
+    function openGateModalForRoute(id) {
+        const r = routes.find(rt => rt.id === id);
+        if (!r) return;
+
+        const freeGates = GATES.filter(g => !gateStates[g].active);
+        if (freeGates.length === 0) {
+            showToast('Все ворота заняты!', 'warning');
+            return;
+        }
+
+        openGateModal(freeGates[0]);
+
+        document.getElementById('gateRoute').value = r.route;
+        document.getElementById('gateDirection').value = r.fullDirection || r.direction;
+        document.getElementById('gateDriver').value = r.driver || '';
+        document.getElementById('gateVehicle').value = r.vehicle || '';
+        document.getElementById('gateVolume').value = r.pallets || 20;
+
+        if (r.rec === 'wait') selectRec('wait');
+        else selectRec('do');
+    }
+
+    // ===== УТИЛИТЫ =====
+    function showToast(text, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        toast.textContent = text;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(400px)';
+            toast.style.transition = 'all 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function resetAll() {
+        if (!confirm('Сбросить всё? Данные будут потеряны.')) return;
+        bufferData = [];
+        routes = [];
+        gateStates = {};
+        initGates();
+        renderBufferTable();
+        renderRoutes();
+        showToast('Всё сброшено', 'success');
+    }
+
+    // ===== СТАРТ =====
+    initGates();
+    renderBufferTable();
+    renderRoutes();
+</script>
+
+</body>
+</html>

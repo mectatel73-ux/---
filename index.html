@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Шпаргалка бригадира</title>
+<title>Помощник бригадира</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-        --bg: #f5f7fa;
+        --bg: #f1f5f9;
         --card: #ffffff;
-        --card-hover: #fafbfc;
-        --border: #e3e8ee;
+        --card-hover: #f8fafc;
+        --border: #e2e8f0;
         --border-strong: #cbd5e1;
-        --text: #1e293b;
-        --text-dim: #64748b;
+        --text: #0f172a;
+        --text-dim: #475569;
         --text-muted: #94a3b8;
         --accent: #2563eb;
         --accent-light: #dbeafe;
@@ -32,14 +32,15 @@
     }
 
     body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
         background: var(--bg);
         color: var(--text);
         min-height: 100vh;
-        overflow-x: hidden;
+        font-size: 13px;
+        -webkit-font-smoothing: antialiased;
     }
 
-    /* === HEADER === */
+    /* ===== HEADER ===== */
     .app-header {
         background: var(--card);
         border-bottom: 2px solid var(--border);
@@ -56,13 +57,13 @@
     }
 
     .app-logo {
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 900;
         color: var(--text);
         display: flex;
         align-items: center;
         gap: 10px;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
     }
 
     .app-logo-icon {
@@ -86,7 +87,7 @@
     }
 
     .clock {
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 900;
         color: var(--accent);
         font-variant-numeric: tabular-nums;
@@ -96,13 +97,54 @@
         border-radius: 8px;
     }
 
-    /* === ПЕРЕКЛЮЧАТЕЛЬ ВКЛАДОК === */
+    /* ===== КНОПКИ ===== */
+    .btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        letter-spacing: 0.2px;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    .btn-secondary {
+        background: var(--card);
+        color: var(--text);
+        border: 1.5px solid var(--border-strong);
+    }
+    .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
+
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { background: #15803d; }
+
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #b91c1c; }
+
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-warning:hover { background: #b45309; }
+
+    /* ===== ВКЛАДКИ ===== */
     .tab-switcher {
         display: flex;
         gap: 4px;
-        padding: 12px 20px 0;
-        max-width: 1900px;
-        margin: 0 auto;
+        padding: 12px 24px 0;
+        background: var(--bg);
         flex-wrap: wrap;
     }
 
@@ -120,8 +162,7 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
+        letter-spacing: 0.3px;
         border-bottom: 3px solid transparent;
     }
 
@@ -131,143 +172,235 @@
         background: var(--card);
         color: var(--accent);
         border-bottom-color: var(--accent);
-        box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
     }
 
-    /* === КНОПКИ === */
-    .btn {
-        padding: 9px 16px;
-        border: none;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.15s;
-        font-family: inherit;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        white-space: nowrap;
-    }
-
-    .btn:active { transform: scale(0.97); }
-
-    .btn-primary {
+    .tab-btn .tab-count {
         background: var(--accent);
         color: white;
-        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
-    }
-    .btn-primary:hover { background: #1d4ed8; }
-
-    .btn-secondary {
-        background: var(--card);
-        color: var(--text);
-        border: 1.5px solid var(--border-strong);
-    }
-    .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
-
-    .btn-success {
-        background: var(--success);
-        color: white;
-        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
-    }
-    .btn-success:hover { background: #15803d; }
-
-    .btn-danger {
-        background: var(--danger);
-        color: white;
-    }
-    .btn-danger:hover { background: #b91c1c; }
-
-    .btn-icon {
-        width: 38px;
-        height: 38px;
-        padding: 0;
-        justify-content: center;
-        font-size: 16px;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 2px 7px;
+        border-radius: 10px;
     }
 
-    /* === КОНТЕНТ ВКЛАДОК === */
+    .tab-btn.active .tab-count { background: var(--accent); }
+    .tab-btn:not(.active) .tab-count { background: var(--text-muted); }
+
+    /* ===== СОДЕРЖИМОЕ ===== */
     .tab-content {
-        max-width: 1900px;
-        margin: 0 auto;
-        padding: 20px;
-        background: var(--card);
-        border-top: 2px solid var(--border);
-        min-height: calc(100vh - 180px);
+        padding: 20px 24px;
+        background: var(--bg);
+        min-height: calc(100vh - 160px);
     }
-
     .tab-content.hidden { display: none; }
 
-    /* === УТРЕННИЙ АНАЛИЗ === */
-    .analysis-toolbar {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 20px;
-        padding: 14px 18px;
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border-radius: 12px;
-        border-left: 4px solid var(--warning);
-        flex-wrap: wrap;
-    }
-
-    .analysis-toolbar-title {
-        font-size: 15px;
-        font-weight: 900;
-        color: #78350f;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-    }
-
-    .analysis-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-        gap: 14px;
-        margin-bottom: 20px;
-    }
-
-    .analysis-card {
+    /* ===== СЕКЦИИ ===== */
+    .section {
         background: var(--card);
-        border: 2px solid var(--border);
-        border-radius: 12px;
-        padding: 14px 16px;
-        transition: all 0.15s;
-        position: relative;
+        border-radius: 14px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
     }
 
-    .analysis-card:hover { border-color: var(--accent); }
-    .analysis-card.ready { border-left: 5px solid var(--success); background: linear-gradient(90deg, rgba(220, 252, 231, 0.3) 0%, var(--card) 30%); }
-    .analysis-card.warning { border-left: 5px solid var(--warning); background: linear-gradient(90deg, rgba(254, 243, 199, 0.3) 0%, var(--card) 30%); }
-    .analysis-card.danger { border-left: 5px solid var(--danger); background: linear-gradient(90deg, rgba(254, 226, 226, 0.3) 0%, var(--card) 30%); }
-
-    .analysis-card-header {
+    .section-header {
+        padding: 14px 20px;
+        border-bottom: 2px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
-    .analysis-card-name {
-        font-size: 16px;
+    .section-title {
+        font-size: 13px;
         font-weight: 900;
         color: var(--text);
-        letter-spacing: 0.3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
     }
 
-    .analysis-card-cutoff {
+    .section-title-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: white;
+    }
+
+    .section-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+    .section-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+    .section-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
+    .section-title-icon.green { background: linear-gradient(135deg, #22c55e, #15803d); }
+    .section-title-icon.red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+
+    .section-count {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--text-dim);
+        background: var(--bg);
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    /* ===== ТАБЛИЦА ===== */
+    .table-wrap {
+        max-height: 500px;
+        overflow: auto;
+    }
+
+    .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #f8fafc;
+        color: var(--text-dim);
         font-size: 10px;
         font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 8px;
-        background: var(--accent-light);
-        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 10px 8px;
+        text-align: left;
+        border-bottom: 2px solid var(--border);
+        white-space: nowrap;
+        z-index: 2;
+    }
+
+    tbody td {
+        padding: 9px 8px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        font-weight: 600;
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    tbody tr:hover { background: var(--card-hover); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    td.center { text-align: center; }
+    td.right { text-align: right; }
+
+    .num {
+        font-weight: 900;
+        font-size: 13px;
+        color: var(--text);
+    }
+
+    .need-ts {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: 900;
+        font-size: 12px;
+    }
+    .need-ts.zero { background: var(--bg); color: var(--text-muted); }
+    .need-ts.one { background: var(--accent-light); color: var(--accent); }
+    .need-ts.many { background: var(--warning-light); color: var(--warning); }
+    .need-ts.urgent { background: var(--danger-light); color: var(--danger); }
+
+    .highlight-row { background: rgba(254, 243, 199, 0.3) !important; }
+
+    /* ===== СТАТУСЫ ===== */
+    .status-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .status-badge.loaded { background: var(--success-light); color: var(--success); }
+    .status-badge.on-gate { background: var(--danger-light); color: var(--danger); }
+    .status-badge.parking { background: var(--warning-light); color: var(--warning); }
+    .status-badge.coming { background: var(--accent-light); color: var(--accent); }
+    .status-badge.problem { background: var(--danger); color: white; }
+    .status-badge.agree { background: var(--purple-light); color: var(--purple); }
+
+    /* ===== ВОРОТА ===== */
+    .gates-grid {
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 12px;
+    }
+
+    .gate-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.2s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .gate-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .gate-card.free { border-left: 5px solid var(--success); }
+    .gate-card.loading { border-left: 5px solid var(--warning); }
+    .gate-card.unloading { border-left: 5px solid var(--danger); }
+    .gate-card.problem { border-left: 5px solid var(--danger); animation: pulse-card 1.5s infinite; }
+    .gate-card.cutoff-danger { border-left: 5px solid var(--danger); }
+
+    @keyframes pulse-card {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
+        50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    }
+
+    .gate-card-header {
+        padding: 10px 14px;
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .gate-num {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: -0.5px;
+    }
+
+    .gate-num-label {
+        font-size: 9px;
+        font-weight: 800;
+        color: var(--text-muted);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
         margin-left: 6px;
     }
 
-    .analysis-card-status {
+    .gate-status {
         font-size: 10px;
         font-weight: 800;
         padding: 3px 10px;
@@ -275,109 +408,219 @@
         letter-spacing: 0.5px;
         text-transform: uppercase;
     }
+    .gate-status.free { background: var(--success-light); color: var(--success); }
+    .gate-status.loading { background: var(--warning-light); color: var(--warning); }
+    .gate-status.unloading { background: var(--danger-light); color: var(--danger); }
 
-    .analysis-card-status.ready { background: var(--success-light); color: var(--success); }
-    .analysis-card-status.warning { background: var(--warning-light); color: var(--warning); }
-    .analysis-card-status.danger { background: var(--danger-light); color: var(--danger); }
-
-    .analysis-row {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        gap: 10px;
-        margin-bottom: 10px;
-        align-items: center;
-    }
-
-    .analysis-field {
+    .gate-card-body {
+        padding: 12px 14px;
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
     }
 
-    .analysis-field-label {
-        font-size: 10px;
-        font-weight: 800;
+    .gate-route {
+        font-size: 14px;
+        font-weight: 900;
+        color: var(--text);
+    }
+
+    .gate-direction {
+        font-size: 11px;
         color: var(--text-dim);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .gate-meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .gate-meta-item { display: flex; align-items: center; gap: 3px; }
+
+    .gate-timer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 6px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+    }
+
+    .gate-timer {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--success);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.5px;
+    }
+    .gate-timer.warning { color: var(--warning); }
+    .gate-timer.danger { color: var(--danger); animation: blink 1s infinite; }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .gate-progress-text {
+        font-size: 11px;
+        color: var(--text-dim);
+        font-weight: 700;
+    }
+
+    /* ===== КАТОФФ ===== */
+    .cutoff-block {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 800;
+        margin-top: 4px;
+    }
+
+    .cutoff-block.safe { background: var(--success-light); color: var(--success); }
+    .cutoff-block.warning { background: var(--warning-light); color: var(--warning); }
+    .cutoff-block.danger { background: var(--danger-light); color: var(--danger); animation: blink 1.5s infinite; }
+    .cutoff-block.overdue { background: var(--danger); color: white; animation: blink 1s infinite; }
+
+    /* ===== ЧЕК-ЛИСТ ===== */
+    .checklist {
+        margin-top: 8px;
+        padding: 8px 12px;
+        background: #f0f9ff;
+        border-left: 3px solid var(--accent);
+        border-radius: 6px;
+        font-size: 10px;
+    }
+
+    .checklist-title {
+        font-weight: 900;
+        color: var(--accent);
+        margin-bottom: 5px;
+        font-size: 9px;
         letter-spacing: 0.5px;
         text-transform: uppercase;
     }
 
-    .analysis-field-input {
+    .checklist-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 10px;
+        color: var(--text);
+        line-height: 1.4;
+    }
+
+    .checklist-item { display: flex; align-items: center; gap: 4px; }
+    .checklist-item .box { color: var(--accent); font-weight: 900; }
+
+    /* ===== КОММЕНТАРИЙ ===== */
+    .comment-visible {
+        margin-top: 6px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+    .comment-visible.do { background: var(--success-light); border-left: 3px solid var(--success); color: #14532d; }
+    .comment-visible.no { background: var(--danger-light); border-left: 3px solid var(--danger); color: #7f1d1d; }
+    .comment-visible.wait { background: var(--warning-light); border-left: 3px solid var(--warning); color: #78350f; }
+
+    /* ===== АНАЛИЗ ===== */
+    .alert-block {
+        background: var(--card);
+        border-radius: 14px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        margin-bottom: 20px;
+        border: 1px solid var(--border);
+    }
+
+    .alert-header {
+        padding: 14px 20px;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-bottom: 2px solid #fca5a5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .alert-title {
+        font-size: 14px;
+        font-weight: 900;
+        color: #7f1d1d;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 8px;
+        letter-spacing: 0.5px;
     }
 
-    .analysis-field-input input[type="number"] {
-        width: 50px;
-        padding: 6px 8px;
-        border: 1.5px solid var(--border-strong);
-        border-radius: 6px;
-        text-align: center;
-        font-weight: 900;
-        font-size: 14px;
-        color: var(--text);
-        font-family: inherit;
+    .alert-list {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
-    .analysis-field-input input[type="number"]:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-light);
-    }
-
-    .analysis-field-input select {
-        padding: 6px 10px;
-        border: 1.5px solid var(--border-strong);
-        border-radius: 6px;
+    .alert-item {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 12px;
         font-weight: 700;
-        font-size: 12px;
-        color: var(--text);
-        background: white;
-        font-family: inherit;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        line-height: 1.4;
         cursor: pointer;
+        transition: all 0.15s;
     }
 
-    .analysis-field-input select:focus {
-        outline: none;
-        border-color: var(--accent);
+    .alert-item:hover { transform: translateX(3px); }
+
+    .alert-item.critical { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #7f1d1d; border-left: 4px solid #dc2626; }
+    .alert-item.warning { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #78350f; border-left: 4px solid #d97706; }
+    .alert-item.info { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e3a8a; border-left: 4px solid #2563eb; }
+    .alert-item.success { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #14532d; border-left: 4px solid #16a34a; }
+
+    .alert-item-icon { font-size: 18px; flex-shrink: 0; }
+
+    .alert-empty {
+        padding: 30px 20px;
+        text-align: center;
+        color: var(--success);
+        font-size: 14px;
+        font-weight: 800;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
     }
 
-    .analysis-comment {
-        width: 100%;
-        padding: 8px 10px;
-        border: 1.5px solid var(--border-strong);
-        border-radius: 6px;
-        font-size: 12px;
-        font-family: inherit;
-        color: var(--text);
-        background: #f8fafc;
-        resize: vertical;
-        min-height: 42px;
-    }
+    .alert-empty-icon { font-size: 40px; }
 
-    .analysis-comment:focus {
-        outline: none;
-        border-color: var(--accent);
-        background: white;
-        box-shadow: 0 0 0 3px var(--accent-light);
-    }
-
-    .analysis-preview {
-        background: #1e293b;
+    /* ===== ПРЕДПРОСМОТР ТЕКСТА ===== */
+    .text-preview {
+        background: #0f172a;
         color: #e2e8f0;
         padding: 18px;
         border-radius: 12px;
         font-family: 'Consolas', 'Monaco', monospace;
         font-size: 12px;
-        line-height: 1.7;
+        line-height: 1.8;
         white-space: pre-wrap;
-        margin-top: 20px;
         border-left: 4px solid var(--success);
-        position: relative;
     }
 
-    .analysis-preview-header {
+    .text-preview-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -387,476 +630,431 @@
         font-family: inherit;
     }
 
-    .analysis-preview-title {
-        font-size: 12px;
+    .text-preview-title {
+        font-size: 11px;
         font-weight: 900;
         color: #94a3b8;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
 
-    /* === ОСНОВНАЯ СЕТКА === */
-    .main-grid {
-        display: grid;
-        grid-template-columns: 1.15fr 1fr;
-        gap: 20px;
+    /* ===== МОДАЛКИ ===== */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
+    .modal-overlay.active { display: flex; }
 
-    .panel {
+    .modal {
         background: var(--card);
-        border-radius: 14px;
-        box-shadow: var(--shadow-md);
-        overflow: hidden;
-        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 720px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+        animation: modal-in 0.2s ease;
     }
 
-    .panel-header {
-        padding: 14px 18px;
-        border-bottom: 2px solid var(--border);
+    @keyframes modal-in {
+        0% { transform: scale(0.95); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+        margin-bottom: 16px;
     }
 
-    .panel-title {
-        font-size: 14px;
+    .modal-title {
+        font-size: 17px;
         font-weight: 900;
         color: var(--text);
         display: flex;
         align-items: center;
-        gap: 10px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
-    .panel-title-icon {
-        width: 28px;
-        height: 28px;
-        border-radius: 7px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        color: white;
-    }
-
-    .panel-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
-    .panel-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
-    .panel-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
-
-    .panel-count {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-dim);
-        background: var(--bg);
-        padding: 4px 12px;
-        border-radius: 20px;
-    }
-
-    /* === ВОРОТА === */
-    .gates-grid {
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-height: 1400px;
-        overflow-y: auto;
-    }
-
-    .gates-grid::-webkit-scrollbar { width: 8px; }
-    .gates-grid::-webkit-scrollbar-track { background: transparent; }
-    .gates-grid::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
-
-    .gate-row {
-        display: grid;
-        grid-template-columns: 80px 1fr 180px;
-        gap: 0;
-        background: var(--card);
-        border-radius: 12px;
-        border: 2px solid var(--border);
-        overflow: hidden;
-        transition: all 0.25s;
-        cursor: pointer;
-        min-height: 120px;
-    }
-
-    .gate-row:hover {
-        border-color: var(--accent);
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
-        transform: translateX(2px);
-    }
-
-    .gate-row.free { border-left: 6px solid var(--success); }
-    .gate-row.loading { border-left: 6px solid var(--warning); }
-    .gate-row.unloading { border-left: 6px solid var(--danger); }
-    .gate-row.problem { border-left: 6px solid var(--danger); animation: pulse-row 1.5s infinite; }
-    .gate-row.cutoff-danger { border-left: 6px solid var(--danger); animation: pulse-row 1s infinite; }
-
-    @keyframes pulse-row {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
-        50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
-    }
-
-    .gate-number-box {
-        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-right: 1px solid var(--border);
-        gap: 4px;
-    }
-
-    .gate-number { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -1px; }
-    .gate-number-label { font-size: 9px; font-weight: 800; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; }
-
-    .gate-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); margin-top: 4px; }
-    .gate-row.loading .gate-dot { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
-    .gate-row.unloading .gate-dot { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-    .gate-row.problem .gate-dot,
-    .gate-row.cutoff-danger .gate-dot { background: var(--danger); box-shadow: 0 0 12px var(--danger); animation: blink-dot 0.6s infinite; }
-
-    @keyframes blink-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-    .gate-info { padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
-
-    .gate-status { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 12px; letter-spacing: 1px; text-transform: uppercase; width: fit-content; margin-bottom: 2px; }
-    .gate-status.free { background: var(--success-light); color: var(--success); }
-    .gate-status.loading { background: var(--warning-light); color: var(--warning); }
-    .gate-status.unloading { background: var(--danger-light); color: var(--danger); }
-
-    .gate-route { font-size: 15px; font-weight: 900; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .gate-direction { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .gate-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .gate-meta-item { display: flex; align-items: center; gap: 3px; }
-
-    /* === БЛОК КАТОФФА === */
-    .gate-cutoff {
-        display: flex;
-        align-items: center;
         gap: 8px;
-        margin-top: 6px;
-        padding: 6px 10px;
+    }
+
+    .modal-close {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: var(--bg);
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        color: var(--text-dim);
+    }
+    .modal-close:hover { background: var(--danger-light); color: var(--danger); }
+
+    .modal-desc {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-bottom: 12px;
+        line-height: 1.5;
+        padding: 10px 12px;
+        background: var(--accent-light);
+        border-radius: 8px;
+        border-left: 3px solid var(--accent);
+    }
+
+    .modal textarea {
+        width: 100%;
+        min-height: 220px;
+        padding: 12px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 11px;
+        resize: vertical;
+        color: var(--text);
+        background: #f8fafc;
+        line-height: 1.5;
+        white-space: pre;
+    }
+
+    .modal textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: white;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .modal-buttons button { flex: 1; padding: 12px; font-size: 13px; }
+
+    /* ===== ФИЛЬТРЫ ===== */
+    .filters {
+        display: flex;
+        gap: 6px;
+        padding: 12px 16px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        border: 1.5px solid var(--border-strong);
+        background: var(--card);
         border-radius: 8px;
         font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        color: var(--text-dim);
+        font-family: inherit;
+        transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .filter-btn.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+
+    /* ===== ИСТОЧНИК ===== */
+    .source-badge {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 6px;
+        font-size: 10px;
         font-weight: 800;
         letter-spacing: 0.3px;
     }
 
-    .gate-cutoff.safe { background: var(--success-light); color: var(--success); border-left: 3px solid var(--success); }
-    .gate-cutoff.warning { background: var(--warning-light); color: var(--warning); border-left: 3px solid var(--warning); }
-    .gate-cutoff.danger { background: var(--danger-light); color: var(--danger); border-left: 3px solid var(--danger); animation: cutoff-pulse 1.5s infinite; }
-    .gate-cutoff.overdue { background: var(--danger); color: white; border-left: 3px solid #7f1d1d; animation: cutoff-pulse 1s infinite; }
+    .source-badge.google { background: #dbeafe; color: #1e40af; }
+    .source-badge.chat { background: var(--purple-light); color: var(--purple); }
+    .source-badge.both { background: var(--success-light); color: var(--success); }
 
-    @keyframes cutoff-pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-    }
-
-    .gate-cutoff-icon { font-size: 14px; }
-
-    /* === ЧЕК-ЛИСТ ПРИ ВЫГРУЗКЕ === */
-    .gate-checklist {
-        margin-top: 8px;
-        padding: 10px 12px;
-        background: #f0f9ff;
-        border-left: 3px solid var(--accent);
-        border-radius: 6px;
-        font-size: 11px;
-    }
-
-    .gate-checklist-title {
-        font-weight: 900;
-        color: var(--accent);
-        margin-bottom: 6px;
-        font-size: 10px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
-    .gate-checklist-item {
+    /* ===== ТОСТ ===== */
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 2000;
         display: flex;
-        align-items: flex-start;
-        gap: 6px;
-        padding: 2px 0;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .toast {
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 12px;
+        box-shadow: var(--shadow-lg);
+        background: var(--card);
         color: var(--text);
-        line-height: 1.4;
+        border-left: 4px solid var(--accent);
+        animation: toast-in 0.3s ease;
+        max-width: 340px;
     }
 
-    .gate-checklist-item .box {
-        color: var(--accent);
-        font-weight: 900;
-        flex-shrink: 0;
-    }
-
-    .gate-comment-visible {
-        font-size: 12px; padding: 7px 12px; border-radius: 8px; margin-top: 8px; font-weight: 700;
-        line-height: 1.4; word-wrap: break-word; white-space: normal;
-        display: flex; align-items: flex-start; gap: 6px;
-        animation: comment-appear 0.3s ease;
-    }
-    @keyframes comment-appear { 0% { opacity: 0; transform: translateY(-4px); } 100% { opacity: 1; transform: translateY(0); } }
-
-    .gate-comment-visible.do { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid var(--success); color: #14532d; }
-    .gate-comment-visible.no { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-left: 4px solid var(--danger); color: #7f1d1d; }
-    .gate-comment-visible.wait { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid var(--warning); color: #78350f; }
-
-    .gate-timer-box { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 1px solid var(--border); gap: 4px; padding: 8px; }
-
-    .gate-timer { font-size: 22px; font-weight: 900; color: var(--success); font-variant-numeric: tabular-nums; letter-spacing: 1px; }
-    .gate-timer.warning { color: var(--warning); }
-    .gate-timer.danger { color: var(--danger); animation: blink-dot 1s infinite; }
-
-    .gate-progress-text { font-size: 11px; color: var(--text-dim); font-weight: 700; }
-    .gate-progress-mini { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; margin-top: 2px; }
-    .gate-progress-mini-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width 0.3s; }
-
-    .gate-empty { font-size: 12px; color: var(--text-muted); font-style: italic; }
-
-    /* === ТАБЛИЦА === */
-    .table-wrap { max-height: 480px; overflow-y: auto; overflow-x: auto; }
-    .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
-    .table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 11px; }
-    thead th { position: sticky; top: 0; background: #f8fafc; color: var(--text-dim); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 6px; text-align: left; border-bottom: 2px solid var(--border); white-space: nowrap; z-index: 2; }
-    tbody td { padding: 7px 6px; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; white-space: nowrap; }
-    tbody tr:hover { background: var(--card-hover); }
-    tbody tr:last-child td { border-bottom: none; }
-
-    .td-center { text-align: center; }
-    .num-highlight { font-weight: 900; color: var(--text); font-size: 13px; }
-
-    .need-ts { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 12px; }
-    .need-ts.zero { background: var(--bg); color: var(--text-muted); }
-    .need-ts.one { background: var(--accent-light); color: var(--accent); }
-    .need-ts.many { background: var(--warning-light); color: var(--warning); }
-    .need-ts.urgent { background: var(--danger-light); color: var(--danger); }
-
-    .highlight-row { background: rgba(254, 243, 199, 0.3) !important; }
-
-    /* === РЕЙСЫ === */
-    .routes-list { max-height: 500px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .routes-list::-webkit-scrollbar { width: 8px; }
-    .routes-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
-
-    .route-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; transition: all 0.15s; cursor: pointer; position: relative; }
-    .route-card:hover { border-color: var(--accent); transform: translateX(2px); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1); }
-    .route-card.matched { border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(220, 252, 231, 0.4) 0%, var(--card) 40%); }
-    .route-card.unmatched { border-left: 4px solid var(--border-strong); opacity: 0.75; }
-
-    .route-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-    .route-card-number { font-size: 13px; font-weight: 900; color: var(--accent); letter-spacing: 0.5px; }
-    .route-card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
-    .route-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
-    .route-badge.ours { background: var(--success-light); color: var(--success); }
-    .route-badge.wait-ffc { background: var(--warning-light); color: var(--warning); }
-    .route-badge.head { background: var(--accent-light); color: var(--accent); }
-    .route-badge.tail { background: var(--purple-light); color: var(--purple); }
-    .route-badge.cutoff { background: #fee2e2; color: #991b1b; }
-
-    .route-card-direction { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; white-space: normal; word-break: break-word; }
-    .route-card-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--text-dim); }
-    .route-card-meta-item { display: flex; align-items: center; gap: 3px; }
-    .route-card-actions { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
-
-    .route-action-btn { flex: 1; padding: 6px 10px; border: none; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer; transition: all 0.15s; font-family: inherit; letter-spacing: 0.3px; text-transform: uppercase; }
-    .route-action-btn.load-btn { background: var(--success); color: white; }
-    .route-action-btn.load-btn:hover { background: #15803d; }
-
-    .empty-block { padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; }
-    .empty-block-icon { font-size: 40px; opacity: 0.3; margin-bottom: 10px; }
-
-    /* === МОДАЛКИ === */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-    .modal-overlay.active { display: flex; }
-
-    .modal { background: var(--card); border-radius: 16px; padding: 24px; max-width: 620px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: modal-in 0.2s ease; }
-    @keyframes modal-in { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .modal-title { font-size: 17px; font-weight: 900; color: var(--text); display: flex; align-items: center; gap: 8px; }
-    .modal-close { width: 32px; height: 32px; border: none; background: var(--bg); border-radius: 8px; font-size: 16px; cursor: pointer; color: var(--text-dim); transition: all 0.15s; }
-    .modal-close:hover { background: var(--danger-light); color: var(--danger); }
-
-    .modal-desc { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; padding: 10px 12px; background: var(--accent-light); border-radius: 8px; border-left: 3px solid var(--accent); }
-
-    .modal textarea { width: 100%; min-height: 220px; padding: 12px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 12px; resize: vertical; color: var(--text); background: #f8fafc; line-height: 1.5; white-space: pre; overflow: auto; }
-    .modal textarea:focus { outline: none; border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-light); }
-
-    .modal label { display: block; font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 14px; }
-    .modal input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 13px; font-family: inherit; color: var(--text); background: white; }
-    .modal input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
-
-    .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
-    .modal-buttons button { flex: 1; padding: 12px; font-size: 13px; }
-
-    .gate-selector { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 6px; }
-    .gate-selector-item { padding: 10px 4px; border: 2px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-weight: 900; font-size: 14px; color: var(--text); background: white; transition: all 0.15s; }
-    .gate-selector-item:hover { border-color: var(--accent); }
-    .gate-selector-item.selected { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-    .gate-selector-item.disabled { background: var(--bg); color: var(--text-muted); cursor: not-allowed; opacity: 0.5; }
-
-    .rec-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
-    .rec-option { padding: 10px 6px; border: 2px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-size: 11px; font-weight: 800; background: white; transition: all 0.15s; user-select: none; }
-    .rec-option:hover { border-color: var(--accent); }
-    .rec-option.selected.do { background: var(--success-light); border-color: var(--success); color: var(--success); }
-    .rec-option.selected.no { background: var(--danger-light); border-color: var(--danger); color: var(--danger); }
-    .rec-option.selected.wait { background: var(--warning-light); border-color: var(--warning); color: var(--warning); }
-
-    /* === ТОСТ === */
-    .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
-    .toast { padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; box-shadow: var(--shadow-lg); background: var(--card); color: var(--text); border-left: 4px solid var(--accent); animation: toast-in 0.3s ease; max-width: 320px; }
     .toast.success { border-left-color: var(--success); }
     .toast.error { border-left-color: var(--danger); }
     .toast.warning { border-left-color: var(--warning); }
-    @keyframes toast-in { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    @media (max-width: 1100px) {
-        .main-grid { grid-template-columns: 1fr; }
-        .gate-row { grid-template-columns: 60px 1fr 140px; }
-        .gate-number { font-size: 20px; }
-        .gate-timer { font-size: 16px; }
-        .analysis-grid { grid-template-columns: 1fr; }
+    @keyframes toast-in {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ===== ПУСТОЙ БЛОК ===== */
+    .empty-state {
+        padding: 50px 20px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    .empty-state-icon {
+        font-size: 48px;
+        opacity: 0.3;
+        margin-bottom: 12px;
+    }
+
+    .empty-state-hint {
+        font-size: 12px;
+        color: var(--text-dim);
+        font-style: normal;
+        margin-top: 8px;
+    }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 900px) {
+        .gates-grid { grid-template-columns: 1fr; }
+        .tab-switcher { padding: 8px 12px 0; }
+        .tab-btn { padding: 8px 12px; font-size: 11px; }
+        .tab-content { padding: 12px; }
     }
 </style>
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header class="app-header">
     <div class="app-logo">
-        <div class="app-logo-icon">📋</div>
-        ШПАРГАЛКА БРИГАДИРА
+        <div class="app-logo-icon">🚛</div>
+        ПОМОЩНИК БРИГАДИРА
     </div>
     <div class="header-actions">
         <div class="clock" id="clock">--:--:--</div>
-        <button class="btn btn-secondary btn-icon" onclick="openImportRoutesModal()" title="Импорт рейсов из чата">📋</button>
-        <button class="btn btn-secondary btn-icon" onclick="resetAll()" title="Сброс">🔄</button>
+        <button class="btn btn-secondary" onclick="openImport('buffer')" title="Импорт среза по буферу">📊 Срез</button>
+        <button class="btn btn-secondary" onclick="openImport('google')" title="Импорт из Google Таблицы">📊 Google</button>
+        <button class="btn btn-secondary" onclick="openImport('chat')" title="Импорт рейсов из чата">📋 Чат</button>
+        <button class="btn btn-secondary" onclick="resetAll()" title="Сброс">🔄</button>
     </div>
 </header>
 
+<!-- ===== ВКЛАДКИ ===== -->
 <div class="tab-switcher">
-    <button class="tab-btn active" data-tab="analysis" onclick="switchTab('analysis')">📝 Утренний анализ</button>
-    <button class="tab-btn" data-tab="buffer" onclick="switchTab('buffer')">📊 Буфер и ворота</button>
+    <button class="tab-btn active" data-tab="gates" onclick="switchTab('gates')">
+        🚪 Ворота <span class="tab-count" id="tabCountGates">0</span>
+    </button>
+    <button class="tab-btn" data-tab="incoming" onclick="switchTab('incoming')">
+        🔽 Вход <span class="tab-count" id="tabCountIncoming">0</span>
+    </button>
+    <button class="tab-btn" data-tab="outgoing" onclick="switchTab('outgoing')">
+        🔼 Исход <span class="tab-count" id="tabCountOutgoing">0</span>
+    </button>
+    <button class="tab-btn" data-tab="analysis" onclick="switchTab('analysis')">
+        📝 Анализ
+    </button>
 </div>
 
-<!-- ВКЛАДКА: УТРЕННИЙ АНАЛИЗ -->
-<div class="tab-content" id="tab-analysis">
-    <div class="analysis-toolbar">
-        <div class="analysis-toolbar-title">📝 УТРЕННИЙ АНАЛИЗ ПО НАПРАВЛЕНИЯМ</div>
-        <button class="btn btn-primary" onclick="copyAnalysis()">📋 Скопировать текст</button>
-        <button class="btn btn-secondary" onclick="resetAnalysis()">🔄 Сброс</button>
+<!-- ===== ВКЛАДКА: ВОРОТА ===== -->
+<div class="tab-content" id="tab-gates">
+    <!-- Срез по буферу -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-title-icon orange">📊</div>
+                СРЕЗ ПО БУФЕРУ
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <div class="section-count" id="bufferCount">0 направлений</div>
+                <button class="btn btn-primary" onclick="addBufferRow()" style="padding: 6px 12px;">➕ Добавить</button>
+            </div>
+        </div>
+        <div class="table-wrap" style="max-height: 400px;">
+            <table id="bufferTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="text-align: left; vertical-align: bottom; min-width: 130px;">Направление</th>
+                        <th rowspan="2" class="center" style="vertical-align: bottom; min-width: 100px;">🎯 Катофф</th>
+                        <th colspan="2" class="center" style="background: #fef3c7; color: #78350f;">Старый сорт</th>
+                        <th colspan="2" class="center" style="background: #dbeafe; color: #1e40af;">Новый сорт</th>
+                        <th rowspan="2" class="center" style="vertical-align: bottom;">Тотал</th>
+                        <th rowspan="2" class="center" style="vertical-align: bottom; background: #fecaca; color: #991b1b;">Потр. ТС</th>
+                        <th rowspan="2" class="center" style="vertical-align: bottom;">Есть ТС</th>
+                        <th rowspan="2" class="center" style="vertical-align: bottom;">🔥</th>
+                        <th rowspan="2" style="width: 30px;"></th>
+                    </tr>
+                    <tr>
+                        <th class="center" style="font-size: 9px;">Габарит</th>
+                        <th class="center" style="font-size: 9px;">Негабарит</th>
+                        <th class="center" style="font-size: 9px;">Габарит</th>
+                        <th class="center" style="font-size: 9px;">Негабарит</th>
+                    </tr>
+                </thead>
+                <tbody id="bufferTableBody"></tbody>
+            </table>
+        </div>
     </div>
-    <div class="analysis-grid" id="analysisGrid"></div>
-    <div class="analysis-preview">
-        <div class="analysis-preview-header">
-            <div class="analysis-preview-title">📄 Предпросмотр (можно скопировать в чат)</div>
-            <button class="btn btn-success" onclick="copyAnalysis()" style="padding: 6px 12px; font-size: 11px;">📋 Копировать</button>
-        </div>
-        <div id="analysisText"></div>
-    </div>
-</div>
 
-<!-- ВКЛАДКА: БУФЕР И ВОРОТА -->
-<div class="tab-content hidden" id="tab-buffer">
-    <div class="main-grid">
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <div class="panel-title-icon blue">🚪</div>
-                    ВОРОТА 11–17
-                </div>
-                <div class="panel-count" id="gatesCount">0 / 7 занято</div>
+    <!-- Ворота -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-title-icon blue">🚪</div>
+                ВОРОТА 11–17
             </div>
-            <div class="gates-grid" id="gatesGrid"></div>
+            <div class="section-count" id="gatesCount">0 / 7 занято</div>
         </div>
-
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <div class="panel-title-icon orange">📊</div>
-                        СРЕЗ ПО БУФЕРУ
-                    </div>
-                    <div style="display: flex; gap: 6px; align-items: center;">
-                        <div class="panel-count" id="bufferCount">0 направлений</div>
-                        <button class="btn btn-primary" onclick="addBufferRow()" style="padding: 6px 12px; font-size: 11px;">➕ Добавить</button>
-                    </div>
-                </div>
-                <div class="table-wrap">
-                    <table id="bufferTable">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" style="text-align: left; vertical-align: bottom; min-width: 130px;">Направления</th>
-                                <th colspan="2" style="text-align: center; background: #fef3c7; color: #78350f;">Старый сорт</th>
-                                <th colspan="2" style="text-align: center; background: #dbeafe; color: #1e40af;">Новый сорт</th>
-                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">Тотал</th>
-                                <th rowspan="2" class="td-center" style="vertical-align: bottom; background: #fecaca; color: #991b1b;">Потр. ТС</th>
-                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">Есть ТС</th>
-                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">X-dok</th>
-                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">ВП</th>
-                                <th rowspan="2" class="td-center" style="vertical-align: bottom; width: 40px;"></th>
-                            </tr>
-                            <tr>
-                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
-                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
-                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
-                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bufferTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <div class="panel-title-icon purple">🚛</div>
-                        ЧЕМ ВЕЗТИ (рейсы)
-                    </div>
-                    <div class="panel-count" id="routesCount">0 рейсов</div>
-                </div>
-                <div class="routes-list" id="routesList">
-                    <div class="empty-block">
-                        <div class="empty-block-icon">📋</div>
-                        Нажми «📋» в шапке, чтобы вставить список рейсов из чата
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="gates-grid" id="gatesGrid"></div>
     </div>
 </div>
 
-<!-- МОДАЛКА ИМПОРТА РЕЙСОВ -->
-<div class="modal-overlay" id="routesModal" onclick="if(event.target===this) closeRoutesModal()">
+<!-- ===== ВКЛАДКА: ВХОД ===== -->
+<div class="tab-content hidden" id="tab-incoming">
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-title-icon red">🔽</div>
+                ВХОДЯЩИЙ ПОТОК — ВЫГРУЗКА
+            </div>
+            <div class="section-count" id="incomingCount">0 рейсов</div>
+        </div>
+        <div class="filters" id="incomingFilters">
+            <button class="filter-btn active" data-filter="all" onclick="setIncomingFilter('all')">Все</button>
+            <button class="filter-btn" data-filter="on-gate" onclick="setIncomingFilter('on-gate')">🔴 На воротах</button>
+            <button class="filter-btn" data-filter="parking" onclick="setIncomingFilter('parking')">🟠 На парковке</button>
+            <button class="filter-btn" data-filter="coming" onclick="setIncomingFilter('coming')">⏳ Едет</button>
+            <button class="filter-btn" data-filter="loaded" onclick="setIncomingFilter('loaded')">🟢 Выгрузили</button>
+        </div>
+        <div class="table-wrap">
+            <table id="incomingTable">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">№</th>
+                        <th style="width: 50px;">Ист.</th>
+                        <th>Рейс</th>
+                        <th>Направление</th>
+                        <th>Номер ТС</th>
+                        <th>ФИО</th>
+                        <th>План прибытия</th>
+                        <th>Факт прибытия</th>
+                        <th class="center">ГМ</th>
+                        <th class="center">Ворота</th>
+                        <th class="center">Статус</th>
+                        <th class="center" style="width:110px;">Действие</th>
+                    </tr>
+                </thead>
+                <tbody id="incomingTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ВКЛАДКА: ИСХОД ===== -->
+<div class="tab-content hidden" id="tab-outgoing">
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-title-icon green">🔼</div>
+                ИСХОДЯЩИЙ ПОТОК — ЗАГРУЗКА
+            </div>
+            <div class="section-count" id="outgoingCount">0 рейсов</div>
+        </div>
+        <div class="filters" id="outgoingFilters">
+            <button class="filter-btn active" data-filter="all" onclick="setOutgoingFilter('all')">Все</button>
+            <button class="filter-btn" data-filter="on-gate" onclick="setOutgoingFilter('on-gate')">🔴 На воротах</button>
+            <button class="filter-btn" data-filter="parking" onclick="setOutgoingFilter('parking')">🟠 На парковке</button>
+            <button class="filter-btn" data-filter="coming" onclick="setOutgoingFilter('coming')">⏳ Едет</button>
+            <button class="filter-btn" data-filter="loaded" onclick="setOutgoingFilter('loaded')">🟢 Загрузили</button>
+        </div>
+        <div class="table-wrap">
+            <table id="outgoingTable">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">№</th>
+                        <th style="width: 50px;">Ист.</th>
+                        <th>Рейс</th>
+                        <th>Направление</th>
+                        <th>Номер ТС</th>
+                        <th>ФИО</th>
+                        <th>План отгрузки</th>
+                        <th>Факт отгрузки</th>
+                        <th class="center">ГМ</th>
+                        <th class="center">Ворота</th>
+                        <th class="center">Статус</th>
+                        <th class="center" style="width:110px;">Действие</th>
+                    </tr>
+                </thead>
+                <tbody id="outgoingTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ВКЛАДКА: АНАЛИЗ ===== -->
+<div class="tab-content hidden" id="tab-analysis">
+    <div class="alert-block">
+        <div class="alert-header">
+            <div class="alert-title">🚨 ТРЕБУЕТ ВНИМАНИЯ</div>
+            <div class="section-count" id="alertCount">0 проблем</div>
+        </div>
+        <div class="alert-list" id="alertList"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-title-icon purple">📋</div>
+                УТРЕННИЙ АНАЛИЗ — ГОТОВЫЙ ТЕКСТ
+            </div>
+            <button class="btn btn-success" onclick="copyAnalysisText()">📋 Скопировать в чат</button>
+        </div>
+        <div style="padding: 16px;">
+            <div class="text-preview" id="analysisText">Загрузите срез, Google и чат — анализ появится автоматически.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== МОДАЛКА ИМПОРТА ===== -->
+<div class="modal-overlay" id="importModal" onclick="if(event.target===this) closeImport()">
     <div class="modal">
         <div class="modal-header">
-            <div class="modal-title">📋 Импорт рейсов из чата</div>
-            <button class="modal-close" onclick="closeRoutesModal()">✕</button>
+            <div class="modal-title" id="importTitle">📊 Импорт</div>
+            <button class="modal-close" onclick="closeImport()">✕</button>
         </div>
-        <div class="modal-desc">
-            Вставь текст из Telegram как есть. Приложение само разберёт: рейс, направление, водителя, ТС, пометки.
-        </div>
-        <textarea id="routesInput" placeholder="Дзерж
-
-обе ваши тс
-Рейс #820239
-CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Киров - СЦ Казань - ФФЦ Казань - СЦ Дзержинский
-ООО Веатон
-Водитель: Мороз Евгений Сергеевич
-+79897344001
-Номер тягача: H008OY790
-Палетовместимость прицепа: 40"></textarea>
+        <div class="modal-desc" id="importDesc"></div>
+        <textarea id="importInput" placeholder="Вставь сюда текст..."></textarea>
         <div class="modal-buttons">
-            <button class="btn btn-secondary" onclick="closeRoutesModal()">Отмена</button>
-            <button class="btn btn-primary" onclick="importRoutes()">✅ Разобрать</button>
+            <button class="btn btn-secondary" onclick="closeImport()">Отмена</button>
+            <button class="btn btn-primary" onclick="doImport()">✅ Загрузить</button>
         </div>
     </div>
 </div>
 
-<!-- МОДАЛКА ПОСТАНОВКИ НА ВОРОТА -->
+<!-- ===== МОДАЛКА ПОСТАНОВКИ НА ВОРОТА ===== -->
 <div class="modal-overlay" id="gateModal" onclick="if(event.target===this) closeGateModal()">
     <div class="modal">
         <div class="modal-header">
@@ -864,33 +1062,48 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             <button class="modal-close" onclick="closeGateModal()">✕</button>
         </div>
 
-        <label>Выбери ворота</label>
-        <div class="gate-selector" id="gateSelector"></div>
+        <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Выбери ворота</div>
+        <div id="gateSelector" style="display:grid; grid-template-columns:repeat(7,1fr); gap:8px;"></div>
 
-        <label>Рейс</label>
-        <input type="text" id="gateRoute" placeholder="#820239">
-
-        <label>Направление</label>
-        <input type="text" id="gateDirection" placeholder="Киров">
-
-        <label>Водитель</label>
-        <input type="text" id="gateDriver" placeholder="Мороз Е.С.">
-
-        <label>Номер ТС</label>
-        <input type="text" id="gateVehicle" placeholder="H008OY790">
-
-        <label>Объём ГМ</label>
-        <input type="number" id="gateVolume" value="20" min="0">
-
-        <label>Рекомендация</label>
-        <div class="rec-options">
-            <div class="rec-option selected do" data-rec="do" onclick="selectRec('do')">✅ Грузить</div>
-            <div class="rec-option" data-rec="no" onclick="selectRec('no')">❌ Не грузить</div>
-            <div class="rec-option" data-rec="wait" onclick="selectRec('wait')">⏳ Ждать ФФЦ</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+            <div>
+                <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Рейс</div>
+                <input type="text" id="gateRoute" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+                <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Направление</div>
+                <input type="text" id="gateDirection" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+                <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Водитель</div>
+                <input type="text" id="gateDriver" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+                <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Номер ТС</div>
+                <input type="text" id="gateVehicle" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+                <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Объём ГМ</div>
+                <input type="number" id="gateVolume" value="20" min="0" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+                <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px;">Тип операции</div>
+                <select id="gateType" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
+                    <option value="unloading">🔽 Выгрузка (вход)</option>
+                    <option value="loading">🔼 Загрузка (исход)</option>
+                </select>
+            </div>
         </div>
 
-        <label>Комментарий</label>
-        <input type="text" id="gateComment" placeholder="Например: ждём документы">
+        <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin:16px 0 6px 0;">Рекомендация</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+            <div class="rec-option" data-rec="do" onclick="selectRec('do')" style="padding:10px; border:2px solid var(--border-strong); border-radius:8px; text-align:center; font-size:11px; font-weight:800; cursor:pointer; background:white;">✅ Грузить</div>
+            <div class="rec-option" data-rec="no" onclick="selectRec('no')" style="padding:10px; border:2px solid var(--border-strong); border-radius:8px; text-align:center; font-size:11px; font-weight:800; cursor:pointer; background:white;">❌ Не грузить</div>
+            <div class="rec-option" data-rec="wait" onclick="selectRec('wait')" style="padding:10px; border:2px solid var(--border-strong); border-radius:8px; text-align:center; font-size:11px; font-weight:800; cursor:pointer; background:white;">⏳ Ждать ФФЦ</div>
+        </div>
+
+        <div style="font-size:11px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin:16px 0 6px 0;">Комментарий</div>
+        <input type="text" id="gateComment" placeholder="Например: ждём документы" style="width:100%; padding:10px; border:1.5px solid var(--border-strong); border-radius:8px; font-size:13px; font-family:inherit;">
 
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeGateModal()">Отмена</button>
@@ -899,10 +1112,11 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     </div>
 </div>
 
+<!-- ===== ТОСТЫ ===== -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-    // ===== КОНСТАНТЫ =====
+    // ==================== КОНСТАНТЫ ====================
     const GATES = [11, 12, 13, 14, 15, 16, 17];
 
     const DEFAULT_DIRECTIONS = [
@@ -924,7 +1138,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         'Пенза': 'Пенза', 'Саратов': 'Саратов', 'Дзержинский': 'Дзер'
     };
 
-    // === КАТОФФЫ (ДЕДЛАЙНЫ ОТГРУЗКИ) ===
     const CUTOFFS = {
         'Екатеринбург': { start: '12:00', end: '13:00' },
         'Дзержинский': { start: '12:00', end: '13:00' },
@@ -942,45 +1155,48 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         'Оренбург': { start: '01:30', end: '02:30' }
     };
 
-    // === ЧЕК-ЛИСТ ПРИ ВЫГРУЗКЕ ===
     const UNLOAD_CHECKLIST = [
-        'Проверить ТрН у водителя',
-        'Сканировать паллеты инфосканом',
-        'Отделить НЕ НАШИ (если есть)',
-        'Отделить КРОСС-ДОК (если есть)',
-        'Разместить в буфере'
+        'ТрН',
+        'инфоскан',
+        'не наши',
+        'кросс-док',
+        'буфер'
     ];
 
-    let gateStates = {};
+    // ==================== СОСТОЯНИЕ ====================
     let bufferData = [];
-    let routes = [];
-    let analysisData = {};
-
+    let gateStates = {};
+    let googleData = { incoming: [], outgoing: [] };
+    let chatRoutes = [];
     let selectedGate = null;
     let currentRec = 'do';
-    let currentTab = 'analysis';
+    let currentTab = 'gates';
+    let currentImport = 'buffer';
+    let incomingFilter = 'all';
+    let outgoingFilter = 'all';
 
-    // ===== ЧАСЫ =====
+    // ==================== ЧАСЫ ====================
     setInterval(() => {
         const now = new Date();
         document.getElementById('clock').textContent = now.toTimeString().slice(0,8);
     }, 1000);
 
-    // ===== ВКЛАДКИ =====
+    // ==================== ВКЛАДКИ ====================
     function switchTab(tab) {
         currentTab = tab;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.getElementById('tab-' + tab).classList.remove('hidden');
         if (tab === 'analysis') renderAnalysis();
-        if (tab === 'buffer') { renderBufferTable(); renderRoutes(); }
+        if (tab === 'incoming') renderIncoming();
+        if (tab === 'outgoing') renderOutgoing();
+        if (tab === 'gates') { renderBufferTable(); renderGates(); }
     }
 
-    // ===== КАТОФФ =====
-    function getCutoffTime(direction) {
+    // ==================== КАТОФФ ====================
+    function getCutoffFor(direction) {
         if (!direction) return null;
         const dir = direction.trim();
-        // Ищем совпадение по вхождению
         for (const key in CUTOFFS) {
             if (dir.includes(key) || key.includes(dir)) return CUTOFFS[key];
         }
@@ -988,39 +1204,28 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     }
 
     function getCutoffStatus(direction) {
-        const cutoff = getCutoffTime(direction);
+        const cutoff = getCutoffFor(direction);
         if (!cutoff) return null;
 
         const now = new Date();
         const [endH, endM] = cutoff.end.split(':').map(Number);
-        const [startH, startM] = cutoff.start.split(':').map(Number);
-
         const endTime = new Date(now);
         endTime.setHours(endH, endM, 0, 0);
-
-        const startTime = new Date(now);
-        startTime.setHours(startH, startM, 0, 0);
-
-        // Если катофф в другой день (ночью), корректируем
-        if (endTime < now && (endH < 6)) endTime.setDate(endTime.getDate() + 1);
-        if (startTime < now && (startH < 6)) startTime.setDate(startTime.getDate() + 1);
+        if (endTime < now && endH < 6) endTime.setDate(endTime.getDate() + 1);
 
         const diffMs = endTime - now;
         const diffMin = Math.floor(diffMs / 60000);
 
-        // Проверяем просрочку
-        const isOverdue = diffMs < 0;
-
         return {
             start: cutoff.start,
             end: cutoff.end,
-            diffMin: Math.abs(diffMin),
             diffMs: diffMs,
-            isOverdue: isOverdue
+            diffMin: diffMin,
+            isOverdue: diffMs < 0
         };
     }
 
-    function formatCutoffTime(ms) {
+    function formatCutoffDuration(ms) {
         const totalMin = Math.floor(Math.abs(ms) / 60000);
         const h = Math.floor(totalMin / 60);
         const m = totalMin % 60;
@@ -1033,245 +1238,203 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         if (!status) return '';
 
         let cls, icon, text;
-
         if (status.isOverdue) {
-            cls = 'overdue';
-            icon = '🔥';
-            text = `КАТОФФ ${status.end} — ПРОСРОЧЕНО на ${formatCutoffTime(status.diffMs)}`;
+            cls = 'overdue'; icon = '🔥';
+            text = `КАТОФФ ${status.end} — просрочено на ${formatCutoffDuration(status.diffMs)}`;
         } else if (status.diffMin <= 60) {
-            cls = 'danger';
-            icon = '⚠️';
-            text = `КАТОФФ ${status.end} — осталось ${formatCutoffTime(status.diffMs)}`;
+            cls = 'danger'; icon = '⚠️';
+            text = `КАТОФФ ${status.end} — осталось ${formatCutoffDuration(status.diffMs)}`;
         } else if (status.diffMin <= 120) {
-            cls = 'warning';
-            icon = '⏰';
-            text = `КАТОФФ ${status.end} — осталось ${formatCutoffTime(status.diffMs)}`;
+            cls = 'warning'; icon = '⏰';
+            text = `КАТОФФ ${status.end} — осталось ${formatCutoffDuration(status.diffMs)}`;
         } else {
-            cls = 'safe';
-            icon = '🎯';
-            text = `КАТОФФ ${status.end} — осталось ${formatCutoffTime(status.diffMs)}`;
+            cls = 'safe'; icon = '🎯';
+            text = `КАТОФФ ${status.end} — осталось ${formatCutoffDuration(status.diffMs)}`;
         }
 
-        return `<div class="gate-cutoff ${cls}">
-            <span class="gate-cutoff-icon">${icon}</span>
-            <span>${text}</span>
-        </div>`;
+        return `<div class="cutoff-block ${cls}"><span>${icon}</span><span>${text}</span></div>`;
     }
 
     function renderChecklist() {
-        return `<div class="gate-checklist">
-            <div class="gate-checklist-title">📋 ПРИ ВЫГРУЗКЕ:</div>
-            ${UNLOAD_CHECKLIST.map(item => `
-                <div class="gate-checklist-item">
-                    <span class="box">☐</span>
-                    <span>${item}</span>
-                </div>
-            `).join('')}
+        return `<div class="checklist">
+            <div class="checklist-title">📋 ПРИ ВЫГРУЗКЕ</div>
+            <div class="checklist-row">
+                ${UNLOAD_CHECKLIST.map(i => `<span class="checklist-item"><span class="box">☐</span>${i}</span>`).join('')}
+            </div>
         </div>`;
     }
 
-    // ===== УТРЕННИЙ АНАЛИЗ =====
-    function initAnalysisData() {
-        const saved = localStorage.getItem('warehouseAnalysis');
+    // ==================== СРЕЗ ПО БУФЕРУ ====================
+    function initBufferData() {
+        const saved = localStorage.getItem('wb_buffer');
         if (saved) {
-            try {
-                analysisData = JSON.parse(saved);
-                DEFAULT_DIRECTIONS.forEach(dir => {
-                    if (!analysisData[dir]) {
-                        analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
-                    }
-                });
-                return;
-            } catch(e) {}
+            try { bufferData = JSON.parse(saved); if (bufferData.length > 0) return; } catch(e) {}
         }
-        analysisData = {};
-        DEFAULT_DIRECTIONS.forEach(dir => {
-            analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+        bufferData = [
+            ...DEFAULT_DIRECTIONS.map(d => ({ direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0, haveTS: 0, isReturn: false })),
+            ...DEFAULT_RETURNS.map(d => ({ direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0, haveTS: 0, isReturn: true }))
+        ];
+    }
+
+    function saveBufferData() { localStorage.setItem('wb_buffer', JSON.stringify(bufferData)); }
+
+    function updateBufferCell(idx, field, value) {
+        bufferData[idx][field] = Math.max(0, parseInt(value) || 0);
+        saveBufferData();
+        updateBufferRowTotals(idx);
+    }
+
+    function updateBufferRowTotals(idx) {
+        const row = bufferData[idx];
+        const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
+        const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
+        const totalEl = document.getElementById(`bt-${idx}`);
+        const needEl = document.getElementById(`bn-${idx}`);
+        if (totalEl) totalEl.textContent = total;
+        if (needEl) { needEl.textContent = needTS; needEl.className = 'need-ts ' + getNeedClass(needTS); }
+        const fireEl = document.getElementById(`bf-${idx}`);
+        if (fireEl) fireEl.textContent = (needTS > 0 && (row.haveTS || 0) < needTS) ? '🔥' : '';
+        const tr = document.getElementById(`brow-${idx}`);
+        if (tr) {
+            const highlight = needTS > 0 && !row.isReturn;
+            tr.classList.toggle('highlight-row', highlight);
+        }
+        updateTabCounts();
+    }
+
+    function getNeedClass(need) {
+        if (need === 0) return 'zero';
+        if (need === 1) return 'one';
+        if (need <= 3) return 'many';
+        return 'urgent';
+    }
+
+    function addBufferRow() {
+        const name = prompt('Название направления:');
+        if (!name) return;
+        bufferData.push({ direction: name.trim(), oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0, haveTS: 0, isReturn: false });
+        saveBufferData();
+        renderBufferTable();
+    }
+
+    function removeBufferRow(idx) {
+        if (!confirm(`Удалить "${bufferData[idx].direction}"?`)) return;
+        bufferData.splice(idx, 1);
+        saveBufferData();
+        renderBufferTable();
+    }
+
+    function renderBufferTable() {
+        const tbody = document.getElementById('bufferTableBody');
+        document.getElementById('bufferCount').textContent = bufferData.filter(b => !b.isReturn).length + ' направлений';
+
+        if (bufferData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Нажми «➕ Добавить»</td></tr>';
+            return;
+        }
+
+        let html = '';
+        const main = bufferData.map((r, i) => ({ ...r, idx: i })).filter(r => !r.isReturn);
+        const returns = bufferData.map((r, i) => ({ ...r, idx: i })).filter(r => r.isReturn);
+
+        main.sort((a, b) => {
+            const na = Math.ceil(((a.oldGab || 0) + (a.oldNegab || 0) * 1.5) / 33);
+            const nb = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
+            if (nb !== na) return nb - na;
+            return a.direction.localeCompare(b.direction);
         });
-    }
 
-    function saveAnalysisData() {
-        localStorage.setItem('warehouseAnalysis', JSON.stringify(analysisData));
-    }
+        main.forEach(r => {
+            const total = (r.oldGab || 0) + (r.oldNegab || 0) + (r.newGab || 0) + (r.newNegab || 0);
+            const needTS = Math.ceil(((r.oldGab || 0) + (r.oldNegab || 0) * 1.5) / 33);
+            const cutoff = getCutoffFor(r.direction);
+            const cutoffStr = cutoff ? `<br><span style="font-size:10px; color:#d97706; font-weight:800;">${cutoff.start}–${cutoff.end}</span>` : '<span style="color:var(--text-muted); font-size:10px;">—</span>';
+            const fire = needTS > 0 && (r.haveTS || 0) < needTS ? '🔥' : '';
+            const highlight = needTS > 0 ? 'highlight-row' : '';
 
-    function renderAnalysis() {
-        const grid = document.getElementById('analysisGrid');
-        grid.innerHTML = '';
-
-        DEFAULT_DIRECTIONS.forEach(dir => {
-            const data = analysisData[dir] || { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
-            const shortName = ANALYSIS_NAMES[dir] || dir;
-
-            let cardClass = '';
-            let statusText = 'ГОТОВО';
-            let statusClass = 'ready';
-
-            if (data.needExtra === 'yes') {
-                cardClass = 'danger';
-                statusText = '⚠️ ДОП НУЖНО';
-                statusClass = 'danger';
-            } else if (data.comment && /не хватит|проблема|нет инфо|мало/i.test(data.comment)) {
-                cardClass = 'warning';
-                statusText = '⚠️ ВНИМАНИЕ';
-                statusClass = 'warning';
-            }
-
-            // Катофф для карточки
-            const cutoff = CUTOFFS[dir];
-            const cutoffBadge = cutoff ? `<span class="analysis-card-cutoff">🎯 ${cutoff.start}–${cutoff.end}</span>` : '';
-
-            const card = document.createElement('div');
-            card.className = 'analysis-card ' + cardClass;
-            card.innerHTML = `
-                <div class="analysis-card-header">
-                    <div>
-                        <span class="analysis-card-name">${shortName}</span>
-                        ${cutoffBadge}
-                    </div>
-                    <div class="analysis-card-status ${statusClass}">${statusText}</div>
-                </div>
-                <div class="analysis-row">
-                    <div class="analysis-field">
-                        <div class="analysis-field-label">Есть ТС</div>
-                        <div class="analysis-field-input">
-                            <input type="number" min="0" max="99" value="${data.haveTS || 0}"
-                                onchange="updateAnalysis('${dir}', 'haveTS', this.value)">
-                        </div>
-                    </div>
-                    <div class="analysis-field">
-                        <div class="analysis-field-label">Грузится</div>
-                        <div class="analysis-field-input">
-                            <input type="number" min="0" max="99" value="${data.loadingTS || 0}"
-                                onchange="updateAnalysis('${dir}', 'loadingTS', this.value)">
-                        </div>
-                    </div>
-                    <div class="analysis-field">
-                        <div class="analysis-field-label">Доп. ТС</div>
-                        <div class="analysis-field-input">
-                            <select onchange="updateAnalysis('${dir}', 'needExtra', this.value)">
-                                <option value="no" ${data.needExtra === 'no' ? 'selected' : ''}>Не требуется</option>
-                                <option value="yes" ${data.needExtra === 'yes' ? 'selected' : ''}>Нужно</option>
-                                <option value="unknown" ${data.needExtra === 'unknown' ? 'selected' : ''}>Неизвестно</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <textarea class="analysis-comment" placeholder="Комментарий (например: обе после ФФЦ, возможно не хватит места)"
-                    onchange="updateAnalysis('${dir}', 'comment', this.value)">${data.comment || ''}</textarea>
+            html += `
+                <tr class="${highlight}" id="brow-${r.idx}">
+                    <td><b>${r.direction}</b></td>
+                    <td class="center" style="font-size:11px; font-weight:800; color:#d97706;">${cutoffStr}</td>
+                    <td class="center">${editable(r.idx, 'oldGab', r.oldGab, '#fef3c7')}</td>
+                    <td class="center">${editable(r.idx, 'oldNegab', r.oldNegab, '#fef3c7')}</td>
+                    <td class="center">${editable(r.idx, 'newGab', r.newGab, '#dbeafe')}</td>
+                    <td class="center">${editable(r.idx, 'newNegab', r.newNegab, '#dbeafe')}</td>
+                    <td class="center num" id="bt-${r.idx}">${total}</td>
+                    <td class="center"><span class="need-ts ${getNeedClass(needTS)}" id="bn-${r.idx}">${needTS}</span></td>
+                    <td class="center">${editable(r.idx, 'haveTS', r.haveTS, '#f0fdf4')}</td>
+                    <td class="center" style="font-size:16px;" id="bf-${r.idx}">${fire}</td>
+                    <td class="center"><button onclick="removeBufferRow(${r.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;">✕</button></td>
+                </tr>
             `;
-            grid.appendChild(card);
         });
 
-        updateAnalysisText();
-    }
-
-    function updateAnalysis(dir, field, value) {
-        if (!analysisData[dir]) analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
-        if (field === 'haveTS' || field === 'loadingTS') {
-            analysisData[dir][field] = Math.max(0, parseInt(value) || 0);
-        } else {
-            analysisData[dir][field] = value;
+        if (returns.length > 0) {
+            html += `<tr style="background: #dbeafe;"><td colspan="11" style="text-align: center; font-weight: 900; color: #1e40af; padding: 8px; letter-spacing: 2px; font-size: 10px;">ВОЗВРАТЫ</td></tr>`;
+            returns.forEach(r => {
+                const total = (r.oldGab || 0) + (r.oldNegab || 0) + (r.newGab || 0) + (r.newNegab || 0);
+                html += `
+                    <tr style="background: #f0f9ff;" id="brow-${r.idx}">
+                        <td><b>${r.direction}</b></td>
+                        <td class="center" style="font-size:10px; color:var(--text-muted);">—</td>
+                        <td class="center">${editable(r.idx, 'oldGab', r.oldGab, '#fef3c7')}</td>
+                        <td class="center">${editable(r.idx, 'oldNegab', r.oldNegab, '#fef3c7')}</td>
+                        <td class="center">${editable(r.idx, 'newGab', r.newGab, '#dbeafe')}</td>
+                        <td class="center">${editable(r.idx, 'newNegab', r.newNegab, '#dbeafe')}</td>
+                        <td class="center num" id="bt-${r.idx}">${total}</td>
+                        <td class="center"><span class="need-ts zero" id="bn-${r.idx}">0</span></td>
+                        <td class="center">${editable(r.idx, 'haveTS', r.haveTS, '#f0fdf4')}</td>
+                        <td class="center" id="bf-${r.idx}"></td>
+                        <td class="center"><button onclick="removeBufferRow(${r.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;">✕</button></td>
+                    </tr>
+                `;
+            });
         }
-        saveAnalysisData();
-        renderAnalysis();
+
+        tbody.innerHTML = html;
     }
 
-    function updateAnalysisText() {
-        const textEl = document.getElementById('analysisText');
-        let text = '';
-
-        DEFAULT_DIRECTIONS.forEach(dir => {
-            const data = analysisData[dir] || { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
-            const shortName = ANALYSIS_NAMES[dir] || dir;
-
-            let line = shortName + ' - ';
-
-            if (data.haveTS > 0) line += data.haveTS + ' ТС есть';
-            else line += 'ТС нет';
-
-            if (data.loadingTS > 0) line += ', ' + data.loadingTS + ' ТС грузится';
-            else if (data.haveTS > 0) line += ', 1 ТС загружена';
-
-            if (data.needExtra === 'yes') line += ', ДОП ТС НУЖНО';
-            else if (data.needExtra === 'unknown') line += ', доп неизвестно';
-            else line += ', доп не требуется';
-
-            if (data.comment) line += ', ' + data.comment;
-
-            text += line + '\n';
-        });
-
-        textEl.textContent = text;
+    function editable(idx, field, value, bg) {
+        return `<input type="number" value="${value || 0}" min="0"
+            style="width:46px; padding:4px 6px; border:1.5px solid transparent; border-radius:6px; background:${bg}; text-align:center; font-weight:800; font-size:12px; color:#0f172a; font-family:inherit; outline:none;"
+            onfocus="this.style.borderColor='#2563eb'; this.style.background='white';"
+            onblur="this.style.borderColor='transparent'; this.style.background='${bg}';"
+            onchange="updateBufferCell(${idx}, '${field}', this.value)">`;
     }
 
-    function copyAnalysis() {
-        const text = document.getElementById('analysisText').textContent;
-        if (!text) return;
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('📋 Текст скопирован в буфер обмена', 'success');
-        }).catch(() => {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-            showToast('📋 Текст скопирован', 'success');
-        });
-    }
-
-    function resetAnalysis() {
-        if (!confirm('Сбросить утренний анализ?')) return;
-        analysisData = {};
-        DEFAULT_DIRECTIONS.forEach(dir => {
-            analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
-        });
-        saveAnalysisData();
-        renderAnalysis();
-        showToast('Анализ сброшен', 'success');
-    }
-
-    // ===== ИНИЦИАЛИЗАЦИЯ ВОРОТ =====
+    // ==================== ВОРОТА ====================
     function initGates() {
         const grid = document.getElementById('gatesGrid');
-        if (!grid) return;
         grid.innerHTML = '';
-
         GATES.forEach(num => {
-            const row = document.createElement('div');
-            row.className = 'gate-row free';
-            row.id = 'gate-row-' + num;
-            row.onclick = () => onGateClick(num);
-
-            row.innerHTML = `
-                <div class="gate-number-box">
-                    <div class="gate-number-label">ВОРОТА</div>
-                    <div class="gate-number">${num}</div>
-                    <div class="gate-dot"></div>
+            const card = document.createElement('div');
+            card.className = 'gate-card free';
+            card.id = 'gate-' + num;
+            card.onclick = () => onGateClick(num);
+            card.innerHTML = `
+                <div class="gate-card-header">
+                    <div><span class="gate-num">${num}</span><span class="gate-num-label">ВОРОТА</span></div>
+                    <div class="gate-status free" id="gate-status-${num}">Свободно</div>
                 </div>
-                <div class="gate-info" id="gate-info-${num}">
-                    <div class="gate-status free">Свободно</div>
-                    <div class="gate-empty">Готово к постановке</div>
+                <div class="gate-card-body" id="gate-body-${num}">
+                    <div style="color:var(--text-muted); font-style:italic; font-size:12px; text-align:center; padding:20px 0;">Готово к постановке</div>
                 </div>
-                <div class="gate-timer-box" id="gate-timer-${num}"></div>
             `;
-            grid.appendChild(row);
+            grid.appendChild(card);
             gateStates[num] = { active: false, data: null };
         });
-
         updateGatesCount();
     }
 
     function updateGatesCount() {
         const busy = GATES.filter(g => gateStates[g].active).length;
-        const el = document.getElementById('gatesCount');
-        if (el) el.textContent = busy + ' / 7 занято';
+        document.getElementById('gatesCount').textContent = busy + ' / 7 занято';
     }
 
     function onGateClick(num) {
         if (gateStates[num].active) {
-            const state = gateStates[num];
-            if (confirm(`Ворота ${num}\n\nРейс: ${state.data.route}\nНаправление: ${state.data.direction}\nВодитель: ${state.data.driver}${state.data.comment ? '\n\n💬 ' + state.data.comment : ''}\n\nЗавершить?`)) {
+            const s = gateStates[num];
+            if (confirm(`Ворота ${num}\n\nРейс: ${s.data.route}\nНаправление: ${s.data.direction}\nВодитель: ${s.data.driver || '—'}${s.data.comment ? '\n💬 ' + s.data.comment : ''}\n\nЗавершить?`)) {
                 completeOperation(num);
             }
         } else {
@@ -1279,15 +1442,93 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         }
     }
 
+    function renderGates() {
+        GATES.forEach(num => {
+            const s = gateStates[num];
+            const card = document.getElementById('gate-' + num);
+            const body = document.getElementById('gate-body-' + num);
+            const status = document.getElementById('gate-status-' + num);
+
+            if (!s.active) {
+                card.className = 'gate-card free';
+                status.className = 'gate-status free';
+                status.textContent = 'Свободно';
+                body.innerHTML = `<div style="color:var(--text-muted); font-style:italic; font-size:12px; text-align:center; padding:20px 0;">Готово к постановке</div>`;
+                return;
+            }
+
+            const d = s.data;
+            card.className = 'gate-card ' + (d.type === 'unloading' ? 'unloading' : 'loading');
+            status.className = 'gate-status ' + (d.type === 'unloading' ? 'unloading' : 'loading');
+            status.textContent = d.type === 'unloading' ? '🔽 Выгрузка' : '🔼 Загрузка';
+
+            const cutoffHtml = renderCutoffBlock(d.direction);
+            const checklistHtml = d.type === 'unloading' ? renderChecklist() : '';
+            const commentClass = d.rec === 'do' ? 'do' : d.rec === 'no' ? 'no' : 'wait';
+            const commentHtml = d.comment ? `<div class="comment-visible ${commentClass}">💬 ${d.comment}</div>` : '';
+
+            body.innerHTML = `
+                <div class="gate-route">${d.route}</div>
+                <div class="gate-direction">${d.direction || '—'}</div>
+                <div class="gate-meta">
+                    <div class="gate-meta-item">👤 ${d.driver || '—'}</div>
+                    <div class="gate-meta-item">🚛 ${d.vehicle || '—'}</div>
+                </div>
+                ${cutoffHtml}
+                ${checklistHtml}
+                ${commentHtml}
+                <div class="gate-timer-row">
+                    <div class="gate-timer" id="timer-${num}">00:00:00</div>
+                    <div class="gate-progress-text" id="progress-${num}">📦 0/${d.volume} ГМ</div>
+                </div>
+            `;
+
+            startTimer(num);
+        });
+    }
+
+    function startTimer(num) {
+        const s = gateStates[num];
+        if (!s.active) return;
+
+        const tick = () => {
+            const state = gateStates[num];
+            if (!state.active) return;
+            const diff = Date.now() - state.startTime;
+            const timerEl = document.getElementById('timer-' + num);
+            if (!timerEl) return;
+            timerEl.textContent = formatDuration(diff);
+            timerEl.classList.remove('warning', 'danger');
+            if (diff > 90 * 60 * 1000) timerEl.classList.add('danger');
+            else if (diff > 60 * 60 * 1000) timerEl.classList.add('warning');
+
+            const volume = state.data.volume || 0;
+            const loaded = Math.min(volume, Math.floor(diff / 15000));
+            const p = document.getElementById('progress-' + num);
+            if (p) p.textContent = `📦 ${loaded}/${volume} ГМ`;
+        };
+        if (s.timerInterval) clearInterval(s.timerInterval);
+        s.timerInterval = setInterval(tick, 1000);
+        tick();
+    }
+
+    function formatDuration(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSec % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
     function openGateModal(num) {
         selectedGate = num;
         currentRec = 'do';
-
-        const selector = document.getElementById('gateSelector');
-        selector.innerHTML = GATES.map(g => {
+        const sel = document.getElementById('gateSelector');
+        sel.innerHTML = GATES.map(g => {
             const busy = gateStates[g].active;
-            return `<div class="gate-selector-item ${busy ? 'disabled' : ''} ${g === num ? 'selected' : ''}" 
-                        onclick="${busy ? '' : `selectGate(${g})`}">${g}</div>`;
+            const bg = g === num ? '#2563eb' : (busy ? '#f1f5f9' : 'white');
+            const color = g === num ? 'white' : (busy ? '#94a3b8' : '#0f172a');
+            return `<div onclick="${busy ? '' : `selectGate(${g})`}" style="padding:10px; border:2px solid ${g === num ? '#2563eb' : '#cbd5e1'}; border-radius:8px; text-align:center; font-weight:900; font-size:14px; cursor:${busy ? 'not-allowed' : 'pointer'}; background:${bg}; color:${color};">${g}</div>`;
         }).join('');
 
         document.getElementById('gateRoute').value = '';
@@ -1296,29 +1537,45 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         document.getElementById('gateVehicle').value = '';
         document.getElementById('gateVolume').value = '20';
         document.getElementById('gateComment').value = '';
+        document.getElementById('gateType').value = 'unloading';
 
-        document.querySelectorAll('.rec-option').forEach(el => el.classList.remove('selected'));
-        document.querySelector('.rec-option[data-rec="do"]').classList.add('selected');
+        document.querySelectorAll('.rec-option').forEach(el => {
+            el.style.background = 'white';
+            el.style.borderColor = '#cbd5e1';
+            el.style.color = '#0f172a';
+        });
+        const doOpt = document.querySelector('.rec-option[data-rec="do"]');
+        doOpt.style.background = '#dcfce7';
+        doOpt.style.borderColor = '#16a34a';
+        doOpt.style.color = '#16a34a';
 
         document.getElementById('gateModal').classList.add('active');
     }
 
-    function closeGateModal() {
-        document.getElementById('gateModal').classList.remove('active');
-        selectedGate = null;
-    }
+    function closeGateModal() { document.getElementById('gateModal').classList.remove('active'); selectedGate = null; }
 
     function selectGate(g) {
         selectedGate = g;
-        document.querySelectorAll('.gate-selector-item').forEach(el => {
-            el.classList.toggle('selected', parseInt(el.textContent) === g);
+        document.querySelectorAll('#gateSelector > div').forEach(el => {
+            const num = parseInt(el.textContent);
+            const busy = gateStates[num].active;
+            if (num === g) {
+                el.style.background = '#2563eb'; el.style.color = 'white'; el.style.borderColor = '#2563eb';
+            } else if (!busy) {
+                el.style.background = 'white'; el.style.color = '#0f172a'; el.style.borderColor = '#cbd5e1';
+            }
         });
     }
 
     function selectRec(rec) {
         currentRec = rec;
-        document.querySelectorAll('.rec-option').forEach(el => el.classList.remove('selected'));
-        document.querySelector(`.rec-option[data-rec="${rec}"]`).classList.add('selected');
+        document.querySelectorAll('.rec-option').forEach(el => {
+            el.style.background = 'white'; el.style.borderColor = '#cbd5e1'; el.style.color = '#0f172a';
+        });
+        const opt = document.querySelector(`.rec-option[data-rec="${rec}"]`);
+        if (rec === 'do') { opt.style.background = '#dcfce7'; opt.style.borderColor = '#16a34a'; opt.style.color = '#16a34a'; }
+        if (rec === 'no') { opt.style.background = '#fee2e2'; opt.style.borderColor = '#dc2626'; opt.style.color = '#dc2626'; }
+        if (rec === 'wait') { opt.style.background = '#fef3c7'; opt.style.borderColor = '#d97706'; opt.style.color = '#d97706'; }
     }
 
     function startOperation() {
@@ -1331,415 +1588,221 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         const vehicle = document.getElementById('gateVehicle').value.trim();
         const volume = parseInt(document.getElementById('gateVolume').value) || 0;
         const comment = document.getElementById('gateComment').value.trim();
+        const type = document.getElementById('gateType').value;
 
         if (!route) { showToast('Введи номер рейса', 'warning'); return; }
 
-        placeTruckOnGate(selectedGate, {
-            route, direction, driver, vehicle, volume, comment, rec: currentRec
-        });
+        gateStates[selectedGate] = {
+            active: true,
+            data: { route, direction, driver, vehicle, volume, comment, rec: currentRec, type },
+            startTime: Date.now()
+        };
 
         closeGateModal();
+        renderGates();
+        updateGatesCount();
+        saveGates();
         showToast(`Рейс ${route} → ворота ${selectedGate}`, 'success');
     }
 
-    function placeTruckOnGate(num, data) {
-        const row = document.getElementById('gate-row-' + num);
-        if (!row) return;
-        row.classList.remove('free');
-        row.classList.add(data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading');
-
-        const recText = data.rec === 'do' ? 'Загрузка' : data.rec === 'no' ? 'Не грузить' : 'Ждать ФФЦ';
-        const recClass = data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading';
-
-        // Катофф
-        const cutoffHtml = renderCutoffBlock(data.direction);
-
-        // Чек-лист при выгрузке
-        const checklistHtml = data.rec === 'no' ? renderChecklist() : '';
-
-        document.getElementById('gate-info-' + num).innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-                <div style="flex: 1; min-width: 0;">
-                    <div class="gate-status ${recClass}">${recText}</div>
-                    <div class="gate-route">${data.route}</div>
-                    <div class="gate-direction">${data.direction}</div>
-                    <div class="gate-meta">
-                        <div class="gate-meta-item">👤 ${data.driver || '—'}</div>
-                        <div class="gate-meta-item">🚛 ${data.vehicle || '—'}</div>
-                    </div>
-                </div>
-                <button onclick="event.stopPropagation(); editComment(${num})" 
-                        style="background: white; border: 1.5px solid var(--border-strong); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 800; cursor: pointer; color: var(--text-dim); white-space: nowrap; font-family: inherit;">
-                    ✏️ Комментарий
-                </button>
-            </div>
-            ${cutoffHtml}
-            ${checklistHtml}
-            ${data.comment ? `
-                <div class="gate-comment-visible ${data.rec}" id="comment-${num}">
-                    💬 ${data.comment}
-                </div>
-            ` : `<div id="comment-${num}"></div>`}
-        `;
-
-        document.getElementById('gate-timer-' + num).innerHTML = `
-            <div class="gate-timer" id="timer-${num}">00:00:00</div>
-            <div class="gate-progress-text" id="progress-${num}">📦 0/${data.volume} ГМ</div>
-            <div class="gate-progress-mini">
-                <div class="gate-progress-mini-fill" id="progress-fill-${num}" style="width:0%"></div>
-            </div>
-        `;
-
-        gateStates[num] = { active: true, data, startTime: Date.now() };
-        updateGatesCount();
-        startTimer(num);
-        saveGatesToLocal();
-    }
-
-    function editComment(num) {
-        const state = gateStates[num];
-        if (!state.active) return;
-
-        const currentComment = state.data.comment || '';
-        const newComment = prompt(
-            `Комментарий к рейсу ${state.data.route} (ворота ${num}):\n\nОставьте пустым, чтобы удалить.`,
-            currentComment
-        );
-
-        if (newComment === null) return;
-
-        state.data.comment = newComment.trim();
-
-        const commentEl = document.getElementById('comment-' + num);
-        if (commentEl) {
-            if (state.data.comment) {
-                commentEl.className = 'gate-comment-visible ' + state.data.rec;
-                commentEl.innerHTML = '💬 ' + state.data.comment;
-            } else {
-                commentEl.className = '';
-                commentEl.innerHTML = '';
-            }
-        }
-
-        saveGatesToLocal();
-        showToast(state.data.comment ? 'Комментарий сохранён' : 'Комментарий удалён', 'success');
-    }
-
-    function saveGatesToLocal() {
-        try {
-            const data = {};
-            GATES.forEach(num => {
-                if (gateStates[num].active) {
-                    data[num] = {
-                        data: gateStates[num].data,
-                        startTime: gateStates[num].startTime
-                    };
-                }
-            });
-            localStorage.setItem('warehouseGates', JSON.stringify(data));
-        } catch(e) {}
-    }
-
-    function loadGatesFromLocal() {
-        try {
-            const saved = JSON.parse(localStorage.getItem('warehouseGates') || '{}');
-            Object.keys(saved).forEach(num => {
-                const numInt = parseInt(num);
-                if (GATES.includes(numInt)) {
-                    placeTruckOnGate(numInt, saved[num].data);
-                    gateStates[numInt].startTime = saved[num].startTime;
-                }
-            });
-        } catch(e) {}
-    }
-
-    function startTimer(num) {
-        const interval = setInterval(() => {
-            const state = gateStates[num];
-            if (!state.active) { clearInterval(interval); return; }
-
-            const diff = Date.now() - state.startTime;
-            const timerEl = document.getElementById('timer-' + num);
-            if (!timerEl) { clearInterval(interval); return; }
-
-            timerEl.textContent = formatDuration(diff);
-            timerEl.classList.remove('warning', 'danger');
-
-            if (diff > 90 * 60 * 1000) {
-                timerEl.classList.add('danger');
-                document.getElementById('gate-row-' + num).classList.add('problem');
-            } else if (diff > 60 * 60 * 1000) {
-                timerEl.classList.add('warning');
-            }
-
-            // Обновляем катофф каждую минуту
-            if (diff % 60000 < 1000) {
-                updateCutoffInCard(num);
-            }
-
-            const volume = state.data.volume || 0;
-            const loaded = Math.min(volume, Math.floor(diff / 15000));
-            const progressEl = document.getElementById('progress-' + num);
-            const fillEl = document.getElementById('progress-fill-' + num);
-            if (progressEl) progressEl.textContent = `📦 ${loaded}/${volume} ГМ`;
-            if (fillEl) fillEl.style.width = (loaded / volume * 100) + '%';
-        }, 1000);
-    }
-
-    function updateCutoffInCard(num) {
-        const state = gateStates[num];
-        if (!state.active) return;
-        const row = document.getElementById('gate-row-' + num);
-        if (!row) return;
-
-        // Удаляем старый блок катоффа
-        const old = row.querySelector('.gate-cutoff');
-        if (old) {
-            const newCutoff = document.createElement('div');
-            newCutoff.innerHTML = renderCutoffBlock(state.data.direction);
-            old.replaceWith(newCutoff.firstElementChild);
-        }
-    }
-
-    function formatDuration(ms) {
-        const totalSec = Math.floor(ms / 1000);
-        const h = String(Math.floor(totalSec / 3600)).padStart(2, '0');
-        const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
-        const s = String(totalSec % 60).padStart(2, '0');
-        return `${h}:${m}:${s}`;
-    }
-
     function completeOperation(num) {
-        const row = document.getElementById('gate-row-' + num);
-        row.classList.remove('loading', 'unloading', 'problem', 'cutoff-danger');
-        row.classList.add('free');
-
-        document.getElementById('gate-info-' + num).innerHTML = `
-            <div class="gate-status free">Свободно</div>
-            <div class="gate-empty">Готово к постановке</div>
-        `;
-        document.getElementById('gate-timer-' + num).innerHTML = '';
-
+        const s = gateStates[num];
+        if (s.timerInterval) clearInterval(s.timerInterval);
         gateStates[num] = { active: false, data: null };
+        renderGates();
         updateGatesCount();
-        saveGatesToLocal();
+        saveGates();
         showToast(`Ворота ${num} освобождены`, 'success');
     }
 
-    // ===== БУФЕР =====
-    function initBufferData() {
-        const saved = localStorage.getItem('warehouseBuffer');
-        if (saved) {
-            try {
-                bufferData = JSON.parse(saved);
-                if (bufferData.length > 0) return;
-            } catch(e) {}
-        }
-        bufferData = [
-            ...DEFAULT_DIRECTIONS.map(d => ({
-                direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
-                haveTS: 0, xdok: 0, vp: 0, isReturn: false
-            })),
-            ...DEFAULT_RETURNS.map(d => ({
-                direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
-                haveTS: 0, xdok: 0, vp: 0, isReturn: true
-            }))
-        ];
+    function saveGates() {
+        const data = {};
+        GATES.forEach(num => { if (gateStates[num].active) data[num] = gateStates[num]; });
+        localStorage.setItem('wb_gates', JSON.stringify(data));
     }
 
-    function saveBufferData() {
-        localStorage.setItem('warehouseBuffer', JSON.stringify(bufferData));
-    }
-
-    function addBufferRow() {
-        const name = prompt('Название направления:', '');
-        if (!name) return;
-        bufferData.push({
-            direction: name.trim(), oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
-            haveTS: 0, xdok: 0, vp: 0, isReturn: false
-        });
-        saveBufferData();
-        renderBufferTable();
-    }
-
-    function removeBufferRow(idx) {
-        if (!confirm(`Удалить строку "${bufferData[idx].direction}"?`)) return;
-        bufferData.splice(idx, 1);
-        saveBufferData();
-        renderBufferTable();
-    }
-
-    function updateBufferCell(idx, field, value) {
-        const num = parseInt(value) || 0;
-        bufferData[idx][field] = Math.max(0, num);
-        saveBufferData();
-        updateBufferRowTotals(idx);
-        updateBufferCount();
-    }
-
-    function updateBufferRowTotals(idx) {
-        const row = bufferData[idx];
-        const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
-        const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
-
-        const totalEl = document.getElementById(`total-${idx}`);
-        const needEl = document.getElementById(`need-${idx}`);
-        if (totalEl) totalEl.textContent = total;
-        if (needEl) {
-            needEl.textContent = needTS;
-            needEl.className = 'need-ts ' + getNeedClass(needTS);
-        }
-        const tr = document.getElementById(`buf-row-${idx}`);
-        if (tr) {
-            if (needTS > 0 && !row.isReturn) tr.classList.add('highlight-row');
-            else tr.classList.remove('highlight-row');
-        }
-    }
-
-    function getNeedClass(need) {
-        if (need === 0) return 'zero';
-        if (need === 1) return 'one';
-        if (need <= 3) return 'many';
-        return 'urgent';
-    }
-
-    function updateBufferCount() {
-        const dirs = bufferData.filter(b => !b.isReturn).length;
-        const el = document.getElementById('bufferCount');
-        if (el) el.textContent = dirs + ' направлений';
-    }
-
-    function renderBufferTable() {
-        const tbody = document.getElementById('bufferTableBody');
-        if (!tbody) return;
-        updateBufferCount();
-
-        if (bufferData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="empty-block"><div class="empty-block-icon">📊</div>Нажми «➕ Добавить», чтобы создать строку</td></tr>';
-            return;
-        }
-
-        let html = '';
-        const mainRows = bufferData.map((row, idx) => ({ ...row, idx })).filter(r => !r.isReturn);
-        const returnRows = bufferData.map((row, idx) => ({ ...row, idx })).filter(r => r.isReturn);
-
-        mainRows.sort((a, b) => {
-            const needA = Math.ceil(((a.oldGab || 0) + (a.oldNegab || 0) * 1.5) / 33);
-            const needB = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
-            if (needB !== needA) return needB - needA;
-            return a.direction.localeCompare(b.direction);
-        });
-
-        mainRows.forEach(row => {
-            const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
-            const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
-            const needClass = getNeedClass(needTS);
-            const highlight = needTS > 0 ? 'highlight-row' : '';
-            const cutoff = CUTOFFS[row.direction];
-            const cutoffStr = cutoff ? `<br><span style="font-size:9px;color:#d97706;font-weight:800;">🎯 ${cutoff.end}</span>` : '';
-
-            html += `
-                <tr class="${highlight}" id="buf-row-${row.idx}">
-                    <td><b>${row.direction}</b>${cutoffStr}</td>
-                    <td class="td-center">${editableCell(row.idx, 'oldGab', row.oldGab, '#fef3c7')}</td>
-                    <td class="td-center">${editableCell(row.idx, 'oldNegab', row.oldNegab, '#fef3c7')}</td>
-                    <td class="td-center">${editableCell(row.idx, 'newGab', row.newGab, '#dbeafe')}</td>
-                    <td class="td-center">${editableCell(row.idx, 'newNegab', row.newNegab, '#dbeafe')}</td>
-                    <td class="td-center num-highlight" id="total-${row.idx}">${total}</td>
-                    <td class="td-center"><span class="need-ts ${needClass}" id="need-${row.idx}">${needTS}</span></td>
-                    <td class="td-center">${editableCell(row.idx, 'haveTS', row.haveTS, '#f0fdf4')}</td>
-                    <td class="td-center">${editableCell(row.idx, 'xdok', row.xdok, '#f8fafc')}</td>
-                    <td class="td-center">${editableCell(row.idx, 'vp', row.vp, '#f8fafc')}</td>
-                    <td class="td-center">
-                        <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;">✕</button>
-                    </td>
-                </tr>
-            `;
-        });
-
-        if (returnRows.length > 0) {
-            html += `<tr style="background: #dbeafe;"><td colspan="11" style="text-align: center; font-weight: 900; color: #1e40af; padding: 8px; letter-spacing: 2px; font-size: 11px;">ВОЗВРАТЫ</td></tr>`;
-            returnRows.forEach(row => {
-                const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
-                html += `
-                    <tr style="background: #f0f9ff;" id="buf-row-${row.idx}">
-                        <td><b>${row.direction}</b></td>
-                        <td class="td-center">${editableCell(row.idx, 'oldGab', row.oldGab, '#fef3c7')}</td>
-                        <td class="td-center">${editableCell(row.idx, 'oldNegab', row.oldNegab, '#fef3c7')}</td>
-                        <td class="td-center">${editableCell(row.idx, 'newGab', row.newGab, '#dbeafe')}</td>
-                        <td class="td-center">${editableCell(row.idx, 'newNegab', row.newNegab, '#dbeafe')}</td>
-                        <td class="td-center num-highlight" id="total-${row.idx}">${total}</td>
-                        <td class="td-center"><span class="need-ts zero" id="need-${row.idx}">0</span></td>
-                        <td class="td-center">${editableCell(row.idx, 'haveTS', row.haveTS, '#f0fdf4')}</td>
-                        <td class="td-center">${editableCell(row.idx, 'xdok', row.xdok, '#f8fafc')}</td>
-                        <td class="td-center">${editableCell(row.idx, 'vp', row.vp, '#f8fafc')}</td>
-                        <td class="td-center">
-                            <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;">✕</button>
-                        </td>
-                    </tr>
-                `;
+    function loadGates() {
+        try {
+            const saved = JSON.parse(localStorage.getItem('wb_gates') || '{}');
+            Object.keys(saved).forEach(num => {
+                const n = parseInt(num);
+                if (GATES.includes(n)) {
+                    gateStates[n] = saved[n];
+                }
             });
-        }
-
-        tbody.innerHTML = html;
+        } catch(e) {}
     }
 
-    function editableCell(idx, field, value, bgColor) {
-        return `<input type="number" 
-                       value="${value || 0}" 
-                       min="0" 
-                       style="width: 48px; padding: 4px 6px; border: 1.5px solid transparent; border-radius: 6px; background: ${bgColor}; text-align: center; font-weight: 800; font-size: 12px; color: #1e293b; font-family: inherit; outline: none;"
-                       onfocus="this.style.borderColor='#2563eb'; this.style.background='white';"
-                       onblur="this.style.borderColor='transparent'; this.style.background='${bgColor}';"
-                       onchange="updateBufferCell(${idx}, '${field}', this.value)"
-                       onclick="event.stopPropagation();">`;
+    // ==================== ИМПОРТ ====================
+    function openImport(type) {
+        currentImport = type;
+        const titles = {
+            buffer: '📊 Импорт среза по буферу',
+            google: '📊 Импорт из Google Таблицы',
+            chat: '📋 Импорт рейсов из чата'
+        };
+        const descs = {
+            buffer: 'Скопируй <b>весь блок</b> из Google Таблицы (с шапкой) и вставь сюда. Приложение само разберёт столбцы.',
+            google: 'Скопируй строки из Google Таблицы (Исход или Вход). Приложение само определит, куда их отнести.',
+            chat: 'Вставь текст из Telegram <b>как есть</b>. Разберём рейсы, направления, водителей, пометки.'
+        };
+        document.getElementById('importTitle').textContent = titles[type];
+        document.getElementById('importDesc').innerHTML = descs[type];
+        document.getElementById('importInput').value = '';
+        document.getElementById('importModal').classList.add('active');
     }
 
-    // ===== РЕЙСЫ =====
-    function openImportRoutesModal() {
-        document.getElementById('routesModal').classList.add('active');
-    }
-    function closeRoutesModal() {
-        document.getElementById('routesModal').classList.remove('active');
-    }
+    function closeImport() { document.getElementById('importModal').classList.remove('active'); }
 
-    function importRoutes() {
-        const text = document.getElementById('routesInput').value.trim();
-        if (!text) { showToast('Вставь текст с рейсами', 'warning'); return; }
+    function doImport() {
+        const text = document.getElementById('importInput').value.trim();
+        if (!text) { showToast('Вставь текст', 'warning'); return; }
 
-        const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
-        routes = [];
+        if (currentImport === 'buffer') importBuffer(text);
+        else if (currentImport === 'google') importGoogle(text);
+        else if (currentImport === 'chat') importChat(text);
 
-        blocks.forEach((block, idx) => {
-            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
-            if (lines.length === 0) return;
-            const routeObj = parseRouteBlock(lines, idx);
-            if (routeObj) routes.push(routeObj);
-        });
-
-        renderRoutes();
-        closeRoutesModal();
-        showToast(`Разобрано ${routes.length} рейсов`, 'success');
+        closeImport();
     }
 
-    function parseRouteBlock(lines, idx) {
-        let route = '', direction = '', company = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [];
+    // ==================== ИМПОРТ СРЕЗА ====================
+    function importBuffer(text) {
+        const lines = text.split('\n').map(l => l.replace(/\r$/, ''));
+        let inReturns = false;
+        let count = 0;
 
         lines.forEach(line => {
-            const routeMatch = line.match(/[Рр]ейс\s*#?(\d+)/i);
-            if (routeMatch) { route = '#' + routeMatch[1]; return; }
+            if (!line.trim()) return;
+            if (/^\s*Возвраты\s*$/i.test(line.trim())) { inReturns = true; return; }
 
-            const driverMatch = line.match(/[Вв]одитель[:\s]+(.+)/i);
-            if (driverMatch) { driver = driverMatch[1].trim(); return; }
+            const parts = line.split('\t').map(p => p.trim());
+            const first = parts[0] || '';
+            if (/^(Направления?|Габарит|Старый сорт|Новый сорт|Тотал|Потребность)/i.test(first)) return;
+            if (!first || /^\d+$/.test(first)) return;
 
-            const phoneMatch = line.match(/\+?\d{10,12}/);
-            if (phoneMatch && !phone) { phone = phoneMatch[0]; return; }
+            const direction = first;
+            const nums = parts.slice(1).map(p => parseInt(p) || 0);
+            const oldGab = nums[0] || 0, oldNegab = nums[1] || 0, newGab = nums[2] || 0, newNegab = nums[3] || 0;
 
-            const vehicleMatch = line.match(/[Нн]омер\s+(?:тягача|машины|ТС|прицепа)[:\s]+([А-ЯA-Z0-9]+)/i);
-            if (vehicleMatch && !vehicle) { vehicle = vehicleMatch[1].trim(); return; }
+            // Ищем существующее
+            const idx = bufferData.findIndex(b => b.direction === direction);
+            if (idx >= 0) {
+                bufferData[idx] = { ...bufferData[idx], oldGab, oldNegab, newGab, newNegab, isReturn: inReturns };
+            } else {
+                bufferData.push({ direction, oldGab, oldNegab, newGab, newNegab, haveTS: 0, isReturn: inReturns });
+            }
+            count++;
+        });
 
-            const palletsMatch = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
-            if (palletsMatch) { pallets = parseInt(palletsMatch[1]) || 0; return; }
+        saveBufferData();
+        renderBufferTable();
+        updateTabCounts();
+        showToast(`Загружено ${count} направлений`, 'success');
+    }
+
+    // ==================== ИМПОРТ GOOGLE ====================
+    function importGoogle(text) {
+        const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
+        if (lines.length === 0) return;
+
+        // Определяем тип: Вход (есть "Плановое прибытие"/"Статус") или Исход (есть "Плановая отгрузка")
+        const header = lines[0].toLowerCase();
+        let type = 'outgoing';
+        if (header.includes('прибыт') || header.includes('статус') || header.includes('выгрузк')) type = 'incoming';
+
+        let parsed = 0;
+        lines.slice(1).forEach(line => {
+            const parts = line.split('\t').map(p => p.trim());
+            if (parts.length < 5) return;
+
+            // Пропускаем пустые
+            if (!parts[1] && !parts[2] && !parts[3]) return;
+
+            const route = parts[3] || parts[2] || '';
+            if (!route && !parts[4]) return;
+
+            const item = {
+                source: 'google',
+                num: parts[0],
+                direction: parts[1],
+                vehicle: parts[2],
+                route: route.startsWith('#') ? route : '#' + route,
+                driver: parts[4],
+                plan: (parts[5] || '') + ' ' + (parts[6] || ''),
+                fact: (parts[7] || '') + ' ' + (parts[8] || ''),
+                volume: parseInt(parts[9]) || 0,
+                comment: parts[10] || '',
+                gate: parts[11] || '',
+                status: detectStatus(parts[10] || '', parts[11] || '', parts[7] || '')
+            };
+
+            // Ищем существующий
+            const targetArr = type === 'incoming' ? googleData.incoming : googleData.outgoing;
+            const idx = targetArr.findIndex(x => x.route === item.route);
+            if (idx >= 0) targetArr[idx] = { ...targetArr[idx], ...item, source: 'both' };
+            else targetArr.push(item);
+            parsed++;
+        });
+
+        saveGoogleData();
+        renderIncoming();
+        renderOutgoing();
+        updateTabCounts();
+        showToast(`Загружено ${parsed} рейсов в ${type === 'incoming' ? 'Вход' : 'Исход'}`, 'success');
+    }
+
+    function detectStatus(comment, gate, fact) {
+        const c = (comment + ' ' + gate).toLowerCase();
+        if (c.includes('загрузили') || c.includes('выгрузили')) return 'loaded';
+        if (c.includes('на ворот') || gate.match(/\d+/)) return 'on-gate';
+        if (c.includes('на парковке')) return 'parking';
+        if (c.includes('согласовать')) return 'agree';
+        if (fact) return 'loaded';
+        return 'coming';
+    }
+
+    function saveGoogleData() { localStorage.setItem('wb_google', JSON.stringify(googleData)); }
+    function loadGoogleData() {
+        try { const s = JSON.parse(localStorage.getItem('wb_google') || 'null'); if (s) googleData = s; } catch(e) {}
+    }
+
+    // ==================== ИМПОРТ ЧАТА ====================
+    function importChat(text) {
+        const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
+        let count = 0;
+
+        blocks.forEach(block => {
+            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+            const route = parseChatBlock(lines);
+            if (route) {
+                const idx = chatRoutes.findIndex(r => r.route === route.route);
+                if (idx >= 0) chatRoutes[idx] = route;
+                else chatRoutes.push(route);
+                count++;
+            }
+        });
+
+        saveChatData();
+        renderIncoming();
+        renderOutgoing();
+        updateTabCounts();
+        showToast(`Разобрано ${count} рейсов из чата`, 'success');
+    }
+
+    function parseChatBlock(lines) {
+        let route = '', direction = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [];
+
+        lines.forEach(line => {
+            const rm = line.match(/[Рр]ейс\s*#?(\d+)/i);
+            if (rm) { route = '#' + rm[1]; return; }
+            const dm = line.match(/[Вв]одитель[:\s]+(.+)/i);
+            if (dm) { driver = dm[1].trim(); return; }
+            const pm = line.match(/\+?\d{10,12}/);
+            if (pm && !phone) { phone = pm[0]; return; }
+            const vm = line.match(/[Нн]омер\s+(?:тягача|машины|ТС|прицепа)[:\s]+([А-ЯA-Z0-9]+)/i);
+            if (vm && !vehicle) { vehicle = vm[1].trim(); return; }
+            const plm = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
+            if (plm) { pallets = parseInt(plm[1]) || 0; return; }
 
             const hasDash = / [-—] /.test(line) || line.includes(' - ') || line.includes(' — ');
             const hasCities = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
@@ -1749,156 +1812,396 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             if (/ФФЦ/i.test(line) && /сначала|потом|берёт|берет|берут/i.test(line)) marks.push('wait-ffc');
             if (/голова/i.test(line)) marks.push('head');
             if (/хвост/i.test(line)) marks.push('tail');
-
-            if (/ООО|ИП\s|ТК\s|Логистик|Транс|Веатон|Делко|Фаст|К2/i.test(line) && !company) {
-                company = line;
-            }
         });
 
         if (!route && !direction) return null;
 
-        const normalizedDirection = normalizeDirection(direction);
-
         return {
-            id: 'route-' + idx,
+            source: 'chat',
             route: route || '(без номера)',
-            direction: normalizedDirection,
-            fullDirection: direction,
-            company, driver, phone, vehicle, pallets,
+            direction: direction,
+            shortDirection: normalizeDirection(direction),
+            driver, phone, vehicle, pallets,
             marks: [...new Set(marks)],
-            rec: marks.includes('wait-ffc') ? 'wait' : 'do'
+            rec: marks.includes('wait-ffc') ? 'wait' : 'do',
+            type: direction && /вход|выгруз/i.test(direction) ? 'incoming' : 'outgoing'
         };
     }
 
     function normalizeDirection(dir) {
         if (!dir) return 'Не указано';
-        let cleaned = dir.replace(/\b(СЦ|ПСЦ|ФФЦ|МК|ВП)\b/gi, '').trim();
-        const parts = cleaned.split(/\s*[-—→]\s*/).map(p => p.trim()).filter(p => p);
+        const parts = dir.replace(/\b(СЦ|ПСЦ|ФФЦ|МК|ВП)\b/gi, '').split(/\s*[-—→]\s*/).map(p => p.trim()).filter(p => p);
         if (parts.length === 0) return 'Не указано';
-        let last = parts[parts.length - 1].trim();
-        if (last.includes(' ')) {
-            const words = last.split(/\s+/);
-            last = words[words.length - 1];
-        }
-        return last || cleaned || 'Не указано';
+        let last = parts[parts.length - 1];
+        if (last.includes(' ')) last = last.split(/\s+/).pop();
+        return last;
     }
 
-    function renderRoutes() {
-        const container = document.getElementById('routesList');
-        if (!container) return;
-        document.getElementById('routesCount').textContent = routes.length + ' рейсов';
+    function saveChatData() { localStorage.setItem('wb_chat', JSON.stringify(chatRoutes)); }
+    function loadChatData() {
+        try { const s = JSON.parse(localStorage.getItem('wb_chat') || 'null'); if (s) chatRoutes = s; } catch(e) {}
+    }
 
-        if (routes.length === 0) {
-            container.innerHTML = '<div class="empty-block"><div class="empty-block-icon">📋</div>Нажми «📋» в шапке, чтобы вставить список рейсов из чата</div>';
+    // ==================== ВХОД / ИСХОД ====================
+    function renderIncoming() {
+        const tbody = document.getElementById('incomingTableBody');
+        document.getElementById('incomingCount').textContent = googleData.incoming.length + ' рейсов';
+
+        let items = [...googleData.incoming];
+
+        // Добавляем из чата (если рейса нет в Google)
+        chatRoutes.forEach(r => {
+            if (r.type === 'incoming' || !googleData.incoming.find(g => g.route === r.route)) {
+                if (!googleData.incoming.find(g => g.route === r.route)) {
+                    items.push({ ...r, source: 'chat', status: 'coming' });
+                }
+            }
+        });
+
+        // Фильтр
+        if (incomingFilter !== 'all') {
+            items = items.filter(i => i.status === incomingFilter);
+        }
+
+        if (items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="12" class="empty-state"><div class="empty-state-icon">🔽</div>Нет входящих рейсов<br><span class="empty-state-hint">Вставь Google Таблицу или чат</span></td></tr>`;
             return;
         }
 
-        const bufferDirs = bufferData.filter(b => !b.isReturn).map(b => b.direction.toLowerCase());
-        routes.forEach(r => {
-            const dir = r.direction.toLowerCase();
-            r.matched = bufferDirs.some(b => b.includes(dir) || dir.includes(b));
-        });
+        tbody.innerHTML = items.map((item, i) => {
+            const srcBadge = item.source === 'both' ? '<span class="source-badge both">✅</span>' :
+                             item.source === 'google' ? '<span class="source-badge google">📊</span>' :
+                             '<span class="source-badge chat">📋</span>';
+            const statusBadge = renderStatusBadge(item.status);
+            const action = item.status === 'on-gate'
+                ? `<button class="btn btn-success" style="padding:4px 8px;font-size:10px;" onclick="completeFromTable('incoming', ${i})">✅ Готово</button>`
+                : item.status === 'coming'
+                    ? `<button class="btn btn-primary" style="padding:4px 8px;font-size:10px;" onclick="openGateFromTable('incoming', ${i})">🚪 Ворота</button>`
+                    : '—';
 
-        const sorted = [...routes].sort((a, b) => (b.matched ? 1 : 0) - (a.matched ? 1 : 0));
-
-        container.innerHTML = sorted.map(r => {
-            const badges = [];
-            if (r.marks.includes('ours')) badges.push('<span class="route-badge ours">✅ ВАШ</span>');
-            if (r.marks.includes('wait-ffc')) badges.push('<span class="route-badge wait-ffc">⏳ ЖДЁТ ФФЦ</span>');
-            if (r.marks.includes('head')) badges.push('<span class="route-badge head">📦 ГОЛОВА</span>');
-            if (r.marks.includes('tail')) badges.push('<span class="route-badge tail">📦 ХВОСТ</span>');
-
-            // Катофф
-            const cutoff = CUTOFFS[r.direction];
-            if (cutoff) badges.push(`<span class="route-badge cutoff">🎯 до ${cutoff.end}</span>`);
-
-            const cardClass = r.matched ? 'matched' : 'unmatched';
-
-            return `
-                <div class="route-card ${cardClass}" id="route-${r.id}">
-                    <div class="route-card-header">
-                        <div class="route-card-number">${r.route}</div>
-                        <div class="route-card-badges">${badges.join('')}</div>
-                    </div>
-                    <div class="route-card-direction">📍 ${r.fullDirection || r.direction}</div>
-                    <div class="route-card-meta">
-                        ${r.driver ? `<div class="route-card-meta-item">👤 ${r.driver}</div>` : ''}
-                        ${r.vehicle ? `<div class="route-card-meta-item">🚛 ${r.vehicle}</div>` : ''}
-                        ${r.pallets ? `<div class="route-card-meta-item">📦 ${r.pallets} паллет</div>` : ''}
-                        ${r.phone ? `<div class="route-card-meta-item">📞 ${r.phone}</div>` : ''}
-                    </div>
-                    <div class="route-card-actions">
-                        <button class="route-action-btn load-btn" onclick="event.stopPropagation(); openGateModalForRoute('${r.id}')">🚪 Поставить</button>
-                    </div>
-                </div>
-            `;
+            return `<tr>
+                <td class="center">${i + 1}</td>
+                <td class="center">${srcBadge}</td>
+                <td><b>${item.route || '—'}</b></td>
+                <td>${item.direction || '—'}</td>
+                <td>${item.vehicle || '—'}</td>
+                <td>${item.driver || '—'}</td>
+                <td>${item.plan || '—'}</td>
+                <td>${item.fact || '—'}</td>
+                <td class="center num">${item.volume || 0}</td>
+                <td class="center">${item.gate || '—'}</td>
+                <td class="center">${statusBadge}</td>
+                <td class="center">${action}</td>
+            </tr>`;
         }).join('');
     }
 
-    function openGateModalForRoute(id) {
-        const r = routes.find(rt => rt.id === id);
-        if (!r) return;
+    function renderOutgoing() {
+        const tbody = document.getElementById('outgoingTableBody');
+        document.getElementById('outgoingCount').textContent = googleData.outgoing.length + ' рейсов';
 
-        const freeGates = GATES.filter(g => !gateStates[g].active);
-        if (freeGates.length === 0) {
-            showToast('Все ворота заняты!', 'warning');
+        let items = [...googleData.outgoing];
+        chatRoutes.forEach(r => {
+            if (!googleData.outgoing.find(g => g.route === r.route)) {
+                items.push({ ...r, source: 'chat', status: 'coming' });
+            }
+        });
+
+        if (outgoingFilter !== 'all') items = items.filter(i => i.status === outgoingFilter);
+
+        if (items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="12" class="empty-state"><div class="empty-state-icon">🔼</div>Нет исходящих рейсов<br><span class="empty-state-hint">Вставь Google Таблицу или чат</span></td></tr>`;
             return;
         }
 
-        openGateModal(freeGates[0]);
+        tbody.innerHTML = items.map((item, i) => {
+            const srcBadge = item.source === 'both' ? '<span class="source-badge both">✅</span>' :
+                             item.source === 'google' ? '<span class="source-badge google">📊</span>' :
+                             '<span class="source-badge chat">📋</span>';
+            const statusBadge = renderStatusBadge(item.status);
+            const action = item.status === 'on-gate'
+                ? `<button class="btn btn-success" style="padding:4px 8px;font-size:10px;" onclick="completeFromTable('outgoing', ${i})">✅ Готово</button>`
+                : item.status === 'coming'
+                    ? `<button class="btn btn-primary" style="padding:4px 8px;font-size:10px;" onclick="openGateFromTable('outgoing', ${i})">🚪 Ворота</button>`
+                    : '—';
 
-        document.getElementById('gateRoute').value = r.route;
-        document.getElementById('gateDirection').value = r.fullDirection || r.direction;
-        document.getElementById('gateDriver').value = r.driver || '';
-        document.getElementById('gateVehicle').value = r.vehicle || '';
-        document.getElementById('gateVolume').value = r.pallets || 20;
-
-        if (r.rec === 'wait') selectRec('wait');
-        else selectRec('do');
+            return `<tr>
+                <td class="center">${i + 1}</td>
+                <td class="center">${srcBadge}</td>
+                <td><b>${item.route || '—'}</b></td>
+                <td>${item.direction || '—'}</td>
+                <td>${item.vehicle || '—'}</td>
+                <td>${item.driver || '—'}</td>
+                <td>${item.plan || '—'}</td>
+                <td>${item.fact || '—'}</td>
+                <td class="center num">${item.volume || 0}</td>
+                <td class="center">${item.gate || '—'}</td>
+                <td class="center">${statusBadge}</td>
+                <td class="center">${action}</td>
+            </tr>`;
+        }).join('');
     }
 
-    // ===== УТИЛИТЫ =====
+    function renderStatusBadge(status) {
+        const map = {
+            'loaded': ['loaded', '🟢 Готово'],
+            'on-gate': ['on-gate', '🔴 На воротах'],
+            'parking': ['parking', '🟠 На парковке'],
+            'coming': ['coming', '⏳ Едет'],
+            'agree': ['agree', '🟣 Согласовать'],
+            'problem': ['problem', '⚠️ Проблема']
+        };
+        const [cls, txt] = map[status] || ['coming', '⏳'];
+        return `<span class="status-badge ${cls}">${txt}</span>`;
+    }
+
+    function setIncomingFilter(f) { incomingFilter = f; document.querySelectorAll('#incomingFilters .filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderIncoming(); }
+    function setOutgoingFilter(f) { outgoingFilter = f; document.querySelectorAll('#outgoingFilters .filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderOutgoing(); }
+
+    function openGateFromTable(type, idx) {
+        const items = type === 'incoming' ? googleData.incoming : googleData.outgoing;
+        const item = items[idx];
+        if (!item) return;
+        // Найти свободные ворота
+        const free = GATES.filter(g => !gateStates[g].active);
+        if (free.length === 0) { showToast('Все ворота заняты', 'warning'); return; }
+        openGateModal(free[0]);
+        document.getElementById('gateRoute').value = item.route || '';
+        document.getElementById('gateDirection').value = item.direction || '';
+        document.getElementById('gateDriver').value = item.driver || '';
+        document.getElementById('gateVehicle').value = item.vehicle || '';
+        document.getElementById('gateVolume').value = item.volume || 20;
+        document.getElementById('gateType').value = type === 'incoming' ? 'unloading' : 'loading';
+    }
+
+    function completeFromTable(type, idx) {
+        // Просто помечаем как loaded
+        const items = type === 'incoming' ? googleData.incoming : googleData.outgoing;
+        if (items[idx]) {
+            items[idx].status = 'loaded';
+            saveGoogleData();
+            if (type === 'incoming') renderIncoming(); else renderOutgoing();
+            updateTabCounts();
+            showToast('Отмечено как готово', 'success');
+        }
+    }
+
+    // ==================== АНАЛИЗ ====================
+    function renderAnalysis() {
+        const alerts = buildAlerts();
+        const alertList = document.getElementById('alertList');
+        document.getElementById('alertCount').textContent = alerts.length + ' проблем';
+
+        if (alerts.length === 0) {
+            alertList.innerHTML = `<div class="alert-empty"><div class="alert-empty-icon">✅</div>Всё в порядке!<br><span style="font-size:12px; font-weight:600; color:var(--text-dim);">Проблем не найдено</span></div>`;
+        } else {
+            alertList.innerHTML = alerts.map(a => `
+                <div class="alert-item ${a.level}">
+                    <span class="alert-item-icon">${a.icon}</span>
+                    <span>${a.text}</span>
+                </div>
+            `).join('');
+        }
+
+        // Текст для чата
+        const text = buildAnalysisText();
+        document.getElementById('analysisText').textContent = text;
+
+        updateTabCounts();
+    }
+
+    function buildAlerts() {
+        const alerts = [];
+        const now = new Date();
+
+        // 1. Проверяем каждое направление
+        bufferData.filter(b => !b.isReturn).forEach(b => {
+            const needTS = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
+            const haveTS = b.haveTS || 0;
+
+            // Найти машины в Google и чате по направлению
+            const googleCount = [...googleData.incoming, ...googleData.outgoing].filter(g =>
+                g.direction && g.direction.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
+            ).length;
+            const chatCount = chatRoutes.filter(c =>
+                c.shortDirection && c.shortDirection.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
+            ).length;
+
+            const totalAvailable = haveTS + googleCount + chatCount;
+
+            // Катофф
+            const cutoff = getCutoffStatus(b.direction);
+            if (cutoff && !cutoff.isOverdue && cutoff.diffMin <= 120 && needTS > 0) {
+                alerts.push({
+                    level: cutoff.diffMin <= 60 ? 'critical' : 'warning',
+                    icon: '⏰',
+                    text: `<b>${b.direction}</b> — катофф через ${formatCutoffDuration(cutoff.diffMs)} (${cutoff.start}–${cutoff.end}), нужно ${needTS} ТС`
+                });
+            }
+
+            // Нехватка ТС
+            if (needTS > 0 && totalAvailable < needTS) {
+                alerts.push({
+                    level: 'critical',
+                    icon: '🚨',
+                    text: `<b>${b.direction}</b> — нужно ${needTS} ТС, есть ${totalAvailable}. НУЖНА МАШИНА!`
+                });
+            }
+
+            // Много груза
+            const total = (b.oldGab || 0) + (b.oldNegab || 0) + (b.newGab || 0) + (b.newNegab || 0);
+            if (total > 15 && needTS <= 1) {
+                alerts.push({
+                    level: 'warning',
+                    icon: '🔥',
+                    text: `<b>${b.direction}</b> — ${total} ГМ, но ${needTS} ТС. Возможно, не хватит места!`
+                });
+            }
+        });
+
+        // 2. Долгое стояние на воротах
+        GATES.forEach(num => {
+            const s = gateStates[num];
+            if (!s.active) return;
+            const diff = Date.now() - s.startTime;
+            if (diff > 90 * 60 * 1000) {
+                alerts.push({
+                    level: 'critical',
+                    icon: '⏱',
+                    text: `<b>#${s.data.route.replace('#','')}</b> (ворота ${num}) — ${formatDuration(diff)}. ПРОБЛЕМА!`
+                });
+            }
+        });
+
+        return alerts;
+    }
+
+    function buildAnalysisText() {
+        let text = '';
+        bufferData.filter(b => !b.isReturn).forEach(b => {
+            const shortName = ANALYSIS_NAMES[b.direction] || b.direction;
+            const needTS = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
+            const haveTS = b.haveTS || 0;
+
+            // Машины из Google
+            const googleCount = [...googleData.incoming, ...googleData.outgoing].filter(g =>
+                g.direction && g.direction.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
+            ).length;
+
+            // Рейсы из чата
+            const chatMatches = chatRoutes.filter(c =>
+                c.shortDirection && c.shortDirection.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
+            );
+
+            let line = shortName + ' - ';
+
+            // Есть ТС
+            const totalHave = haveTS + googleCount;
+            if (totalHave > 0) line += totalHave + ' ТС есть';
+            else line += 'ТС нет';
+
+            // Едет из чата
+            if (chatMatches.length > 0) {
+                const marks = chatMatches.map(c => {
+                    if (c.marks.includes('ours')) return 'ваш';
+                    if (c.marks.includes('wait-ffc')) return 'ФФЦ';
+                    return '';
+                }).filter(m => m).join(', ');
+                line += ', ' + chatMatches.length + ' ТС едет';
+                if (marks) line += ' (' + marks + ')';
+            }
+
+            // Доп
+            if (needTS > totalHave) {
+                line += `, ДОП НУЖНО (${needTS - totalHave})`;
+            } else if (needTS > 0) {
+                line += ', доп не требуется';
+            } else {
+                line += ', доп не требуется';
+            }
+
+            text += line + '\n';
+        });
+        return text;
+    }
+
+    function copyAnalysisText() {
+        const text = document.getElementById('analysisText').textContent;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('📋 Текст скопирован в буфер', 'success');
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('📋 Текст скопирован', 'success');
+        });
+    }
+
+    // ==================== СЧЁТЧИКИ ВКЛАДОК ====================
+    function updateTabCounts() {
+        const gatesBusy = GATES.filter(g => gateStates[g].active).length;
+        document.getElementById('tabCountGates').textContent = gatesBusy;
+        document.getElementById('tabCountIncoming').textContent = googleData.incoming.length + chatRoutes.filter(r => r.type === 'incoming').length;
+        document.getElementById('tabCountOutgoing').textContent = googleData.outgoing.length + chatRoutes.filter(r => r.type !== 'incoming').length;
+    }
+
+    // ==================== УТИЛИТЫ ====================
     function showToast(text, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = 'toast ' + type;
-        toast.textContent = text;
-        container.appendChild(toast);
+        const c = document.getElementById('toastContainer');
+        const t = document.createElement('div');
+        t.className = 'toast ' + type;
+        t.textContent = text;
+        c.appendChild(t);
         setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(400px)';
-            toast.style.transition = 'all 0.3s';
-            setTimeout(() => toast.remove(), 300);
+            t.style.opacity = '0';
+            t.style.transform = 'translateX(400px)';
+            t.style.transition = 'all 0.3s';
+            setTimeout(() => t.remove(), 300);
         }, 3000);
     }
 
     function resetAll() {
-        if (!confirm('Сбросить всё? Данные анализа, буфера и ворот будут потеряны.')) return;
-        localStorage.removeItem('warehouseBuffer');
-        localStorage.removeItem('warehouseGates');
-        localStorage.removeItem('warehouseAnalysis');
+        if (!confirm('Сбросить ВСЕ данные? Это удалит буфер, ворота, Google и чат.')) return;
+        localStorage.removeItem('wb_buffer');
+        localStorage.removeItem('wb_gates');
+        localStorage.removeItem('wb_google');
+        localStorage.removeItem('wb_chat');
         bufferData = [];
-        routes = [];
         gateStates = {};
-        analysisData = {};
+        googleData = { incoming: [], outgoing: [] };
+        chatRoutes = [];
         initBufferData();
         initGates();
-        initAnalysisData();
         renderBufferTable();
-        renderRoutes();
+        renderIncoming();
+        renderOutgoing();
         renderAnalysis();
+        updateTabCounts();
         showToast('Всё сброшено', 'success');
     }
 
-    // ===== СТАРТ =====
-    initAnalysisData();
+    // ==================== СТАРТ ====================
     initBufferData();
     initGates();
+    loadGates();
+    loadGoogleData();
+    loadChatData();
+
     renderBufferTable();
-    renderRoutes();
+    renderGates();
+    renderIncoming();
+    renderOutgoing();
     renderAnalysis();
-    loadGatesFromLocal();
-    switchTab('analysis');
+    updateTabCounts();
+
+    // Обновление катоффов и таймеров каждую секунду
+    setInterval(() => {
+        if (currentTab === 'gates') renderGates();
+    }, 60000);
 </script>
 
 </body>

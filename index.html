@@ -24,7 +24,6 @@
         background: var(--bg); color: var(--text); min-height: 100vh;
         font-size: 13px; -webkit-font-smoothing: antialiased;
     }
-
     .app-header {
         background: var(--card); border-bottom: 2px solid var(--border);
         padding: 10px 20px; display: flex; align-items: center;
@@ -37,7 +36,6 @@
         background: linear-gradient(135deg, var(--accent), #1e40af);
         border-radius: 8px; display: flex; align-items: center;
         justify-content: center; font-size: 16px; color: white;
-        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
     }
     .search-box { flex: 1; min-width: 180px; max-width: 380px; position: relative; }
     .search-box input {
@@ -73,7 +71,7 @@
         font-size: 12px; font-weight: 800; cursor: pointer;
         transition: all 0.15s; font-family: inherit;
         display: inline-flex; align-items: center; gap: 5px;
-        white-space: nowrap; letter-spacing: 0.2px;
+        white-space: nowrap;
     }
     .btn:active { transform: scale(0.97); }
     .btn-primary { background: var(--accent); color: white; }
@@ -244,7 +242,6 @@
     .gate-timer.danger { color: var(--danger); animation: blink 1s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* КАТОФФ */
     .cutoff-block {
         display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
         padding: 7px 11px; border-radius: 8px;
@@ -254,6 +251,7 @@
     .cutoff-block.warning { background: var(--warning-light); color: var(--warning); }
     .cutoff-block.danger { background: var(--danger-light); color: var(--danger); animation: blink 1.5s infinite; }
     .cutoff-block.overdue { background: var(--danger); color: white; animation: blink 1s infinite; }
+    .cutoff-block.hour-from-gate { background: var(--accent-light); color: var(--accent); }
 
     .cutoff-dual {
         display: flex; gap: 10px; font-size: 11px;
@@ -268,7 +266,6 @@
     }
     .katoff-badge.katoff { background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; }
     .katoff-badge.free { background: #f0fdf4; color: #166534; border: 1px solid #16a34a; }
-    .katoff-badge.overdue { background: #dc2626; color: white; }
 
     .katoff-reason {
         font-size: 10px; font-weight: 700; color: var(--text-dim);
@@ -584,15 +581,16 @@
             <div class="rules-section">
                 <div class="rules-section-title">⏰ ПРИОРИТЕТ</div>
                 <ul class="rules-list">
-                    <li>Катофф СЦ = дедлайн для нас. Успей ДО.</li>
-                    <li>Катофф ФФЦ — только справка (для сверки).</li>
+                    <li><b>Катофная ТС</b> → дедлайн = катофф СЦ.</li>
+                    <li><b>Не катофная ТС</b> → дедлайн = 1 час с момента постановки на ворота.</li>
+                    <li>Катофф ФФЦ — только справка.</li>
                     <li>ТС не приехал за час до катофа → ЗВОНИ водителю.</li>
                 </ul>
             </div>
             <div class="rules-section">
                 <div class="rules-section-title">🔄 СДВИНУТЬ СЛОТ ТС (если все три):</div>
                 <ul class="rules-list">
-                    <li>ТС не катофная (план после дедлайна СЦ)</li>
+                    <li>ТС не катофная</li>
                     <li>Не руинит слот ФФЦ</li>
                     <li>Не руинит кругорейс</li>
                     <li><b>⚠️ Согласовать с ЛХ в чате!</b></li>
@@ -612,23 +610,22 @@
                 <ul class="rules-list">
                     <li>1 бриг ЛХ сутки — диспетчер</li>
                     <li>1 бриг ЛХ сутки/день — физик</li>
-                    <li>1 старший смены — закрывает потребность в персонале</li>
+                    <li>1 старший смены — персонал</li>
                 </ul>
             </div>
             <div class="rules-section">
                 <div class="rules-section-title">🛠 ИНСТРУМЕНТЫ</div>
                 <ul class="rules-list">
                     <li>Обновлять выгрузку из ЦУП 2 раза в сутки</li>
-                    <li>Пользоваться ГЕО из ЦУП</li>
                     <li>Прозванивать ТС, не прибывшие за час до слота</li>
                     <li>Проверять ТС: пустые / сначала выгрузка</li>
                 </ul>
             </div>
             <div class="rules-section">
-                <div class="rules-section-title">⏱ КОНТРОЛЬ ПЕРСОНАЛА</div>
+                <div class="rules-section-title">⏱ КОНТРОЛЬ</div>
                 <ul class="rules-list">
-                    <li>Не доверять работу необученному сотруднику</li>
                     <li>Соблюдать ФЛОУ ≤ 1 час на 1 ТС</li>
+                    <li>Не доверять работу необученному</li>
                 </ul>
             </div>
         </div>
@@ -673,19 +670,15 @@
 <script>
     // ==================== КОНСТАНТЫ ====================
     const GATES = [11, 12, 13, 14, 15, 16, 17];
+    const HOUR_FROM_GATE = 60 * 60 * 1000; // 1 час в мс
 
     const DEFAULT_DIRECTIONS = [
         'Ижевск', 'Чебоксары', 'Челны', 'Киров', 'Екатеринбург',
         'Самара', 'Самара Возврат', 'Уфа', 'Ростов', 'Ульяновск',
         'Оренбург', 'Нижний Новгород', 'Пенза', 'Саратов', 'Дзержинский'
     ];
-
     const DEFAULT_RETURNS = ['DPD', 'X5', 'Софьино 3.1', 'Софьино КГТ', 'Домодедово', 'Казань ВП', 'ДМД ЕВСЦ'];
 
-    // ==================== КАТОФФЫ ====================
-    // sc = катофф СЦ (дедлайн для нас)
-    // ffc = катофф ФФЦ (только справка)
-    // order = кто грузит первым (для справки)
     const CUTOFFS = {
         'Екатеринбург':    { sc: '12:00–13:00', ffc: '13:30–14:30', order: 'sc-first' },
         'Дзержинский':     { sc: '12:00–13:00', ffc: '13:30–14:30', order: 'sc-first' },
@@ -710,7 +703,6 @@
         'Отделить КРОСС-ДОК (если есть)',
         'Разместить в буфере'
     ];
-
     const LOAD_STEPS = [
         'СТАРЫЙ СОРТ — в первую очередь',
         'НОВЫЙ СОРТ — если старого нет',
@@ -722,7 +714,7 @@
     let google = { incoming: [], outgoing: [] };
     let chat = [];
     let buffer = [];
-    let gateStates = {};
+    let gateStates = {}; // { num: { startTime, data } }
     let gateTimers = {};
     let currentImport = 'buffer';
     let currentTab = 'gates';
@@ -745,7 +737,6 @@
         else if (hours < 12) el.classList.add('stale');
         else el.classList.add('old');
     }
-
     function markCupUpdated() {
         lastCupUpdate = Date.now();
         localStorage.setItem('wb_cup', lastCupUpdate);
@@ -765,7 +756,6 @@
         if (tab === 'buffer') renderBuffer();
         if (tab === 'analysis') renderAnalysis();
     }
-
     function toggleRules() {
         const body = document.getElementById('rulesBody');
         const toggle = document.getElementById('rulesToggle');
@@ -773,7 +763,7 @@
         toggle.textContent = body.classList.contains('open') ? '▲' : '▼';
     }
 
-    // ==================== КАТОФФ — ГЛАВНАЯ ЛОГИКА ====================
+    // ==================== КАТОФФ ====================
     function getCutoffFor(direction) {
         if (!direction) return null;
         const dir = direction.trim();
@@ -783,7 +773,6 @@
         return null;
     }
 
-    // Парсим "12:00" → {h: 12, m: 0}
     function parseTime(str) {
         if (!str) return null;
         const m = str.match(/(\d{1,2}):(\d{2})/);
@@ -791,59 +780,47 @@
         return { h: parseInt(m[1]), m: parseInt(m[2]) };
     }
 
-    // Получаем дедлайн СЦ в минутах от начала суток
-    // Но учитываем ночные (после 24:00 → 0:30 это 1470 минут)
     function getSCDeadlineMinutes(direction) {
         const c = getCutoffFor(direction);
         if (!c || !c.sc) return null;
-        // "12:00–13:00" → берём окончание "13:00"
         const parts = c.sc.split(/[–-]/);
         const endStr = parts[1] ? parts[1].trim() : parts[0].trim();
         const t = parseTime(endStr);
         if (!t) return null;
         let min = t.h * 60 + t.m;
-        // Если дедлайн ночью (< 6:00), он "следующего дня" → +24ч
         if (t.h < 6) min += 1440;
         return min;
     }
 
-    // Получаем время плана в минутах от начала суток
-    // Тоже с учётом ночных
     function getPlanMinutes(item) {
         if (!item.plan) return null;
         const m = item.plan.match(/(\d{1,2}):(\d{2})/);
         if (!m) return null;
         const h = parseInt(m[1]);
         const min = h * 60 + parseInt(m[2]);
-        // Если время плана ночное (< 6:00), считаем как следующий день
         if (h < 6) return min + 1440;
         return min;
     }
 
-    // Катофная = план ≤ дедлайн СЦ + 30 мин
     function isKatoff(item) {
         const deadlineMin = getSCDeadlineMinutes(item.direction);
         const planMin = getPlanMinutes(item);
-        if (deadlineMin === null || planMin === null) return null; // нет данных
-
+        if (deadlineMin === null || planMin === null) return null;
         return planMin <= deadlineMin + 30;
     }
 
-    // Обоснование вердикта
     function getKatoffReason(item) {
         const c = getCutoffFor(item.direction);
         if (!c) return 'Нет катоффа';
         const planMin = getPlanMinutes(item);
         if (planMin === null) return 'Нет плана';
         const deadlineMin = getSCDeadlineMinutes(item.direction);
-
         const planStr = minutesToStr(planMin);
         const deadlineStr = minutesToStr(deadlineMin);
-
         if (planMin <= deadlineMin + 30) {
             return `План ${planStr} ≤ дедлайн СЦ ${deadlineStr} → КАТОФНАЯ`;
         } else {
-            return `План ${planStr} > дедлайн СЦ ${deadlineStr} → НЕ КАТОФНАЯ`;
+            return `План ${planStr} > дедлайн СЦ ${deadlineStr} → НЕ КАТОФНАЯ (дедлайн = 1 час с ворот)`;
         }
     }
 
@@ -854,15 +831,51 @@
         return String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
     }
 
-    // Статус дедлайна (сколько осталось)
-    function getCutoffStatus(direction) {
-        const deadlineMin = getSCDeadlineMinutes(direction);
+    // === ГЛАВНАЯ ФУНКЦИЯ — статус дедлайна ===
+    // Если катофная → дедлайн = катофф СЦ
+    // Если НЕ катофная → дедлайн = 1 час с момента постановки на ворота
+    function getCutoffStatus(item, gateNum) {
+        const katoff = isKatoff(item);
+
+        // НЕ катофная → дедлайн = 1 час с ворот
+        if (katoff === false) {
+            const gateStart = gateStates[gateNum]?.startTime;
+            if (!gateStart) {
+                // Машина ещё не на воротах — дедлайн не активен
+                return {
+                    type: 'hour-from-gate',
+                    deadlineStr: '1 час с ворот',
+                    diffMs: null,
+                    diffMin: null,
+                    isOverdue: false,
+                    notOnGate: true
+                };
+            }
+            const elapsed = Date.now() - gateStart;
+            const diffMs = HOUR_FROM_GATE - elapsed;
+            return {
+                type: 'hour-from-gate',
+                deadlineStr: '1 час с ворот',
+                diffMs: diffMs,
+                diffMin: Math.floor(diffMs / 60000),
+                isOverdue: diffMs < 0
+            };
+        }
+
+        // Катофная (или null) → дедлайн = катофф СЦ
+        const deadlineMin = getSCDeadlineMinutes(item.direction);
         if (deadlineMin === null) return null;
         const now = new Date();
         const nowMin = now.getHours() * 60 + now.getMinutes();
-        // Нормализуем: сравниваем как есть, но если дедлайн > 1440 и сейчас утро — тоже ок
         const diffMs = (deadlineMin - nowMin) * 60000;
-        return { deadlineMin, diffMs, diffMin: Math.floor(diffMs / 60000), isOverdue: diffMs < 0 };
+        return {
+            type: 'cutoff',
+            deadlineMin: deadlineMin,
+            deadlineStr: minutesToStr(deadlineMin),
+            diffMs: diffMs,
+            diffMin: Math.floor(diffMs / 60000),
+            isOverdue: diffMs < 0
+        };
     }
 
     function formatDur(ms) {
@@ -873,27 +886,51 @@
         return m + 'мин';
     }
 
-    function renderCutoffBlock(direction) {
+    // === Рендер блока катоффа ===
+    function renderCutoffBlock(direction, item, gateNum) {
         const c = getCutoffFor(direction);
         if (!c) return '';
 
-        // Показываем оба катоффа
-        let dualHtml = `<div class="cutoff-dual">
+        const dualHtml = `<div class="cutoff-dual">
             <span class="sc">🎯 Катофф СЦ: ${c.sc}</span>
             <span class="ffc">🔄 ФФЦ (справка): ${c.ffc}</span>
         </div>`;
 
-        // Статус по дедлайну СЦ
-        const status = getCutoffStatus(direction);
+        const status = getCutoffStatus(item, gateNum);
         if (!status) return dualHtml;
 
-        let cls, icon, text;
-        if (status.isOverdue) { cls = 'overdue'; icon = '🔥'; text = `ПРОСРОЧЕНО на ${formatDur(status.diffMs)}`; }
-        else if (status.diffMin <= 60) { cls = 'danger'; icon = '⚠️'; text = `осталось ${formatDur(status.diffMs)}`; }
-        else if (status.diffMin <= 120) { cls = 'warning'; icon = '⏰'; text = `осталось ${formatDur(status.diffMs)}`; }
-        else { cls = 'safe'; icon = '✅'; text = `осталось ${formatDur(status.diffMs)}`; }
+        // НЕ катофная и ещё не на воротах
+        if (status.notOnGate) {
+            return dualHtml + `<div class="cutoff-block hour-from-gate">
+                <span>🔄</span>
+                <span>НЕ катофная → дедлайн 1 час с момента постановки на ворота</span>
+            </div>`;
+        }
 
-        return dualHtml + `<div class="cutoff-block ${cls}"><span>${icon}</span><span>До дедлайна СЦ (${minutesToStr(status.deadlineMin)}): ${text}</span></div>`;
+        let cls, icon, text;
+        if (status.isOverdue) {
+            cls = 'overdue';
+            icon = '🔥';
+            text = `ПРОСРОЧЕНО на ${formatDur(status.diffMs)}`;
+        } else if (status.diffMin <= 15) {
+            cls = 'danger';
+            icon = '⚠️';
+            text = `осталось ${formatDur(status.diffMs)}`;
+        } else if (status.diffMin <= 30) {
+            cls = 'warning';
+            icon = '⏰';
+            text = `осталось ${formatDur(status.diffMs)}`;
+        } else {
+            cls = status.type === 'hour-from-gate' ? 'hour-from-gate' : 'safe';
+            icon = status.type === 'hour-from-gate' ? '⏱' : '✅';
+            text = `осталось ${formatDur(status.diffMs)}`;
+        }
+
+        const label = status.type === 'cutoff'
+            ? `До дедлайна СЦ (${status.deadlineStr}):`
+            : `До дедлайна (${status.deadlineStr}):`;
+
+        return dualHtml + `<div class="cutoff-block ${cls}"><span>${icon}</span><span>${label} ${text}</span></div>`;
     }
 
     // ==================== СТАТУС ====================
@@ -924,39 +961,31 @@
         return `<span class="status-badge ${cls}">${txt}</span>`;
     }
 
-    // ==================== ЧТО ДЕЛАТЬ ====================
     function buildWhatToDo(item) {
         const s = detectStatus(item);
         const comment = (item.comment || '').toLowerCase();
-
         if (s === 'loaded') return '✅ Готово';
         if (s === 'parking') return '🅿️ Ждёт на парковке';
         if (s === 'on-gate') return `🚪 На воротах ${item.gate || ''}`.trim();
         if (s === 'agree') return '⚠️ СОГЛАСОВАТЬ с логистом';
-
         if (comment.includes('ффц') && (comment.includes('остав') || comment.includes('мест'))) return '📦 Оставить место для ФФЦ';
         if (comment.includes('не груз') || comment.includes('без соглас')) return '🚫 НЕ грузить';
         if (comment.includes('ваш')) return '✅ Загружаем';
-
         return '⏳ Ждём';
     }
 
-    // ==================== ПАМЯТКА ====================
     function buildMemo(item, type) {
         const steps = type === 'incoming' ? UNLOAD_STEPS : LOAD_STEPS;
         const comment = (item.comment || '').toLowerCase();
-
         let html = `<div class="memo">
             <div class="memo-title">📋 ${type === 'incoming' ? 'ПРИ ВЫГРУЗКЕ' : 'ПРИ ЗАГРУЗКЕ'}</div>
             <div class="memo-list">
                 ${steps.map((s, i) => `<div class="memo-item"><span class="memo-item-num">${i+1}.</span><span>${s}</span></div>`).join('')}
             </div>`;
-
         const extra = [];
         if (comment.includes('остав') && comment.includes('ффц')) extra.push('📦 Оставить место для ФФЦ');
         if (comment.includes('соглас')) extra.push('⚠️ СОГЛАСОВАТЬ с логистом');
         if (comment.includes('не груз')) extra.push('🚫 НЕ грузить без разрешения');
-
         if (extra.length > 0) {
             html += `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed rgba(37,99,235,0.3);">
                 <div style="font-size:10px; font-weight:900; color:#dc2626; margin-bottom:4px;">⚠️ ВНИМАНИЕ:</div>
@@ -970,7 +999,6 @@
     function renderTags(item) {
         const tags = [];
         const comment = (item.comment || '').toLowerCase();
-
         if (comment.includes('ваш') || (item.marks && item.marks.includes('ours')))
             tags.push('<span class="tag ours">✅ ВАШ</span>');
         if (comment.includes('соглас') || (item.marks && item.marks.includes('no-load')))
@@ -981,16 +1009,13 @@
             tags.push('<span class="tag head">📦 ГОЛОВА</span>');
         if (comment.includes('хвост'))
             tags.push('<span class="tag tail">📦 ХВОСТ</span>');
-
         return tags.join('');
     }
 
-    // ==================== ОБЪЕДИНЕНИЕ ====================
     function getAllItems(type) {
         const items = [];
         const googleItems = type === 'incoming' ? google.incoming : google.outgoing;
         googleItems.forEach(g => items.push({ ...g, source: 'google' }));
-
         chat.forEach(c => {
             const exists = items.find(g => g.route === c.route);
             if (exists) {
@@ -1001,17 +1026,6 @@
             }
             items.push({ ...c, source: 'chat', type: c.type || 'outgoing', status: 'coming' });
         });
-
-        // Сортируем: катофные и горящие сверху
-        items.sort((a, b) => {
-            const sa = getCutoffStatus(a.direction);
-            const sb = getCutoffStatus(b.direction);
-            if (!sa && !sb) return 0;
-            if (!sa) return 1;
-            if (!sb) return -1;
-            return sa.diffMs - sb.diffMs;
-        });
-
         return items;
     }
 
@@ -1048,32 +1062,36 @@
             }
 
             busy++;
+
+            // Инициализируем время постановки
+            if (!gateStates[num]) gateStates[num] = { startTime: Date.now(), data: item };
+
             const type = item.type === 'incoming' ? 'unloading' : 'loading';
             const statusText = type === 'unloading' ? '🔽 Выгрузка' : '🔼 Загрузка';
-            const cutoffHtml = renderCutoffBlock(item.direction);
+            const cutoffHtml = renderCutoffBlock(item.direction, item, num);
             const memoHtml = buildMemo(item, item.type || 'incoming');
             const tagsHtml = renderTags(item);
 
-            // Вердикт катофная
             const katoff = isKatoff(item);
             const reason = getKatoffReason(item);
             let katoffBadge = '';
-            if (katoff === true) {
-                katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
-            } else if (katoff === false) {
-                katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
-            }
+            if (katoff === true) katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
+            else if (katoff === false) katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
 
             // Проверка "прозвон за час"
-            const cutoffStatus = getCutoffStatus(item.direction);
             let alertCallHtml = '';
-            if (cutoffStatus && !cutoffStatus.isOverdue && cutoffStatus.diffMin <= 60 && detectStatus(item) === 'coming') {
-                alertCallHtml = `<div style="margin-top:6px; padding:8px 12px; background:var(--danger); color:white; border-radius:8px; font-size:11px; font-weight:800;">
-                    📞 СРОЧНО ПОЗВОНИ ВОДИТЕЛЮ! (${item.phone || 'номер в чате'})
-                </div>`;
+            if (katoff === true) {
+                const cs = getCutoffStatus(item, num);
+                if (cs && cs.type === 'cutoff' && !cs.isOverdue && cs.diffMin <= 60 && detectStatus(item) === 'coming') {
+                    alertCallHtml = `<div style="margin-top:6px; padding:8px 12px; background:var(--danger); color:white; border-radius:8px; font-size:11px; font-weight:800;">
+                        📞 СРОЧНО ПОЗВОНИ ВОДИТЕЛЮ! (${item.phone || 'номер в чате'})
+                    </div>`;
+                }
             }
 
-            const urgentClass = (cutoffStatus && cutoffStatus.diffMin <= 60 && !cutoffStatus.isOverdue) ? 'urgent' : '';
+            // Urgent только для катофных
+            const cs = getCutoffStatus(item, num);
+            const urgentClass = (cs && cs.isOverdue) ? 'urgent' : '';
 
             html += `<div class="gate-card ${type} ${urgentClass}">
                 <div class="gate-card-header">
@@ -1130,9 +1148,7 @@
         const tbody = document.getElementById(type + 'TableBody');
         const countEl = document.getElementById(type + 'Count');
         let items = getAllItems(type);
-
         if (filters[type] !== 'all') items = items.filter(i => detectStatus(i) === filters[type]);
-
         countEl.textContent = items.length + ' рейсов';
 
         if (items.length === 0) {
@@ -1194,9 +1210,8 @@
     function renderBuffer() {
         const tbody = document.getElementById('bufferTableBody');
         document.getElementById('bufferCount').textContent = buffer.filter(b => !b.isReturn).length + ' направлений';
-
         if (buffer.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Нажми «📊 Срез» в шапке</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Нажми «📊 Срез»</td></tr>';
             return;
         }
 
@@ -1204,21 +1219,12 @@
         const main = buffer.map((r, i) => ({ ...r, idx: i })).filter(r => !r.isReturn);
         const returns = buffer.map((r, i) => ({ ...r, idx: i })).filter(r => r.isReturn);
 
-        main.sort((a, b) => {
-            const sa = getCutoffStatus(a.direction);
-            const sb = getCutoffStatus(b.direction);
-            if (sa && sb && sa.diffMs !== sb.diffMs) return sa.diffMs - sb.diffMs;
-            if (sa && !sb) return -1;
-            if (!sa && sb) return 1;
-            return a.direction.localeCompare(b.direction);
-        });
-
         main.forEach(r => {
             const total = (r.oldGab || 0) + (r.oldNegab || 0) + (r.newGab || 0) + (r.newNegab || 0);
             const needTS = Math.ceil(((r.oldGab || 0) + (r.oldNegab || 0) * 1.5) / 33);
             const cutoff = getCutoffFor(r.direction);
             const cutoffStr = cutoff
-                ? `<span class="sc" style="color:#1e40af; font-weight:900;">СЦ: ${cutoff.sc}</span><br><span style="color:#7c3aed; opacity:0.7; font-weight:700;">ФФЦ: ${cutoff.ffc}</span>`
+                ? `<span style="color:#1e40af; font-weight:900;">СЦ: ${cutoff.sc}</span><br><span style="color:#7c3aed; opacity:0.7; font-weight:700;">ФФЦ: ${cutoff.ffc}</span>`
                 : '<span style="color:var(--text-muted);">—</span>';
             const fire = needTS > 0 && (r.haveTS || 0) < needTS ? '🔥' : '';
             const highlight = needTS > 0 ? 'highlight-row' : '';
@@ -1306,7 +1312,6 @@
         renderBuffer();
     }
 
-    // ==================== ПОИСК ====================
     function doSearch(q) {
         searchQuery = (q || '').toLowerCase().trim();
         if (currentTab === 'incoming') renderTable('incoming');
@@ -1318,9 +1323,8 @@
         const alerts = buildAlerts();
         const alertList = document.getElementById('alertList');
         document.getElementById('alertCount').textContent = alerts.length + ' проблем';
-
         if (alerts.length === 0) {
-            alertList.innerHTML = `<div class="alert-empty">✅ Всё в порядке!<br><span style="font-size:12px; color:var(--text-dim);">Проблем не найдено</span></div>`;
+            alertList.innerHTML = `<div class="alert-empty">✅ Всё в порядке!</div>`;
         } else {
             alertList.innerHTML = alerts.map(a => `
                 <div class="alert-item ${a.level}">
@@ -1329,7 +1333,6 @@
                 </div>
             `).join('');
         }
-
         document.getElementById('analysisText').textContent = buildAnalysisText();
         updateTabCounts();
     }
@@ -1338,17 +1341,23 @@
         const alerts = [];
         const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
 
+        // Катофные алерты
         buffer.filter(b => !b.isReturn).forEach(b => {
             const needTS = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
             if (needTS === 0) return;
             const haveTS = b.haveTS || 0;
-            const cutoff = getCutoffStatus(b.direction);
+            const deadlineMin = getSCDeadlineMinutes(b.direction);
+            if (deadlineMin === null) return;
 
-            if (cutoff && !cutoff.isOverdue && cutoff.diffMin <= 120) {
+            const now = new Date();
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+            const diffMin = deadlineMin - nowMin;
+
+            if (diffMin > 0 && diffMin <= 120) {
                 alerts.push({
-                    level: cutoff.diffMin <= 60 ? 'critical' : 'warning',
+                    level: diffMin <= 60 ? 'critical' : 'warning',
                     icon: '⏰',
-                    text: `<b>${b.direction}</b> — до катоффа СЦ ${formatDur(cutoff.diffMs)}, нужно ${needTS} ТС`
+                    text: `<b>${b.direction}</b> — до катоффа СЦ ${diffMin} мин, нужно ${needTS} ТС`
                 });
             }
 
@@ -1373,10 +1382,12 @@
             }
         });
 
+        // Прозвон за час (только катофные)
         all.forEach(item => {
             if (detectStatus(item) !== 'coming') return;
-            const cutoff = getCutoffStatus(item.direction);
-            if (cutoff && !cutoff.isOverdue && cutoff.diffMin <= 60 && cutoff.diffMin > 0) {
+            if (isKatoff(item) !== true) return;
+            const cutoff = getCutoffStatus(item, null);
+            if (cutoff && cutoff.type === 'cutoff' && !cutoff.isOverdue && cutoff.diffMin <= 60 && cutoff.diffMin > 0) {
                 alerts.push({
                     level: 'critical',
                     icon: '📞',
@@ -1404,54 +1415,34 @@
         buffer.filter(b => !b.isReturn).forEach(b => {
             const needTS = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
             const haveTS = b.haveTS || 0;
-
             const googleCount = [...google.incoming, ...google.outgoing].filter(g =>
                 g.direction && g.direction.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
             ).length;
             const chatMatches = chat.filter(c =>
                 c.shortDirection && c.shortDirection.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
             );
-
             let line = b.direction + ' - ';
             const totalHave = haveTS + googleCount;
-
             if (totalHave > 0) line += totalHave + ' ТС есть';
             else line += 'ТС нет';
-
             if (chatMatches.length > 0) line += ', ' + chatMatches.length + ' ТС едет';
-
             if (needTS > totalHave) line += `, ДОП НУЖНО (${needTS - totalHave})`;
             else line += ', доп не требуется';
-
             text += line + '\n';
         });
-        return text || 'Нет данных для анализа.';
+        return text || 'Нет данных.';
     }
 
     function copyAnalysisText() {
         const text = document.getElementById('analysisText').textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('📋 Текст скопирован', 'success');
-        }).catch(() => {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-            showToast('📋 Скопировано', 'success');
-        });
+        navigator.clipboard.writeText(text).then(() => showToast('📋 Скопировано', 'success'))
+            .catch(() => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('📋 Скопировано', 'success'); });
     }
 
     // ==================== ИМПОРТ ====================
     function openImport(type) {
         currentImport = type;
-        const titles = {
-            buffer: '📊 Импорт среза по буферу',
-            incoming: '📥 Импорт Google ВХОД',
-            outgoing: '📤 Импорт Google ИСХОД',
-            chat: '📋 Импорт рейсов из чата'
-        };
+        const titles = { buffer: '📊 Импорт среза', incoming: '📥 Импорт Google ВХОД', outgoing: '📤 Импорт Google ИСХОД', chat: '📋 Импорт рейсов из чата' };
         const descs = {
             buffer: 'Скопируй блок среза из Google Таблицы <b>с шапкой</b>.',
             incoming: 'Скопируй из Google «Вход» <b>с шапкой</b>.',
@@ -1463,9 +1454,7 @@
         document.getElementById('importInput').value = '';
         document.getElementById('importModal').classList.add('active');
     }
-
     function closeImport() { document.getElementById('importModal').classList.remove('active'); }
-
     function doImport() {
         const text = document.getElementById('importInput').value.trim();
         if (!text) { showToast('Вставь текст', 'warning'); return; }
@@ -1479,26 +1468,21 @@
     function importBuffer(text) {
         const lines = text.split('\n').map(l => l.replace(/\r$/, ''));
         let inReturns = false, count = 0;
-
         lines.forEach(line => {
             if (!line.trim()) return;
             if (/^\s*Возвраты\s*$/i.test(line.trim())) { inReturns = true; return; }
-
             const parts = line.split('\t').map(p => p.trim());
             const first = parts[0] || '';
             if (/^(Направления?|Габарит|Старый сорт|Новый сорт|Тотал|Потребность)/i.test(first)) return;
             if (!first || /^\d+$/.test(first)) return;
-
             const direction = first;
             const nums = parts.slice(1).map(p => parseInt(p) || 0);
             const oldGab = nums[0] || 0, oldNegab = nums[1] || 0, newGab = nums[2] || 0, newNegab = nums[3] || 0;
-
             const idx = buffer.findIndex(b => b.direction === direction);
             if (idx >= 0) buffer[idx] = { ...buffer[idx], oldGab, oldNegab, newGab, newNegab, isReturn: inReturns };
             else buffer.push({ direction, oldGab, oldNegab, newGab, newNegab, haveTS: 0, isReturn: inReturns });
             count++;
         });
-
         saveBuffer();
         renderBuffer();
         showToast(`Загружено ${count} направлений`, 'success');
@@ -1507,55 +1491,37 @@
     function importGoogle(text, type) {
         const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
         if (lines.length < 2) { showToast('Мало данных', 'warning'); return; }
-
         let parsed = 0;
         const target = type === 'incoming' ? google.incoming : google.outgoing;
-
         lines.slice(1).forEach(line => {
             const p = line.split('\t').map(x => x.trim());
             if (p.length < 5) return;
-
             let item;
             if (type === 'incoming') {
                 item = {
                     route: '#' + (p[2] || '').replace('#', ''),
-                    direction: p[1] || '',
-                    vehicle: p[3] || '',
-                    driver: p[11] || '',
+                    direction: p[1] || '', vehicle: p[3] || '', driver: p[11] || '',
                     plan: [p[4], p[5]].filter(x => x).join(' '),
                     fact: [p[6], p[7]].filter(x => x).join(' '),
-                    volume: parseInt(p[10]) || 0,
-                    comment: '',
-                    gate: p[12] || '',
-                    status: p[13] || '',
-                    source: 'google',
-                    type: 'incoming'
+                    volume: parseInt(p[10]) || 0, comment: '', gate: p[12] || '', status: p[13] || '',
+                    source: 'google', type: 'incoming'
                 };
             } else {
                 item = {
                     route: '#' + (p[3] || '').replace('#', ''),
-                    direction: p[1] || '',
-                    vehicle: p[2] || '',
-                    driver: p[4] || '',
+                    direction: p[1] || '', vehicle: p[2] || '', driver: p[4] || '',
                     plan: [p[5], p[6]].filter(x => x).join(' '),
                     fact: [p[7], p[8]].filter(x => x).join(' '),
-                    volume: parseInt(p[11]) || 0,
-                    comment: p[12] || '',
-                    gate: p[13] || '',
-                    status: '',
-                    source: 'google',
-                    type: 'outgoing'
+                    volume: parseInt(p[11]) || 0, comment: p[12] || '', gate: p[13] || '', status: '',
+                    source: 'google', type: 'outgoing'
                 };
             }
-
             if (!item.route || item.route === '#') return;
-
             const idx = target.findIndex(g => g.route === item.route);
             if (idx >= 0) target[idx] = { ...target[idx], ...item, source: 'both' };
             else target.push(item);
             parsed++;
         });
-
         saveGoogle();
         showToast(`Загружено ${parsed} рейсов`, 'success');
         if (type === 'incoming') renderTable('incoming'); else renderTable('outgoing');
@@ -1569,7 +1535,6 @@
     function importChat(text) {
         const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
         let count = 0;
-
         blocks.forEach(block => {
             const lines = block.split('\n').map(l => l.trim()).filter(l => l);
             const item = parseChatBlock(lines);
@@ -1580,18 +1545,13 @@
                 count++;
             }
         });
-
         saveChat();
         showToast(`Разобрано ${count} рейсов`, 'success');
-        renderTable('incoming');
-        renderTable('outgoing');
-        renderGates();
-        renderAnalysis();
+        renderTable('incoming'); renderTable('outgoing'); renderGates(); renderAnalysis();
     }
 
     function parseChatBlock(lines) {
         let route = '', direction = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [], comment = '';
-
         lines.forEach(line => {
             const rm = line.match(/[Рр]ейс\s*#?(\d+)/i);
             if (rm) { route = '#' + rm[1]; return; }
@@ -1603,31 +1563,23 @@
             if (vm && !vehicle) { vehicle = vm[1].trim(); return; }
             const plm = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
             if (plm) { pallets = parseInt(plm[1]) || 0; return; }
-
             const hasDash = / [-—] /.test(line) || line.includes(' - ') || line.includes(' — ');
             const hasCities = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
             if (hasDash && hasCities && !direction) { direction = line.trim(); return; }
-
-            const lower = line.toLowerCase();
             if (/обе ваши|ваш\b|наша|его в работу|берите первый/i.test(line)) marks.push('ours');
             if (/без соглас|не бер|не груз/i.test(line)) { marks.push('no-load'); comment += line + ' '; }
             if (/ффц/i.test(line) && /остав|мест|сначала/i.test(line)) { marks.push('ffc'); comment += line + ' '; }
             if (/голова/i.test(line)) marks.push('head');
             if (/хвост/i.test(line)) marks.push('tail');
         });
-
         if (!route && !direction) return null;
-
         return {
-            route: route || '(без номера)',
-            direction,
+            route: route || '(без номера)', direction,
             shortDirection: normalizeDir(direction),
             driver, phone, vehicle, pallets,
             comment: comment.trim(),
             marks: [...new Set(marks)],
-            source: 'chat',
-            type: 'outgoing',
-            status: 'coming'
+            source: 'chat', type: 'outgoing', status: 'coming'
         };
     }
 
@@ -1643,7 +1595,6 @@
     function saveChat() { localStorage.setItem('wb_chat', JSON.stringify(chat)); }
     function loadChat() { try { const s = JSON.parse(localStorage.getItem('wb_chat') || 'null'); if (s) chat = s; } catch(e) {} }
 
-    // ==================== СЧЁТЧИКИ ====================
     function updateTabCounts() {
         document.getElementById('tabCountGates').textContent = document.querySelectorAll('.gate-card:not(.free)').length;
         document.getElementById('tabCountIncoming').textContent = getAllItems('incoming').length;
@@ -1669,20 +1620,13 @@
         if (!confirm('Сбросить ВСЕ данные?')) return;
         localStorage.clear();
         google = { incoming: [], outgoing: [] };
-        chat = [];
-        buffer = [];
-        gateStates = {};
+        chat = []; buffer = []; gateStates = {};
         Object.values(gateTimers).forEach(t => clearInterval(t));
         gateTimers = {};
         lastCupUpdate = 0;
         initBuffer();
-        renderGates();
-        renderTable('incoming');
-        renderTable('outgoing');
-        renderBuffer();
-        renderAnalysis();
-        updateTabCounts();
-        updateCupBadge();
+        renderGates(); renderTable('incoming'); renderTable('outgoing'); renderBuffer(); renderAnalysis();
+        updateTabCounts(); updateCupBadge();
         showToast('Всё сброшено', 'success');
     }
 

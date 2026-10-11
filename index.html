@@ -43,7 +43,7 @@
     .app-header {
         background: var(--card);
         border-bottom: 2px solid var(--border);
-        padding: 14px 24px;
+        padding: 12px 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -51,6 +51,8 @@
         position: sticky;
         top: 0;
         z-index: 100;
+        gap: 16px;
+        flex-wrap: wrap;
     }
 
     .app-logo {
@@ -80,6 +82,7 @@
         display: flex;
         gap: 8px;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     .clock {
@@ -91,6 +94,44 @@
         padding: 6px 14px;
         background: var(--accent-light);
         border-radius: 8px;
+    }
+
+    /* === ПЕРЕКЛЮЧАТЕЛЬ ВКЛАДОК === */
+    .tab-switcher {
+        display: flex;
+        gap: 4px;
+        padding: 12px 20px 0;
+        max-width: 1900px;
+        margin: 0 auto;
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        padding: 10px 18px;
+        border: none;
+        background: transparent;
+        border-radius: 10px 10px 0 0;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.15s;
+        color: var(--text-dim);
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn:hover { background: var(--card-hover); color: var(--text); }
+
+    .tab-btn.active {
+        background: var(--card);
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
     }
 
     /* === КНОПКИ === */
@@ -146,17 +187,221 @@
         font-size: 16px;
     }
 
+    /* === КОНТЕНТ ВКЛАДОК === */
+    .tab-content {
+        max-width: 1900px;
+        margin: 0 auto;
+        padding: 20px;
+        background: var(--card);
+        border-top: 2px solid var(--border);
+        min-height: calc(100vh - 180px);
+    }
+
+    .tab-content.hidden { display: none; }
+
+    /* === УТРЕННИЙ АНАЛИЗ === */
+    .analysis-toolbar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-radius: 12px;
+        border-left: 4px solid var(--warning);
+        flex-wrap: wrap;
+    }
+
+    .analysis-toolbar-title {
+        font-size: 15px;
+        font-weight: 900;
+        color: #78350f;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .analysis-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        transition: all 0.15s;
+        position: relative;
+    }
+
+    .analysis-card:hover { border-color: var(--accent); }
+    .analysis-card.ready { border-left: 5px solid var(--success); background: linear-gradient(90deg, rgba(220, 252, 231, 0.3) 0%, var(--card) 30%); }
+    .analysis-card.warning { border-left: 5px solid var(--warning); background: linear-gradient(90deg, rgba(254, 243, 199, 0.3) 0%, var(--card) 30%); }
+    .analysis-card.danger { border-left: 5px solid var(--danger); background: linear-gradient(90deg, rgba(254, 226, 226, 0.3) 0%, var(--card) 30%); }
+
+    .analysis-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .analysis-card-name {
+        font-size: 16px;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: 0.3px;
+    }
+
+    .analysis-card-cutoff {
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 8px;
+        background: var(--accent-light);
+        color: var(--accent);
+        margin-left: 6px;
+    }
+
+    .analysis-card-status {
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 12px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .analysis-card-status.ready { background: var(--success-light); color: var(--success); }
+    .analysis-card-status.warning { background: var(--warning-light); color: var(--warning); }
+    .analysis-card-status.danger { background: var(--danger-light); color: var(--danger); }
+
+    .analysis-row {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+
+    .analysis-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .analysis-field-label {
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--text-dim);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .analysis-field-input {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .analysis-field-input input[type="number"] {
+        width: 50px;
+        padding: 6px 8px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 14px;
+        color: var(--text);
+        font-family: inherit;
+    }
+
+    .analysis-field-input input[type="number"]:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .analysis-field-input select {
+        padding: 6px 10px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 12px;
+        color: var(--text);
+        background: white;
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    .analysis-field-input select:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+    .analysis-comment {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1.5px solid var(--border-strong);
+        border-radius: 6px;
+        font-size: 12px;
+        font-family: inherit;
+        color: var(--text);
+        background: #f8fafc;
+        resize: vertical;
+        min-height: 42px;
+    }
+
+    .analysis-comment:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: white;
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .analysis-preview {
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 18px;
+        border-radius: 12px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 12px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        margin-top: 20px;
+        border-left: 4px solid var(--success);
+        position: relative;
+    }
+
+    .analysis-preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #334155;
+        font-family: inherit;
+    }
+
+    .analysis-preview-title {
+        font-size: 12px;
+        font-weight: 900;
+        color: #94a3b8;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
     /* === ОСНОВНАЯ СЕТКА === */
     .main-grid {
         display: grid;
-        grid-template-columns: 1.1fr 1fr;
+        grid-template-columns: 1.15fr 1fr;
         gap: 20px;
-        padding: 20px;
-        max-width: 1900px;
-        margin: 0 auto;
     }
 
-    /* === ПАНЕЛИ === */
     .panel {
         background: var(--card);
         border-radius: 14px;
@@ -215,7 +460,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        max-height: 900px;
+        max-height: 1400px;
         overflow-y: auto;
     }
 
@@ -233,7 +478,7 @@
         overflow: hidden;
         transition: all 0.25s;
         cursor: pointer;
-        min-height: 110px;
+        min-height: 120px;
     }
 
     .gate-row:hover {
@@ -245,10 +490,8 @@
     .gate-row.free { border-left: 6px solid var(--success); }
     .gate-row.loading { border-left: 6px solid var(--warning); }
     .gate-row.unloading { border-left: 6px solid var(--danger); }
-    .gate-row.problem {
-        border-left: 6px solid var(--danger);
-        animation: pulse-row 1.5s infinite;
-    }
+    .gate-row.problem { border-left: 6px solid var(--danger); animation: pulse-row 1.5s infinite; }
+    .gate-row.cutoff-danger { border-left: 6px solid var(--danger); animation: pulse-row 1s infinite; }
 
     @keyframes pulse-row {
         0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
@@ -265,642 +508,222 @@
         gap: 4px;
     }
 
-    .gate-number {
-        font-size: 28px;
-        font-weight: 900;
-        color: var(--text);
-        line-height: 1;
-        letter-spacing: -1px;
-    }
+    .gate-number { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -1px; }
+    .gate-number-label { font-size: 9px; font-weight: 800; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; }
 
-    .gate-number-label {
-        font-size: 9px;
-        font-weight: 800;
-        color: var(--text-muted);
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-    }
-
-    .gate-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--success);
-        box-shadow: 0 0 8px var(--success);
-        margin-top: 4px;
-    }
-
+    .gate-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); margin-top: 4px; }
     .gate-row.loading .gate-dot { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
     .gate-row.unloading .gate-dot { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-    .gate-row.problem .gate-dot {
-        background: var(--danger);
-        box-shadow: 0 0 12px var(--danger);
-        animation: blink-dot 0.6s infinite;
-    }
+    .gate-row.problem .gate-dot,
+    .gate-row.cutoff-danger .gate-dot { background: var(--danger); box-shadow: 0 0 12px var(--danger); animation: blink-dot 0.6s infinite; }
 
-    @keyframes blink-dot {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
+    @keyframes blink-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    .gate-info {
-        padding: 12px 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 4px;
-        min-width: 0;
-    }
+    .gate-info { padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
 
-    .gate-status {
-        font-size: 10px;
-        font-weight: 800;
-        padding: 3px 10px;
-        border-radius: 12px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        width: fit-content;
-        margin-bottom: 2px;
-    }
-
+    .gate-status { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 12px; letter-spacing: 1px; text-transform: uppercase; width: fit-content; margin-bottom: 2px; }
     .gate-status.free { background: var(--success-light); color: var(--success); }
     .gate-status.loading { background: var(--warning-light); color: var(--warning); }
     .gate-status.unloading { background: var(--danger-light); color: var(--danger); }
 
-    .gate-route {
-        font-size: 15px;
-        font-weight: 900;
-        color: var(--text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    .gate-route { font-size: 15px; font-weight: 900; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gate-direction { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gate-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .gate-meta-item { display: flex; align-items: center; gap: 3px; }
 
-    .gate-direction {
-        font-size: 12px;
-        color: var(--text-dim);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .gate-meta {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        font-size: 11px;
-        color: var(--text-muted);
-        margin-top: 2px;
-    }
-
-    .gate-meta-item {
+    /* === БЛОК КАТОФФА === */
+    .gate-cutoff {
         display: flex;
         align-items: center;
-        gap: 3px;
+        gap: 8px;
+        margin-top: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
     }
 
-    /* Видимая плашка комментария */
-    .gate-comment-visible {
-        font-size: 12px;
-        padding: 7px 12px;
-        border-radius: 8px;
+    .gate-cutoff.safe { background: var(--success-light); color: var(--success); border-left: 3px solid var(--success); }
+    .gate-cutoff.warning { background: var(--warning-light); color: var(--warning); border-left: 3px solid var(--warning); }
+    .gate-cutoff.danger { background: var(--danger-light); color: var(--danger); border-left: 3px solid var(--danger); animation: cutoff-pulse 1.5s infinite; }
+    .gate-cutoff.overdue { background: var(--danger); color: white; border-left: 3px solid #7f1d1d; animation: cutoff-pulse 1s infinite; }
+
+    @keyframes cutoff-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .gate-cutoff-icon { font-size: 14px; }
+
+    /* === ЧЕК-ЛИСТ ПРИ ВЫГРУЗКЕ === */
+    .gate-checklist {
         margin-top: 8px;
-        font-weight: 700;
-        line-height: 1.4;
-        word-wrap: break-word;
-        white-space: normal;
+        padding: 10px 12px;
+        background: #f0f9ff;
+        border-left: 3px solid var(--accent);
+        border-radius: 6px;
+        font-size: 11px;
+    }
+
+    .gate-checklist-title {
+        font-weight: 900;
+        color: var(--accent);
+        margin-bottom: 6px;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .gate-checklist-item {
         display: flex;
         align-items: flex-start;
         gap: 6px;
+        padding: 2px 0;
+        color: var(--text);
+        line-height: 1.4;
+    }
+
+    .gate-checklist-item .box {
+        color: var(--accent);
+        font-weight: 900;
+        flex-shrink: 0;
+    }
+
+    .gate-comment-visible {
+        font-size: 12px; padding: 7px 12px; border-radius: 8px; margin-top: 8px; font-weight: 700;
+        line-height: 1.4; word-wrap: break-word; white-space: normal;
+        display: flex; align-items: flex-start; gap: 6px;
         animation: comment-appear 0.3s ease;
     }
+    @keyframes comment-appear { 0% { opacity: 0; transform: translateY(-4px); } 100% { opacity: 1; transform: translateY(0); } }
 
-    @keyframes comment-appear {
-        0% { opacity: 0; transform: translateY(-4px); }
-        100% { opacity: 1; transform: translateY(0); }
-    }
+    .gate-comment-visible.do { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid var(--success); color: #14532d; }
+    .gate-comment-visible.no { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-left: 4px solid var(--danger); color: #7f1d1d; }
+    .gate-comment-visible.wait { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid var(--warning); color: #78350f; }
 
-    .gate-comment-visible.do {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-        border-left: 4px solid var(--success);
-        color: #14532d;
-    }
+    .gate-timer-box { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 1px solid var(--border); gap: 4px; padding: 8px; }
 
-    .gate-comment-visible.no {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border-left: 4px solid var(--danger);
-        color: #7f1d1d;
-    }
-
-    .gate-comment-visible.wait {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border-left: 4px solid var(--warning);
-        color: #78350f;
-    }
-
-    .gate-timer-box {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-left: 1px solid var(--border);
-        gap: 4px;
-        padding: 8px;
-    }
-
-    .gate-timer {
-        font-size: 22px;
-        font-weight: 900;
-        color: var(--success);
-        font-variant-numeric: tabular-nums;
-        letter-spacing: 1px;
-    }
-
+    .gate-timer { font-size: 22px; font-weight: 900; color: var(--success); font-variant-numeric: tabular-nums; letter-spacing: 1px; }
     .gate-timer.warning { color: var(--warning); }
-    .gate-timer.danger {
-        color: var(--danger);
-        animation: blink-dot 1s infinite;
-    }
+    .gate-timer.danger { color: var(--danger); animation: blink-dot 1s infinite; }
 
-    .gate-progress-text {
-        font-size: 11px;
-        color: var(--text-dim);
-        font-weight: 700;
-    }
+    .gate-progress-text { font-size: 11px; color: var(--text-dim); font-weight: 700; }
+    .gate-progress-mini { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; margin-top: 2px; }
+    .gate-progress-mini-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width 0.3s; }
 
-    .gate-progress-mini {
-        width: 100%;
-        height: 4px;
-        background: #e2e8f0;
-        border-radius: 2px;
-        overflow: hidden;
-        margin-top: 2px;
-    }
+    .gate-empty { font-size: 12px; color: var(--text-muted); font-style: italic; }
 
-    .gate-progress-mini-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--accent), #60a5fa);
-        transition: width 0.3s;
-    }
-
-    .gate-empty {
-        font-size: 12px;
-        color: var(--text-muted);
-        font-style: italic;
-    }
-
-    /* === ТАБЛИЦА БУФЕРА === */
-    .table-wrap {
-        max-height: 480px;
-        overflow-y: auto;
-        overflow-x: auto;
-    }
-
+    /* === ТАБЛИЦА === */
+    .table-wrap { max-height: 480px; overflow-y: auto; overflow-x: auto; }
     .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
     .table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 11px;
-    }
-
-    thead th {
-        position: sticky;
-        top: 0;
-        background: #f8fafc;
-        color: var(--text-dim);
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 8px 6px;
-        text-align: left;
-        border-bottom: 2px solid var(--border);
-        white-space: nowrap;
-        z-index: 2;
-    }
-
-    tbody td {
-        padding: 7px 6px;
-        border-bottom: 1px solid var(--border);
-        color: var(--text);
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    thead th { position: sticky; top: 0; background: #f8fafc; color: var(--text-dim); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 6px; text-align: left; border-bottom: 2px solid var(--border); white-space: nowrap; z-index: 2; }
+    tbody td { padding: 7px 6px; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600; white-space: nowrap; }
     tbody tr:hover { background: var(--card-hover); }
     tbody tr:last-child td { border-bottom: none; }
 
     .td-center { text-align: center; }
+    .num-highlight { font-weight: 900; color: var(--text); font-size: 13px; }
 
-    .num-highlight {
-        font-weight: 900;
-        color: var(--text);
-        font-size: 13px;
-    }
-
-    .need-ts {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 32px;
-        padding: 3px 8px;
-        border-radius: 6px;
-        font-weight: 900;
-        font-size: 12px;
-    }
+    .need-ts { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 12px; }
     .need-ts.zero { background: var(--bg); color: var(--text-muted); }
     .need-ts.one { background: var(--accent-light); color: var(--accent); }
     .need-ts.many { background: var(--warning-light); color: var(--warning); }
     .need-ts.urgent { background: var(--danger-light); color: var(--danger); }
 
-    .highlight-row {
-        background: rgba(254, 243, 199, 0.3) !important;
-    }
+    .highlight-row { background: rgba(254, 243, 199, 0.3) !important; }
 
-    /* === СПИСОК РЕЙСОВ === */
-    .routes-list {
-        max-height: 500px;
-        overflow-y: auto;
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
+    /* === РЕЙСЫ === */
+    .routes-list { max-height: 500px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
     .routes-list::-webkit-scrollbar { width: 8px; }
     .routes-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
-    .route-card {
-        background: var(--card);
-        border: 1.5px solid var(--border);
-        border-radius: 10px;
-        padding: 10px 14px;
-        transition: all 0.15s;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .route-card:hover {
-        border-color: var(--accent);
-        transform: translateX(2px);
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
-    }
-
+    .route-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; transition: all 0.15s; cursor: pointer; position: relative; }
+    .route-card:hover { border-color: var(--accent); transform: translateX(2px); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1); }
     .route-card.matched { border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(220, 252, 231, 0.4) 0%, var(--card) 40%); }
     .route-card.unmatched { border-left: 4px solid var(--border-strong); opacity: 0.75; }
-    .route-card.parked { border-left: 4px solid var(--purple); background: linear-gradient(90deg, rgba(237, 233, 254, 0.4) 0%, var(--card) 40%); }
 
-    .route-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 10px;
-        margin-bottom: 6px;
-    }
-
-    .route-card-number {
-        font-size: 13px;
-        font-weight: 900;
-        color: var(--accent);
-        letter-spacing: 0.5px;
-    }
-
-    .route-card-badges {
-        display: flex;
-        gap: 4px;
-        flex-wrap: wrap;
-    }
-
-    .route-badge {
-        font-size: 9px;
-        font-weight: 800;
-        padding: 2px 7px;
-        border-radius: 10px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
+    .route-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+    .route-card-number { font-size: 13px; font-weight: 900; color: var(--accent); letter-spacing: 0.5px; }
+    .route-card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+    .route-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
     .route-badge.ours { background: var(--success-light); color: var(--success); }
     .route-badge.wait-ffc { background: var(--warning-light); color: var(--warning); }
     .route-badge.head { background: var(--accent-light); color: var(--accent); }
     .route-badge.tail { background: var(--purple-light); color: var(--purple); }
+    .route-badge.cutoff { background: #fee2e2; color: #991b1b; }
 
-    .route-card-direction {
-        font-size: 13px;
-        font-weight: 800;
-        color: var(--text);
-        margin-bottom: 4px;
-        white-space: normal;
-        word-break: break-word;
-    }
+    .route-card-direction { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; white-space: normal; word-break: break-word; }
+    .route-card-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--text-dim); }
+    .route-card-meta-item { display: flex; align-items: center; gap: 3px; }
+    .route-card-actions { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
 
-    .route-card-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        font-size: 11px;
-        color: var(--text-dim);
-    }
-
-    .route-card-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-    }
-
-    .route-card-actions {
-        display: flex;
-        gap: 6px;
-        margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px dashed var(--border);
-    }
-
-    .route-action-btn {
-        flex: 1;
-        padding: 6px 10px;
-        border: none;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.15s;
-        font-family: inherit;
-        letter-spacing: 0.3px;
-        text-transform: uppercase;
-    }
-
-    .route-action-btn.load-btn {
-        background: var(--success);
-        color: white;
-    }
+    .route-action-btn { flex: 1; padding: 6px 10px; border: none; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer; transition: all 0.15s; font-family: inherit; letter-spacing: 0.3px; text-transform: uppercase; }
+    .route-action-btn.load-btn { background: var(--success); color: white; }
     .route-action-btn.load-btn:hover { background: #15803d; }
 
-    .route-action-btn.park-btn {
-        background: var(--purple);
-        color: white;
-    }
-    .route-action-btn.park-btn:hover { background: #6d28d9; }
-
-    /* === ПУСТОЙ БЛОК === */
-    .empty-block {
-        padding: 40px 20px;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 13px;
-        font-style: italic;
-    }
-
-    .empty-block-icon {
-        font-size: 40px;
-        opacity: 0.3;
-        margin-bottom: 10px;
-    }
+    .empty-block { padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; }
+    .empty-block-icon { font-size: 40px; opacity: 0.3; margin-bottom: 10px; }
 
     /* === МОДАЛКИ === */
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
 
-    .modal {
-        background: var(--card);
-        border-radius: 16px;
-        padding: 24px;
-        max-width: 620px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: var(--shadow-lg);
-        animation: modal-in 0.2s ease;
-    }
+    .modal { background: var(--card); border-radius: 16px; padding: 24px; max-width: 620px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: modal-in 0.2s ease; }
+    @keyframes modal-in { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-    @keyframes modal-in {
-        0% { transform: scale(0.95); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16px;
-    }
-
-    .modal-title {
-        font-size: 17px;
-        font-weight: 900;
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .modal-close {
-        width: 32px;
-        height: 32px;
-        border: none;
-        background: var(--bg);
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        color: var(--text-dim);
-        transition: all 0.15s;
-    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-title { font-size: 17px; font-weight: 900; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .modal-close { width: 32px; height: 32px; border: none; background: var(--bg); border-radius: 8px; font-size: 16px; cursor: pointer; color: var(--text-dim); transition: all 0.15s; }
     .modal-close:hover { background: var(--danger-light); color: var(--danger); }
 
-    .modal-desc {
-        font-size: 12px;
-        color: var(--text-dim);
-        margin-bottom: 12px;
-        line-height: 1.5;
-        padding: 10px 12px;
-        background: var(--accent-light);
-        border-radius: 8px;
-        border-left: 3px solid var(--accent);
-    }
+    .modal-desc { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; padding: 10px 12px; background: var(--accent-light); border-radius: 8px; border-left: 3px solid var(--accent); }
 
-    .modal textarea {
-        width: 100%;
-        min-height: 220px;
-        padding: 12px;
-        border: 1.5px solid var(--border-strong);
-        border-radius: 8px;
-        font-family: 'Consolas', 'Monaco', monospace;
-        font-size: 12px;
-        resize: vertical;
-        color: var(--text);
-        background: #f8fafc;
-        line-height: 1.5;
-        white-space: pre;
-        overflow: auto;
-    }
+    .modal textarea { width: 100%; min-height: 220px; padding: 12px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 12px; resize: vertical; color: var(--text); background: #f8fafc; line-height: 1.5; white-space: pre; overflow: auto; }
+    .modal textarea:focus { outline: none; border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-light); }
 
-    .modal textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        background: white;
-        box-shadow: 0 0 0 3px var(--accent-light);
-    }
+    .modal label { display: block; font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 14px; }
+    .modal input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 13px; font-family: inherit; color: var(--text); background: white; }
+    .modal input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
 
-    .modal label {
-        display: block;
-        font-size: 11px;
-        font-weight: 800;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 6px;
-        margin-top: 14px;
-    }
+    .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-buttons button { flex: 1; padding: 12px; font-size: 13px; }
 
-    .modal input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1.5px solid var(--border-strong);
-        border-radius: 8px;
-        font-size: 13px;
-        font-family: inherit;
-        color: var(--text);
-        background: white;
-    }
-
-    .modal input:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-light);
-    }
-
-    .modal-buttons {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-    }
-
-    .modal-buttons button {
-        flex: 1;
-        padding: 12px;
-        font-size: 13px;
-    }
-
-    /* === СЕЛЕКТОР ВОРОТ === */
-    .gate-selector {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-        margin-top: 6px;
-    }
-
-    .gate-selector-item {
-        padding: 10px 4px;
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        text-align: center;
-        cursor: pointer;
-        font-weight: 900;
-        font-size: 14px;
-        color: var(--text);
-        background: white;
-        transition: all 0.15s;
-    }
-
+    .gate-selector { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 6px; }
+    .gate-selector-item { padding: 10px 4px; border: 2px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-weight: 900; font-size: 14px; color: var(--text); background: white; transition: all 0.15s; }
     .gate-selector-item:hover { border-color: var(--accent); }
+    .gate-selector-item.selected { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+    .gate-selector-item.disabled { background: var(--bg); color: var(--text-muted); cursor: not-allowed; opacity: 0.5; }
 
-    .gate-selector-item.selected {
-        background: var(--accent);
-        color: white;
-        border-color: var(--accent);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-
-    .gate-selector-item.disabled {
-        background: var(--bg);
-        color: var(--text-muted);
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
-
-    .rec-options {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 8px;
-        margin-top: 6px;
-    }
-
-    .rec-option {
-        padding: 10px 6px;
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        text-align: center;
-        cursor: pointer;
-        font-size: 11px;
-        font-weight: 800;
-        background: white;
-        transition: all 0.15s;
-        user-select: none;
-    }
-
+    .rec-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
+    .rec-option { padding: 10px 6px; border: 2px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-size: 11px; font-weight: 800; background: white; transition: all 0.15s; user-select: none; }
     .rec-option:hover { border-color: var(--accent); }
-
     .rec-option.selected.do { background: var(--success-light); border-color: var(--success); color: var(--success); }
     .rec-option.selected.no { background: var(--danger-light); border-color: var(--danger); color: var(--danger); }
     .rec-option.selected.wait { background: var(--warning-light); border-color: var(--warning); color: var(--warning); }
 
     /* === ТОСТ === */
-    .toast-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 2000;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .toast {
-        padding: 12px 18px;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 13px;
-        box-shadow: var(--shadow-lg);
-        background: var(--card);
-        color: var(--text);
-        border-left: 4px solid var(--accent);
-        animation: toast-in 0.3s ease;
-        max-width: 320px;
-    }
-
+    .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; box-shadow: var(--shadow-lg); background: var(--card); color: var(--text); border-left: 4px solid var(--accent); animation: toast-in 0.3s ease; max-width: 320px; }
     .toast.success { border-left-color: var(--success); }
     .toast.error { border-left-color: var(--danger); }
     .toast.warning { border-left-color: var(--warning); }
-
-    @keyframes toast-in {
-        from { transform: translateX(400px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
+    @keyframes toast-in { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
     @media (max-width: 1100px) {
         .main-grid { grid-template-columns: 1fr; }
         .gate-row { grid-template-columns: 60px 1fr 140px; }
         .gate-number { font-size: 20px; }
         .gate-timer { font-size: 16px; }
+        .analysis-grid { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 <body>
 
-<!-- === HEADER === -->
 <header class="app-header">
     <div class="app-logo">
         <div class="app-logo-icon">📋</div>
@@ -913,83 +736,100 @@
     </div>
 </header>
 
-<!-- === ОСНОВНАЯ СЕТКА === -->
-<div class="main-grid">
+<div class="tab-switcher">
+    <button class="tab-btn active" data-tab="analysis" onclick="switchTab('analysis')">📝 Утренний анализ</button>
+    <button class="tab-btn" data-tab="buffer" onclick="switchTab('buffer')">📊 Буфер и ворота</button>
+</div>
 
-    <!-- ЛЕВАЯ КОЛОНКА: ворота -->
-    <div class="panel">
-        <div class="panel-header">
-            <div class="panel-title">
-                <div class="panel-title-icon blue">🚪</div>
-                ВОРОТА 11–17
-            </div>
-            <div class="panel-count" id="gatesCount">0 / 7 занято</div>
-        </div>
-        <div class="gates-grid" id="gatesGrid"></div>
+<!-- ВКЛАДКА: УТРЕННИЙ АНАЛИЗ -->
+<div class="tab-content" id="tab-analysis">
+    <div class="analysis-toolbar">
+        <div class="analysis-toolbar-title">📝 УТРЕННИЙ АНАЛИЗ ПО НАПРАВЛЕНИЯМ</div>
+        <button class="btn btn-primary" onclick="copyAnalysis()">📋 Скопировать текст</button>
+        <button class="btn btn-secondary" onclick="resetAnalysis()">🔄 Сброс</button>
     </div>
-
-    <!-- ПРАВАЯ КОЛОНКА -->
-    <div style="display: flex; flex-direction: column; gap: 20px;">
-
-        <!-- БЛОК 1: Срез по буферу (редактируемый) -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <div class="panel-title-icon orange">📊</div>
-                    СРЕЗ ПО БУФЕРУ
-                </div>
-                <div style="display: flex; gap: 6px; align-items: center;">
-                    <div class="panel-count" id="bufferCount">0 направлений</div>
-                    <button class="btn btn-primary" onclick="addBufferRow()" style="padding: 6px 12px; font-size: 11px;">➕ Добавить</button>
-                </div>
-            </div>
-            <div class="table-wrap">
-                <table id="bufferTable">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="text-align: left; vertical-align: bottom; min-width: 130px;">Направления</th>
-                            <th colspan="2" style="text-align: center; background: #fef3c7; color: #78350f;">Старый сорт</th>
-                            <th colspan="2" style="text-align: center; background: #dbeafe; color: #1e40af;">Новый сорт</th>
-                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">Тотал</th>
-                            <th rowspan="2" class="td-center" style="vertical-align: bottom; background: #fecaca; color: #991b1b;">Потребность ТС</th>
-                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">Есть ТС</th>
-                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">X-dok</th>
-                            <th rowspan="2" class="td-center" style="vertical-align: bottom;">ВП</th>
-                            <th rowspan="2" class="td-center" style="vertical-align: bottom; width: 40px;"></th>
-                        </tr>
-                        <tr>
-                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
-                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
-                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
-                            <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bufferTableBody"></tbody>
-                </table>
-            </div>
+    <div class="analysis-grid" id="analysisGrid"></div>
+    <div class="analysis-preview">
+        <div class="analysis-preview-header">
+            <div class="analysis-preview-title">📄 Предпросмотр (можно скопировать в чат)</div>
+            <button class="btn btn-success" onclick="copyAnalysis()" style="padding: 6px 12px; font-size: 11px;">📋 Копировать</button>
         </div>
-
-        <!-- БЛОК 2: Список рейсов -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <div class="panel-title-icon purple">🚛</div>
-                    ЧЕМ ВЕЗТИ (рейсы)
-                </div>
-                <div class="panel-count" id="routesCount">0 рейсов</div>
-            </div>
-            <div class="routes-list" id="routesList">
-                <div class="empty-block">
-                    <div class="empty-block-icon">📋</div>
-                    Нажми «📋» в шапке, чтобы вставить список рейсов из чата
-                </div>
-            </div>
-        </div>
-
+        <div id="analysisText"></div>
     </div>
 </div>
 
-<!-- === МОДАЛКА ИМПОРТА РЕЙСОВ === -->
+<!-- ВКЛАДКА: БУФЕР И ВОРОТА -->
+<div class="tab-content hidden" id="tab-buffer">
+    <div class="main-grid">
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <div class="panel-title-icon blue">🚪</div>
+                    ВОРОТА 11–17
+                </div>
+                <div class="panel-count" id="gatesCount">0 / 7 занято</div>
+            </div>
+            <div class="gates-grid" id="gatesGrid"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="panel-title-icon orange">📊</div>
+                        СРЕЗ ПО БУФЕРУ
+                    </div>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <div class="panel-count" id="bufferCount">0 направлений</div>
+                        <button class="btn btn-primary" onclick="addBufferRow()" style="padding: 6px 12px; font-size: 11px;">➕ Добавить</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table id="bufferTable">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="text-align: left; vertical-align: bottom; min-width: 130px;">Направления</th>
+                                <th colspan="2" style="text-align: center; background: #fef3c7; color: #78350f;">Старый сорт</th>
+                                <th colspan="2" style="text-align: center; background: #dbeafe; color: #1e40af;">Новый сорт</th>
+                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">Тотал</th>
+                                <th rowspan="2" class="td-center" style="vertical-align: bottom; background: #fecaca; color: #991b1b;">Потр. ТС</th>
+                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">Есть ТС</th>
+                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">X-dok</th>
+                                <th rowspan="2" class="td-center" style="vertical-align: bottom;">ВП</th>
+                                <th rowspan="2" class="td-center" style="vertical-align: bottom; width: 40px;"></th>
+                            </tr>
+                            <tr>
+                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
+                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
+                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Габарит</th>
+                                <th class="td-center" style="font-size: 9px; padding: 6px 4px;">Негабарит</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bufferTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="panel-title-icon purple">🚛</div>
+                        ЧЕМ ВЕЗТИ (рейсы)
+                    </div>
+                    <div class="panel-count" id="routesCount">0 рейсов</div>
+                </div>
+                <div class="routes-list" id="routesList">
+                    <div class="empty-block">
+                        <div class="empty-block-icon">📋</div>
+                        Нажми «📋» в шапке, чтобы вставить список рейсов из чата
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛКА ИМПОРТА РЕЙСОВ -->
 <div class="modal-overlay" id="routesModal" onclick="if(event.target===this) closeRoutesModal()">
     <div class="modal">
         <div class="modal-header">
@@ -1008,15 +848,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 Водитель: Мороз Евгений Сергеевич
 +79897344001
 Номер тягача: H008OY790
-Палетовместимость прицепа: 40
-
-Рейс #824787
-Пермь - Казань - Дзержинский
-ТА-Транс
-Водитель: Шелехов Сергей Константинович
-+79313067080
-Номер тягача: O862CT198
-Палетовместимость прицепа: 33"></textarea>
+Палетовместимость прицепа: 40"></textarea>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeRoutesModal()">Отмена</button>
             <button class="btn btn-primary" onclick="importRoutes()">✅ Разобрать</button>
@@ -1024,7 +856,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     </div>
 </div>
 
-<!-- === МОДАЛКА ПОСТАНОВКИ НА ВОРОТА === -->
+<!-- МОДАЛКА ПОСТАНОВКИ НА ВОРОТА -->
 <div class="modal-overlay" id="gateModal" onclick="if(event.target===this) closeGateModal()">
     <div class="modal">
         <div class="modal-header">
@@ -1057,8 +889,8 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             <div class="rec-option" data-rec="wait" onclick="selectRec('wait')">⏳ Ждать ФФЦ</div>
         </div>
 
-        <label>Комментарий (важно — виден на карточке)</label>
-        <input type="text" id="gateComment" placeholder="Например: ждём документы, догрузить Дзержинск">
+        <label>Комментарий</label>
+        <input type="text" id="gateComment" placeholder="Например: ждём документы">
 
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeGateModal()">Отмена</button>
@@ -1067,7 +899,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     </div>
 </div>
 
-<!-- === ТОСТЫ === -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
@@ -1085,12 +916,49 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         'Домодедово', 'Казань ВП', 'ДМД ЕВСЦ'
     ];
 
+    const ANALYSIS_NAMES = {
+        'Ижевск': 'Ижевск', 'Чебоксары': 'Чебы', 'Челны': 'Челны',
+        'Киров': 'Киров', 'Екатеринбург': 'Екб', 'Самара': 'Самара',
+        'Самара Возврат': 'Самара Возврат', 'Уфа': 'Уфа', 'Ростов': 'Ростов',
+        'Ульяновск': 'Ульяновск', 'Оренбург': 'Орен', 'Нижний Новгород': 'НиНо',
+        'Пенза': 'Пенза', 'Саратов': 'Саратов', 'Дзержинский': 'Дзер'
+    };
+
+    // === КАТОФФЫ (ДЕДЛАЙНЫ ОТГРУЗКИ) ===
+    const CUTOFFS = {
+        'Екатеринбург': { start: '12:00', end: '13:00' },
+        'Дзержинский': { start: '12:00', end: '13:00' },
+        'Киров': { start: '13:30', end: '14:30' },
+        'Чебоксары': { start: '17:30', end: '18:30' },
+        'Ульяновск': { start: '17:30', end: '18:30' },
+        'Ижевск': { start: '17:30', end: '18:30' },
+        'Нижний Новгород': { start: '17:30', end: '18:30' },
+        'Пенза': { start: '17:30', end: '18:30' },
+        'Уфа': { start: '20:30', end: '21:30' },
+        'Челны': { start: '20:30', end: '21:30' },
+        'Саратов': { start: '00:00', end: '00:30' },
+        'Ростов': { start: '00:00', end: '00:30' },
+        'Самара': { start: '01:30', end: '02:30' },
+        'Оренбург': { start: '01:30', end: '02:30' }
+    };
+
+    // === ЧЕК-ЛИСТ ПРИ ВЫГРУЗКЕ ===
+    const UNLOAD_CHECKLIST = [
+        'Проверить ТрН у водителя',
+        'Сканировать паллеты инфосканом',
+        'Отделить НЕ НАШИ (если есть)',
+        'Отделить КРОСС-ДОК (если есть)',
+        'Разместить в буфере'
+    ];
+
     let gateStates = {};
     let bufferData = [];
     let routes = [];
+    let analysisData = {};
 
     let selectedGate = null;
     let currentRec = 'do';
+    let currentTab = 'analysis';
 
     // ===== ЧАСЫ =====
     setInterval(() => {
@@ -1098,9 +966,275 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         document.getElementById('clock').textContent = now.toTimeString().slice(0,8);
     }, 1000);
 
+    // ===== ВКЛАДКИ =====
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('tab-' + tab).classList.remove('hidden');
+        if (tab === 'analysis') renderAnalysis();
+        if (tab === 'buffer') { renderBufferTable(); renderRoutes(); }
+    }
+
+    // ===== КАТОФФ =====
+    function getCutoffTime(direction) {
+        if (!direction) return null;
+        const dir = direction.trim();
+        // Ищем совпадение по вхождению
+        for (const key in CUTOFFS) {
+            if (dir.includes(key) || key.includes(dir)) return CUTOFFS[key];
+        }
+        return null;
+    }
+
+    function getCutoffStatus(direction) {
+        const cutoff = getCutoffTime(direction);
+        if (!cutoff) return null;
+
+        const now = new Date();
+        const [endH, endM] = cutoff.end.split(':').map(Number);
+        const [startH, startM] = cutoff.start.split(':').map(Number);
+
+        const endTime = new Date(now);
+        endTime.setHours(endH, endM, 0, 0);
+
+        const startTime = new Date(now);
+        startTime.setHours(startH, startM, 0, 0);
+
+        // Если катофф в другой день (ночью), корректируем
+        if (endTime < now && (endH < 6)) endTime.setDate(endTime.getDate() + 1);
+        if (startTime < now && (startH < 6)) startTime.setDate(startTime.getDate() + 1);
+
+        const diffMs = endTime - now;
+        const diffMin = Math.floor(diffMs / 60000);
+
+        // Проверяем просрочку
+        const isOverdue = diffMs < 0;
+
+        return {
+            start: cutoff.start,
+            end: cutoff.end,
+            diffMin: Math.abs(diffMin),
+            diffMs: diffMs,
+            isOverdue: isOverdue
+        };
+    }
+
+    function formatCutoffTime(ms) {
+        const totalMin = Math.floor(Math.abs(ms) / 60000);
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        if (h > 0) return h + 'ч ' + m + 'мин';
+        return m + 'мин';
+    }
+
+    function renderCutoffBlock(direction) {
+        const status = getCutoffStatus(direction);
+        if (!status) return '';
+
+        let cls, icon, text;
+
+        if (status.isOverdue) {
+            cls = 'overdue';
+            icon = '🔥';
+            text = `КАТОФФ ${status.end} — ПРОСРОЧЕНО на ${formatCutoffTime(status.diffMs)}`;
+        } else if (status.diffMin <= 60) {
+            cls = 'danger';
+            icon = '⚠️';
+            text = `КАТОФФ ${status.end} — осталось ${formatCutoffTime(status.diffMs)}`;
+        } else if (status.diffMin <= 120) {
+            cls = 'warning';
+            icon = '⏰';
+            text = `КАТОФФ ${status.end} — осталось ${formatCutoffTime(status.diffMs)}`;
+        } else {
+            cls = 'safe';
+            icon = '🎯';
+            text = `КАТОФФ ${status.end} — осталось ${formatCutoffTime(status.diffMs)}`;
+        }
+
+        return `<div class="gate-cutoff ${cls}">
+            <span class="gate-cutoff-icon">${icon}</span>
+            <span>${text}</span>
+        </div>`;
+    }
+
+    function renderChecklist() {
+        return `<div class="gate-checklist">
+            <div class="gate-checklist-title">📋 ПРИ ВЫГРУЗКЕ:</div>
+            ${UNLOAD_CHECKLIST.map(item => `
+                <div class="gate-checklist-item">
+                    <span class="box">☐</span>
+                    <span>${item}</span>
+                </div>
+            `).join('')}
+        </div>`;
+    }
+
+    // ===== УТРЕННИЙ АНАЛИЗ =====
+    function initAnalysisData() {
+        const saved = localStorage.getItem('warehouseAnalysis');
+        if (saved) {
+            try {
+                analysisData = JSON.parse(saved);
+                DEFAULT_DIRECTIONS.forEach(dir => {
+                    if (!analysisData[dir]) {
+                        analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+                    }
+                });
+                return;
+            } catch(e) {}
+        }
+        analysisData = {};
+        DEFAULT_DIRECTIONS.forEach(dir => {
+            analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+        });
+    }
+
+    function saveAnalysisData() {
+        localStorage.setItem('warehouseAnalysis', JSON.stringify(analysisData));
+    }
+
+    function renderAnalysis() {
+        const grid = document.getElementById('analysisGrid');
+        grid.innerHTML = '';
+
+        DEFAULT_DIRECTIONS.forEach(dir => {
+            const data = analysisData[dir] || { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+            const shortName = ANALYSIS_NAMES[dir] || dir;
+
+            let cardClass = '';
+            let statusText = 'ГОТОВО';
+            let statusClass = 'ready';
+
+            if (data.needExtra === 'yes') {
+                cardClass = 'danger';
+                statusText = '⚠️ ДОП НУЖНО';
+                statusClass = 'danger';
+            } else if (data.comment && /не хватит|проблема|нет инфо|мало/i.test(data.comment)) {
+                cardClass = 'warning';
+                statusText = '⚠️ ВНИМАНИЕ';
+                statusClass = 'warning';
+            }
+
+            // Катофф для карточки
+            const cutoff = CUTOFFS[dir];
+            const cutoffBadge = cutoff ? `<span class="analysis-card-cutoff">🎯 ${cutoff.start}–${cutoff.end}</span>` : '';
+
+            const card = document.createElement('div');
+            card.className = 'analysis-card ' + cardClass;
+            card.innerHTML = `
+                <div class="analysis-card-header">
+                    <div>
+                        <span class="analysis-card-name">${shortName}</span>
+                        ${cutoffBadge}
+                    </div>
+                    <div class="analysis-card-status ${statusClass}">${statusText}</div>
+                </div>
+                <div class="analysis-row">
+                    <div class="analysis-field">
+                        <div class="analysis-field-label">Есть ТС</div>
+                        <div class="analysis-field-input">
+                            <input type="number" min="0" max="99" value="${data.haveTS || 0}"
+                                onchange="updateAnalysis('${dir}', 'haveTS', this.value)">
+                        </div>
+                    </div>
+                    <div class="analysis-field">
+                        <div class="analysis-field-label">Грузится</div>
+                        <div class="analysis-field-input">
+                            <input type="number" min="0" max="99" value="${data.loadingTS || 0}"
+                                onchange="updateAnalysis('${dir}', 'loadingTS', this.value)">
+                        </div>
+                    </div>
+                    <div class="analysis-field">
+                        <div class="analysis-field-label">Доп. ТС</div>
+                        <div class="analysis-field-input">
+                            <select onchange="updateAnalysis('${dir}', 'needExtra', this.value)">
+                                <option value="no" ${data.needExtra === 'no' ? 'selected' : ''}>Не требуется</option>
+                                <option value="yes" ${data.needExtra === 'yes' ? 'selected' : ''}>Нужно</option>
+                                <option value="unknown" ${data.needExtra === 'unknown' ? 'selected' : ''}>Неизвестно</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <textarea class="analysis-comment" placeholder="Комментарий (например: обе после ФФЦ, возможно не хватит места)"
+                    onchange="updateAnalysis('${dir}', 'comment', this.value)">${data.comment || ''}</textarea>
+            `;
+            grid.appendChild(card);
+        });
+
+        updateAnalysisText();
+    }
+
+    function updateAnalysis(dir, field, value) {
+        if (!analysisData[dir]) analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+        if (field === 'haveTS' || field === 'loadingTS') {
+            analysisData[dir][field] = Math.max(0, parseInt(value) || 0);
+        } else {
+            analysisData[dir][field] = value;
+        }
+        saveAnalysisData();
+        renderAnalysis();
+    }
+
+    function updateAnalysisText() {
+        const textEl = document.getElementById('analysisText');
+        let text = '';
+
+        DEFAULT_DIRECTIONS.forEach(dir => {
+            const data = analysisData[dir] || { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+            const shortName = ANALYSIS_NAMES[dir] || dir;
+
+            let line = shortName + ' - ';
+
+            if (data.haveTS > 0) line += data.haveTS + ' ТС есть';
+            else line += 'ТС нет';
+
+            if (data.loadingTS > 0) line += ', ' + data.loadingTS + ' ТС грузится';
+            else if (data.haveTS > 0) line += ', 1 ТС загружена';
+
+            if (data.needExtra === 'yes') line += ', ДОП ТС НУЖНО';
+            else if (data.needExtra === 'unknown') line += ', доп неизвестно';
+            else line += ', доп не требуется';
+
+            if (data.comment) line += ', ' + data.comment;
+
+            text += line + '\n';
+        });
+
+        textEl.textContent = text;
+    }
+
+    function copyAnalysis() {
+        const text = document.getElementById('analysisText').textContent;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('📋 Текст скопирован в буфер обмена', 'success');
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('📋 Текст скопирован', 'success');
+        });
+    }
+
+    function resetAnalysis() {
+        if (!confirm('Сбросить утренний анализ?')) return;
+        analysisData = {};
+        DEFAULT_DIRECTIONS.forEach(dir => {
+            analysisData[dir] = { haveTS: 0, loadingTS: 0, needExtra: 'no', comment: '' };
+        });
+        saveAnalysisData();
+        renderAnalysis();
+        showToast('Анализ сброшен', 'success');
+    }
+
     // ===== ИНИЦИАЛИЗАЦИЯ ВОРОТ =====
     function initGates() {
         const grid = document.getElementById('gatesGrid');
+        if (!grid) return;
         grid.innerHTML = '';
 
         GATES.forEach(num => {
@@ -1130,10 +1264,10 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 
     function updateGatesCount() {
         const busy = GATES.filter(g => gateStates[g].active).length;
-        document.getElementById('gatesCount').textContent = busy + ' / 7 занято';
+        const el = document.getElementById('gatesCount');
+        if (el) el.textContent = busy + ' / 7 занято';
     }
 
-    // ===== КЛИК ПО ВОРОТАМ =====
     function onGateClick(num) {
         if (gateStates[num].active) {
             const state = gateStates[num];
@@ -1145,7 +1279,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         }
     }
 
-    // ===== МОДАЛКА ПОСТАНОВКИ =====
     function openGateModal(num) {
         selectedGate = num;
         currentRec = 'do';
@@ -1188,7 +1321,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         document.querySelector(`.rec-option[data-rec="${rec}"]`).classList.add('selected');
     }
 
-    // ===== СТАРТ ОПЕРАЦИИ =====
     function startOperation() {
         if (!selectedGate) { showToast('Выбери ворота', 'warning'); return; }
         if (gateStates[selectedGate].active) { showToast('Ворота заняты', 'warning'); return; }
@@ -1210,14 +1342,20 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         showToast(`Рейс ${route} → ворота ${selectedGate}`, 'success');
     }
 
-    // ===== ПОСТАВИТЬ ФУРУ НА ВОРОТА =====
     function placeTruckOnGate(num, data) {
         const row = document.getElementById('gate-row-' + num);
+        if (!row) return;
         row.classList.remove('free');
         row.classList.add(data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading');
 
         const recText = data.rec === 'do' ? 'Загрузка' : data.rec === 'no' ? 'Не грузить' : 'Ждать ФФЦ';
         const recClass = data.rec === 'do' ? 'loading' : data.rec === 'no' ? 'unloading' : 'loading';
+
+        // Катофф
+        const cutoffHtml = renderCutoffBlock(data.direction);
+
+        // Чек-лист при выгрузке
+        const checklistHtml = data.rec === 'no' ? renderChecklist() : '';
 
         document.getElementById('gate-info-' + num).innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
@@ -1231,11 +1369,12 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                     </div>
                 </div>
                 <button onclick="event.stopPropagation(); editComment(${num})" 
-                        style="background: white; border: 1.5px solid var(--border-strong); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 800; cursor: pointer; color: var(--text-dim); white-space: nowrap; font-family: inherit;"
-                        title="Добавить/изменить комментарий">
+                        style="background: white; border: 1.5px solid var(--border-strong); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 800; cursor: pointer; color: var(--text-dim); white-space: nowrap; font-family: inherit;">
                     ✏️ Комментарий
                 </button>
             </div>
+            ${cutoffHtml}
+            ${checklistHtml}
             ${data.comment ? `
                 <div class="gate-comment-visible ${data.rec}" id="comment-${num}">
                     💬 ${data.comment}
@@ -1257,7 +1396,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         saveGatesToLocal();
     }
 
-    // ===== РЕДАКТИРОВАНИЕ КОММЕНТАРИЯ =====
     function editComment(num) {
         const state = gateStates[num];
         if (!state.active) return;
@@ -1287,7 +1425,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         showToast(state.data.comment ? 'Комментарий сохранён' : 'Комментарий удалён', 'success');
     }
 
-    // ===== СОХРАНЕНИЕ ВОРОТ =====
     function saveGatesToLocal() {
         try {
             const data = {};
@@ -1316,7 +1453,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         } catch(e) {}
     }
 
-    // ===== ТАЙМЕР =====
     function startTimer(num) {
         const interval = setInterval(() => {
             const state = gateStates[num];
@@ -1336,6 +1472,11 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                 timerEl.classList.add('warning');
             }
 
+            // Обновляем катофф каждую минуту
+            if (diff % 60000 < 1000) {
+                updateCutoffInCard(num);
+            }
+
             const volume = state.data.volume || 0;
             const loaded = Math.min(volume, Math.floor(diff / 15000));
             const progressEl = document.getElementById('progress-' + num);
@@ -1343,6 +1484,21 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             if (progressEl) progressEl.textContent = `📦 ${loaded}/${volume} ГМ`;
             if (fillEl) fillEl.style.width = (loaded / volume * 100) + '%';
         }, 1000);
+    }
+
+    function updateCutoffInCard(num) {
+        const state = gateStates[num];
+        if (!state.active) return;
+        const row = document.getElementById('gate-row-' + num);
+        if (!row) return;
+
+        // Удаляем старый блок катоффа
+        const old = row.querySelector('.gate-cutoff');
+        if (old) {
+            const newCutoff = document.createElement('div');
+            newCutoff.innerHTML = renderCutoffBlock(state.data.direction);
+            old.replaceWith(newCutoff.firstElementChild);
+        }
     }
 
     function formatDuration(ms) {
@@ -1353,10 +1509,9 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         return `${h}:${m}:${s}`;
     }
 
-    // ===== ЗАВЕРШЕНИЕ =====
     function completeOperation(num) {
         const row = document.getElementById('gate-row-' + num);
-        row.classList.remove('loading', 'unloading', 'problem');
+        row.classList.remove('loading', 'unloading', 'problem', 'cutoff-danger');
         row.classList.add('free');
 
         document.getElementById('gate-info-' + num).innerHTML = `
@@ -1371,7 +1526,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         showToast(`Ворота ${num} освобождены`, 'success');
     }
 
-    // ===== СРЕЗ ПО БУФЕРУ — РУЧНОЙ ВВОД =====
+    // ===== БУФЕР =====
     function initBufferData() {
         const saved = localStorage.getItem('warehouseBuffer');
         if (saved) {
@@ -1382,16 +1537,12 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         }
         bufferData = [
             ...DEFAULT_DIRECTIONS.map(d => ({
-                direction: d,
-                oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
-                haveTS: 0, xdok: 0, vp: 0,
-                isReturn: false
+                direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
+                haveTS: 0, xdok: 0, vp: 0, isReturn: false
             })),
             ...DEFAULT_RETURNS.map(d => ({
-                direction: d,
-                oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
-                haveTS: 0, xdok: 0, vp: 0,
-                isReturn: true
+                direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
+                haveTS: 0, xdok: 0, vp: 0, isReturn: true
             }))
         ];
     }
@@ -1404,10 +1555,8 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         const name = prompt('Название направления:', '');
         if (!name) return;
         bufferData.push({
-            direction: name.trim(),
-            oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
-            haveTS: 0, xdok: 0, vp: 0,
-            isReturn: false
+            direction: name.trim(), oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0,
+            haveTS: 0, xdok: 0, vp: 0, isReturn: false
         });
         saveBufferData();
         renderBufferTable();
@@ -1456,11 +1605,13 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 
     function updateBufferCount() {
         const dirs = bufferData.filter(b => !b.isReturn).length;
-        document.getElementById('bufferCount').textContent = dirs + ' направлений';
+        const el = document.getElementById('bufferCount');
+        if (el) el.textContent = dirs + ' направлений';
     }
 
     function renderBufferTable() {
         const tbody = document.getElementById('bufferTableBody');
+        if (!tbody) return;
         updateBufferCount();
 
         if (bufferData.length === 0) {
@@ -1484,10 +1635,12 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
             const needClass = getNeedClass(needTS);
             const highlight = needTS > 0 ? 'highlight-row' : '';
+            const cutoff = CUTOFFS[row.direction];
+            const cutoffStr = cutoff ? `<br><span style="font-size:9px;color:#d97706;font-weight:800;">🎯 ${cutoff.end}</span>` : '';
 
             html += `
                 <tr class="${highlight}" id="buf-row-${row.idx}">
-                    <td><b>${row.direction}</b></td>
+                    <td><b>${row.direction}</b>${cutoffStr}</td>
                     <td class="td-center">${editableCell(row.idx, 'oldGab', row.oldGab, '#fef3c7')}</td>
                     <td class="td-center">${editableCell(row.idx, 'oldNegab', row.oldNegab, '#fef3c7')}</td>
                     <td class="td-center">${editableCell(row.idx, 'newGab', row.newGab, '#dbeafe')}</td>
@@ -1498,23 +1651,16 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                     <td class="td-center">${editableCell(row.idx, 'xdok', row.xdok, '#f8fafc')}</td>
                     <td class="td-center">${editableCell(row.idx, 'vp', row.vp, '#f8fafc')}</td>
                     <td class="td-center">
-                        <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;" title="Удалить">✕</button>
+                        <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;">✕</button>
                     </td>
                 </tr>
             `;
         });
 
         if (returnRows.length > 0) {
-            html += `
-                <tr style="background: #dbeafe;">
-                    <td colspan="11" style="text-align: center; font-weight: 900; color: #1e40af; padding: 8px; letter-spacing: 2px; font-size: 11px;">
-                        ВОЗВРАТЫ
-                    </td>
-                </tr>
-            `;
+            html += `<tr style="background: #dbeafe;"><td colspan="11" style="text-align: center; font-weight: 900; color: #1e40af; padding: 8px; letter-spacing: 2px; font-size: 11px;">ВОЗВРАТЫ</td></tr>`;
             returnRows.forEach(row => {
                 const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
-                const needTS = 0;
                 html += `
                     <tr style="background: #f0f9ff;" id="buf-row-${row.idx}">
                         <td><b>${row.direction}</b></td>
@@ -1523,12 +1669,12 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                         <td class="td-center">${editableCell(row.idx, 'newGab', row.newGab, '#dbeafe')}</td>
                         <td class="td-center">${editableCell(row.idx, 'newNegab', row.newNegab, '#dbeafe')}</td>
                         <td class="td-center num-highlight" id="total-${row.idx}">${total}</td>
-                        <td class="td-center"><span class="need-ts zero" id="need-${row.idx}">${needTS}</span></td>
+                        <td class="td-center"><span class="need-ts zero" id="need-${row.idx}">0</span></td>
                         <td class="td-center">${editableCell(row.idx, 'haveTS', row.haveTS, '#f0fdf4')}</td>
                         <td class="td-center">${editableCell(row.idx, 'xdok', row.xdok, '#f8fafc')}</td>
                         <td class="td-center">${editableCell(row.idx, 'vp', row.vp, '#f8fafc')}</td>
                         <td class="td-center">
-                            <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;" title="Удалить">✕</button>
+                            <button onclick="removeBufferRow(${row.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;padding:2px 4px;">✕</button>
                         </td>
                     </tr>
                 `;
@@ -1549,7 +1695,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                        onclick="event.stopPropagation();">`;
     }
 
-    // ===== ИМПОРТ РЕЙСОВ =====
+    // ===== РЕЙСЫ =====
     function openImportRoutesModal() {
         document.getElementById('routesModal').classList.add('active');
     }
@@ -1567,7 +1713,6 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
         blocks.forEach((block, idx) => {
             const lines = block.split('\n').map(l => l.trim()).filter(l => l);
             if (lines.length === 0) return;
-
             const routeObj = parseRouteBlock(lines, idx);
             if (routeObj) routes.push(routeObj);
         });
@@ -1582,41 +1727,23 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 
         lines.forEach(line => {
             const routeMatch = line.match(/[Рр]ейс\s*#?(\d+)/i);
-            if (routeMatch) {
-                route = '#' + routeMatch[1];
-                return;
-            }
+            if (routeMatch) { route = '#' + routeMatch[1]; return; }
 
             const driverMatch = line.match(/[Вв]одитель[:\s]+(.+)/i);
-            if (driverMatch) {
-                driver = driverMatch[1].trim();
-                return;
-            }
+            if (driverMatch) { driver = driverMatch[1].trim(); return; }
 
             const phoneMatch = line.match(/\+?\d{10,12}/);
-            if (phoneMatch && !phone) {
-                phone = phoneMatch[0];
-                return;
-            }
+            if (phoneMatch && !phone) { phone = phoneMatch[0]; return; }
 
             const vehicleMatch = line.match(/[Нн]омер\s+(?:тягача|машины|ТС|прицепа)[:\s]+([А-ЯA-Z0-9]+)/i);
-            if (vehicleMatch && !vehicle) {
-                vehicle = vehicleMatch[1].trim();
-                return;
-            }
+            if (vehicleMatch && !vehicle) { vehicle = vehicleMatch[1].trim(); return; }
 
             const palletsMatch = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
-            if (palletsMatch) {
-                pallets = parseInt(palletsMatch[1]) || 0;
-                return;
-            }
+            if (palletsMatch) { pallets = parseInt(palletsMatch[1]) || 0; return; }
 
             const hasDash = / [-—] /.test(line) || line.includes(' - ') || line.includes(' — ');
             const hasCities = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
-            if (hasDash && hasCities && !direction) {
-                direction = line.trim();
-                return;
-            }
+            if (hasDash && hasCities && !direction) { direction = line.trim(); return; }
 
             if (/обе ваши|ваш\b|наша/i.test(line)) marks.push('ours');
             if (/ФФЦ/i.test(line) && /сначала|потом|берёт|берет|берут/i.test(line)) marks.push('wait-ffc');
@@ -1637,11 +1764,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             route: route || '(без номера)',
             direction: normalizedDirection,
             fullDirection: direction,
-            company,
-            driver,
-            phone,
-            vehicle,
-            pallets,
+            company, driver, phone, vehicle, pallets,
             marks: [...new Set(marks)],
             rec: marks.includes('wait-ffc') ? 'wait' : 'do'
         };
@@ -1662,6 +1785,7 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
 
     function renderRoutes() {
         const container = document.getElementById('routesList');
+        if (!container) return;
         document.getElementById('routesCount').textContent = routes.length + ' рейсов';
 
         if (routes.length === 0) {
@@ -1684,6 +1808,10 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
             if (r.marks.includes('head')) badges.push('<span class="route-badge head">📦 ГОЛОВА</span>');
             if (r.marks.includes('tail')) badges.push('<span class="route-badge tail">📦 ХВОСТ</span>');
 
+            // Катофф
+            const cutoff = CUTOFFS[r.direction];
+            if (cutoff) badges.push(`<span class="route-badge cutoff">🎯 до ${cutoff.end}</span>`);
+
             const cardClass = r.matched ? 'matched' : 'unmatched';
 
             return `
@@ -1701,18 +1829,10 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
                     </div>
                     <div class="route-card-actions">
                         <button class="route-action-btn load-btn" onclick="event.stopPropagation(); openGateModalForRoute('${r.id}')">🚪 Поставить</button>
-                        <button class="route-action-btn park-btn" onclick="event.stopPropagation(); markParked('${r.id}')">🅿️ На парковку</button>
                     </div>
                 </div>
             `;
         }).join('');
-    }
-
-    function markParked(id) {
-        const card = document.getElementById('route-' + id);
-        if (card) card.classList.add('parked');
-        const r = routes.find(rt => rt.id === id);
-        if (r) showToast(`Рейс ${r.route} → на парковке`, 'warning');
     }
 
     function openGateModalForRoute(id) {
@@ -1753,25 +1873,32 @@ CЦ Софьино 3.1 - СЦ Казань - ФФЦ Казань - ПСЦ Кир
     }
 
     function resetAll() {
-        if (!confirm('Сбросить всё? Данные буфера и ворот будут потеряны.')) return;
+        if (!confirm('Сбросить всё? Данные анализа, буфера и ворот будут потеряны.')) return;
         localStorage.removeItem('warehouseBuffer');
         localStorage.removeItem('warehouseGates');
+        localStorage.removeItem('warehouseAnalysis');
         bufferData = [];
         routes = [];
         gateStates = {};
+        analysisData = {};
         initBufferData();
         initGates();
+        initAnalysisData();
         renderBufferTable();
         renderRoutes();
+        renderAnalysis();
         showToast('Всё сброшено', 'success');
     }
 
     // ===== СТАРТ =====
+    initAnalysisData();
     initBufferData();
     initGates();
     renderBufferTable();
     renderRoutes();
+    renderAnalysis();
     loadGatesFromLocal();
+    switchTab('analysis');
 </script>
 
 </body>

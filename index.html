@@ -445,6 +445,8 @@
         <button class="btn btn-secondary" onclick="openImport('incoming')">📥 Вход</button>
         <button class="btn btn-secondary" onclick="openImport('outgoing')">📤 Исход</button>
         <button class="btn btn-secondary" onclick="openImport('chat')">📋 Чат</button>
+        <!-- НОВАЯ КНОПКА ИИ -->
+        <button class="btn btn-primary" onclick="openAILogist()" style="background: var(--purple); box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">🤖 ИИ Логист</button>
         <button class="btn btn-secondary" onclick="resetAll()">🔄</button>
     </div>
 </header>
@@ -665,6 +667,24 @@
     </div>
 </div>
 
+<!-- НОВОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ИИ -->
+<div class="modal-overlay" id="aiModal" onclick="if(event.target===this) closeAILogist()">
+    <div class="modal" style="max-width: 800px;">
+        <div class="modal-header">
+            <div class="modal-title" style="color: var(--purple);">🤖 ИИ Логист — Умный парсер машин</div>
+            <button class="modal-close" onclick="closeAILogist()">✕</button>
+        </div>
+        <div class="modal-desc" style="background: var(--purple-light); border-left-color: var(--purple); color: var(--text);">
+            Вставьте текст от логиста (как в файле Дзержинский.txt). ИИ распознает рейсы, направления, вместимость и приоритеты (Вы → ФФЦ).
+        </div>
+        <textarea id="aiInput" style="min-height: 300px; border-color: var(--purple);" placeholder="Вставьте сюда список машин..."></textarea>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeAILogist()">Отмена</button>
+            <button class="btn btn-primary" onclick="runAILogist()" style="background: var(--purple);">🧠 Проанализировать и добавить</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
@@ -831,17 +851,12 @@
         return String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
     }
 
-    // === ГЛАВНАЯ ФУНКЦИЯ — статус дедлайна ===
-    // Если катофная → дедлайн = катофф СЦ
-    // Если НЕ катофная → дедлайн = 1 час с момента постановки на ворота
     function getCutoffStatus(item, gateNum) {
         const katoff = isKatoff(item);
 
-        // НЕ катофная → дедлайн = 1 час с ворот
         if (katoff === false) {
             const gateStart = gateStates[gateNum]?.startTime;
             if (!gateStart) {
-                // Машина ещё не на воротах — дедлайн не активен
                 return {
                     type: 'hour-from-gate',
                     deadlineStr: '1 час с ворот',
@@ -862,7 +877,6 @@
             };
         }
 
-        // Катофная (или null) → дедлайн = катофф СЦ
         const deadlineMin = getSCDeadlineMinutes(item.direction);
         if (deadlineMin === null) return null;
         const now = new Date();
@@ -886,7 +900,6 @@
         return m + 'мин';
     }
 
-    // === Рендер блока катоффа ===
     function renderCutoffBlock(direction, item, gateNum) {
         const c = getCutoffFor(direction);
         if (!c) return '';
@@ -899,7 +912,6 @@
         const status = getCutoffStatus(item, gateNum);
         if (!status) return dualHtml;
 
-        // НЕ катофная и ещё не на воротах
         if (status.notOnGate) {
             return dualHtml + `<div class="cutoff-block hour-from-gate">
                 <span>🔄</span>
@@ -970,7 +982,7 @@
         if (s === 'agree') return '⚠️ СОГЛАСОВАТЬ с логистом';
         if (comment.includes('ффц') && (comment.includes('остав') || comment.includes('мест'))) return '📦 Оставить место для ФФЦ';
         if (comment.includes('не груз') || comment.includes('без соглас')) return '🚫 НЕ грузить';
-        if (comment.includes('ваш')) return '✅ Загружаем';
+        if (comment.includes('ваш') || comment.includes('ваша')) return '✅ Загружаем';
         return '⏳ Ждём';
     }
 
@@ -999,7 +1011,7 @@
     function renderTags(item) {
         const tags = [];
         const comment = (item.comment || '').toLowerCase();
-        if (comment.includes('ваш') || (item.marks && item.marks.includes('ours')))
+        if (comment.includes('ваш') || comment.includes('ваша') || (item.marks && item.marks.includes('ours')))
             tags.push('<span class="tag ours">✅ ВАШ</span>');
         if (comment.includes('соглас') || (item.marks && item.marks.includes('no-load')))
             tags.push('<span class="tag no-load">🚫 СОГЛАСОВАТЬ</span>');
@@ -1063,7 +1075,6 @@
 
             busy++;
 
-            // Инициализируем время постановки
             if (!gateStates[num]) gateStates[num] = { startTime: Date.now(), data: item };
 
             const type = item.type === 'incoming' ? 'unloading' : 'loading';
@@ -1078,7 +1089,6 @@
             if (katoff === true) katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
             else if (katoff === false) katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
 
-            // Проверка "прозвон за час"
             let alertCallHtml = '';
             if (katoff === true) {
                 const cs = getCutoffStatus(item, num);
@@ -1089,7 +1099,6 @@
                 }
             }
 
-            // Urgent только для катофных
             const cs = getCutoffStatus(item, num);
             const urgentClass = (cs && cs.isOverdue) ? 'urgent' : '';
 
@@ -1154,7 +1163,7 @@
         if (items.length === 0) {
             tbody.innerHTML = `<tr><td colspan="12" class="empty-state">
                 <div class="empty-state-icon">${type === 'incoming' ? '🔽' : '🔼'}</div>
-                Нет рейсов<br>Импортируй Google или чат
+                Нет рейсов<br>Импортируй Google, чат или используй 🤖 ИИ Логиста
             </td></tr>`;
             return;
         }
@@ -1162,7 +1171,7 @@
         tbody.innerHTML = items.map((item, i) => {
             const srcBadge = item.source === 'both' ? '<span class="source-badge both">✅</span>' :
                              item.source === 'google' ? '<span class="source-badge google">📊</span>' :
-                             '<span class="source-badge chat">📋</span>';
+                             '<span class="source-badge chat">🤖</span>';
             const status = detectStatus(item);
             const statusBadge = getStatusBadge(status);
             const whatToDo = buildWhatToDo(item);
@@ -1182,7 +1191,7 @@
                 <td>${item.driver || '—'}</td>
                 <td>${item.plan || '—'}</td>
                 <td>${item.fact || '—'}</td>
-                <td class="center num">${item.volume || 0}</td>
+                <td class="center num">${item.volume || item.capacity || 0}</td>
                 <td class="center">${item.gate || '—'}</td>
                 <td class="center">${statusBadge}</td>
                 <td><span style="font-size:11px; font-weight:700;">${whatToDo}</span></td>
@@ -1295,6 +1304,7 @@
         if (totalEl) totalEl.textContent = total;
         if (needEl) { needEl.textContent = needTS; needEl.className = 'need-ts ' + getNeedClass(needTS); }
         if (fireEl) fireEl.textContent = needTS > 0 && (row.haveTS || 0) < needTS ? '🔥' : '';
+        renderAnalysis(); // Обновляем аналитику при изменении буфера
     }
 
     function addBufferRow() {
@@ -1407,6 +1417,42 @@
             }
         });
 
+        // Добавляем риски от ИИ Логиста (сравнение вместимости машин и потребности)
+        const aiRisks = calculateAICapacityRisks();
+        aiRisks.forEach(risk => alerts.push(risk));
+
+        return alerts;
+    }
+
+    // Функция для автоматического сопоставления машин и буфера
+    function calculateAICapacityRisks() {
+        let alerts = [];
+        let capacityByDir = {};
+        const allItems = [...getAllItems('incoming'), ...getAllItems('outgoing')];
+        
+        allItems.forEach(item => {
+            if (!item.direction || !item.capacity) return;
+            const dirKey = item.direction.toLowerCase().split(' ')[0];
+            if (!capacityByDir[dirKey]) capacityByDir[dirKey] = 0;
+            capacityByDir[dirKey] += item.capacity;
+        });
+
+        buffer.forEach(b => {
+            if (b.isReturn) return;
+            const dirKey = b.direction.toLowerCase().split(' ')[0];
+            const totalNeed = (b.oldGab || 0) + (b.oldNegab || 0) + (b.newGab || 0) + (b.newNegab || 0);
+            
+            if (totalNeed > 0) {
+                const providedCap = capacityByDir[dirKey] || 0;
+                if (providedCap > 0 && providedCap < totalNeed) {
+                    alerts.push({
+                        level: 'warning',
+                        icon: '📦',
+                        text: `<b>${b.direction}</b> — Дефицит ПМ! Нужно: ${totalNeed} ГМ, Едут: ${providedCap} ПМ`
+                    });
+                }
+            }
+        });
         return alerts;
     }
 
@@ -1628,6 +1674,102 @@
         renderGates(); renderTable('incoming'); renderTable('outgoing'); renderBuffer(); renderAnalysis();
         updateTabCounts(); updateCupBadge();
         showToast('Всё сброшено', 'success');
+    }
+
+    // ==================== ИИ ЛОГИСТ ====================
+    function openAILogist() {
+        document.getElementById('aiInput').value = '';
+        document.getElementById('aiModal').classList.add('active');
+    }
+
+    function closeAILogist() {
+        document.getElementById('aiModal').classList.remove('active');
+    }
+
+    function runAILogist() {
+        const text = document.getElementById('aiInput').value.trim();
+        if (!text) {
+            showToast('Вставьте текст от логиста', 'warning');
+            return;
+        }
+
+        const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
+        let parsedCount = 0;
+
+        blocks.forEach(block => {
+            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+            
+            const routeLine = lines.find(l => l.includes('Рейс #') || l.includes('Рейс #'));
+            if (!routeLine) return;
+            
+            const routeMatch = routeLine.match(/#(\d+)/);
+            const route = routeMatch ? '#' + routeMatch[1] : '';
+
+            const dirLine = lines.find(l => (l.includes('СЦ') || l.includes('ФФЦ') || l.includes('МК')) && l.includes('-'));
+            let direction = '';
+            if (dirLine) {
+                const parts = dirLine.split('-').map(p => p.trim());
+                direction = parts[parts.length - 1].replace(/СЦ|ФФЦ|ПСЦ|МК/g, '').trim();
+            }
+
+            const driverLine = lines.find(l => l.includes('Водитель:'));
+            const driver = driverLine ? driverLine.replace('Водитель:', '').trim() : '';
+
+            const palletLine = lines.find(l => l.includes('Палетовместимость'));
+            let capacity = 0;
+            if (palletLine) {
+                const match = palletLine.match(/\d+/);
+                capacity = match ? parseInt(match[0]) : 0;
+            }
+
+            const vehicleLine = lines.find(l => l.includes('Номер тягача') || l.includes('Номер машины'));
+            const vehicle = vehicleLine ? vehicleLine.split(':')[1].trim() : '';
+
+            let isOurs = false;
+            let ffcNote = '';
+            if (block.includes('(Ваш)') || block.includes('(Вы') || block.includes('(ВАШ)') || block.includes('(ВАША)')) {
+                isOurs = true;
+            }
+            if (block.includes('затем ФФЦ')) {
+                ffcNote = '⚠️ Сначала СЦ, затем передать на ФФЦ!';
+            }
+            if (block.includes('В НОЧЬ ВАША')) {
+                ffcNote = '🌙 Ночная смена (Ваша)';
+            }
+
+            if (route) {
+                const car = {
+                    route: route,
+                    direction: direction || 'Не определено',
+                    vehicle: vehicle,
+                    driver: driver,
+                    capacity: capacity,
+                    comment: ffcNote,
+                    marks: isOurs ? ['ours'] : [],
+                    source: 'chat', 
+                    type: 'outgoing',
+                    status: 'coming'
+                };
+
+                const idx = chat.findIndex(c => c.route === route);
+                if (idx >= 0) chat[idx] = { ...chat[idx], ...car };
+                else chat.push(car);
+                parsedCount++;
+            }
+        });
+
+        if (parsedCount > 0) {
+            saveChat();
+            renderTable('incoming'); 
+            renderTable('outgoing'); 
+            renderGates(); 
+            renderAnalysis();
+            showToast(`🤖 ИИ успешно распознал ${parsedCount} машин!`, 'success');
+            closeAILogist();
+            switchTab('outgoing');
+        } else {
+            showToast('Не удалось распознать рейсы. Проверьте формат.', 'error');
+        }
     }
 
     // ==================== СТАРТ ====================

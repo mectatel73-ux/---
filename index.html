@@ -138,6 +138,7 @@
     .katoff-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 900; margin-left: 6px; }
     .katoff-badge.katoff { background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; }
     .katoff-badge.free { background: #f0fdf4; color: #166534; border: 1px solid #16a34a; }
+    .katoff-time { font-size: 10px; font-weight: 800; color: var(--danger); margin-top: 4px; }
 
     .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 12px; font-size: 10px; font-weight: 800; margin-right: 4px; margin-top: 4px; }
     .tag.ours { background: var(--success-light); color: var(--success); }
@@ -303,7 +304,9 @@
             <div class="modal-title">📊 Импорт из Google Таблицы</div>
             <button class="modal-close" onclick="closeImport()">✕</button>
         </div>
-        <div class="modal-desc">Скопируйте данные из ЦУП (с шапкой) и вставьте сюда.</div>
+        <div class="modal-desc">
+            <b>Важно:</b> Вставьте данные из таблицы <b>вместе с шапкой</b>. Скрипт сам поймет, где Вход (Выгрузка), а где Исход (Загрузка).
+        </div>
         <textarea id="importInput" placeholder="Вставьте данные..."></textarea>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeImport()">Отмена</button>
@@ -320,7 +323,7 @@
             <button class="modal-close" onclick="closeAILogist()">✕</button>
         </div>
         <div class="modal-desc" style="background: var(--purple-light); border-left-color: var(--purple); color: var(--text);">
-            Вставьте текст от логиста (как в файле Дзержинский.txt). ИИ распознает рейсы, направления, вместимость и приоритеты.
+            Вставьте текст от логиста (как в файле Дзержинский.txt). ИИ распознает приоритеты и скажет, что делать с машиной (ФФЦ и т.д.).
         </div>
         <textarea id="aiInput" style="min-height: 300px; border-color: var(--purple);" placeholder="Вставьте сюда список машин..."></textarea>
         <div class="modal-buttons">
@@ -368,11 +371,9 @@
     // ==================== СОСТОЯНИЕ ====================
     let google = { incoming: [], outgoing: [] };
     let chat = [];
-    let ffcVehicles = []; // Машины, которые уехали на ФФЦ { data, startTime }
+    let ffcVehicles = []; // { data, startTime }
     let gateStates = {}; // { num: { startTime, data } }
     let gateTimers = {};
-    let ffcTimer = null;
-    let currentImport = 'google';
     let currentTab = 'gates';
     let searchQuery = '';
     let selectedGateForModal = null;
@@ -395,7 +396,7 @@
         if (tab === 'analysis') renderAnalysis();
     }
 
-    // ==================== КАТОФФ И ВРЕМЯ ====================
+    // ==================== ЛОГИКА КАТОФА И ВРЕМЕНИ ====================
     function getCutoffFor(direction) {
         if (!direction) return null;
         const dir = direction.trim();
@@ -430,7 +431,7 @@
         if (!m) return null;
         const h = parseInt(m[1]);
         const min = h * 60 + parseInt(m[2]);
-        if (h < 6) return min + 1440;
+        if (h < 6) min += 1440;
         return min;
     }
 
@@ -439,6 +440,18 @@
         const planMin = getPlanMinutes(item);
         if (deadlineMin === null || planMin === null) return null;
         return planMin <= deadlineMin + 30;
+    }
+
+    function getTimeToKatoff(item) {
+        const deadlineMin = getSCDeadlineMinutes(item.direction);
+        if (deadlineMin === null) return null;
+        const now = new Date();
+        const nowMin = now.getHours() * 60 + now.getMinutes();
+        const diffMin = deadlineMin - nowMin;
+        if (diffMin < 0) return 'ПРОСРОЧЕН';
+        const h = Math.floor(diffMin / 60);
+        const m = diffMin % 60;
+        return h > 0 ? `${h}ч ${m}мин` : `${m}мин`;
     }
 
     function formatDur(ms) {
@@ -475,6 +488,7 @@
         const googleItems = type === 'incoming' ? google.incoming : google.outgoing;
         googleItems.forEach(g => items.push({ ...g, source: 'google' }));
         chat.forEach(c => {
+            if (c.type !== type) return;
             const exists = items.find(g => g.route === c.route);
             if (exists) {
                 exists.source = 'both';
@@ -482,7 +496,7 @@
                 if (c.marks) exists.marks = [...(exists.marks || []), ...c.marks];
                 return;
             }
-            if (c.type === type) items.push({ ...c, source: 'chat', status: 'coming' });
+            items.push({ ...c, source: 'chat', status: 'coming' });
         });
         return items;
     }
@@ -492,7 +506,6 @@
         const gatesMap = {};
         GATES.forEach(n => gatesMap[n] = null);
 
-        // Заполняем ворота машинами, у которых указан gate
         const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
         all.forEach(item => {
             const gate = parseInt(item.gate);
@@ -526,8 +539,13 @@
             
             const katoff = isKatoff(item);
             let katoffBadge = '';
-            if (katoff === true) katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
-            else if (katoff === false) katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
+            let katoffTimeStr = '';
+            if (katoff === true) {
+                katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
+                katoffTimeStr = `<div class="katoff-time">До катофа: ${getTimeToKatoff(item)}</div>`;
+            } else if (katoff === false) {
+                katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
+            }
 
             html += `<div class="gate-card ${type}" onclick="unassignGate(${num})">
                 <div class="gate-card-header">
@@ -541,6 +559,8 @@
                         <div>👤 ${item.driver || '—'}</div>
                         <div>🚛 ${item.vehicle || '—'}</div>
                     </div>
+                    ${katoffTimeStr}
+                    ${item.actionPlan ? `<div class="tag ffc" style="margin-top:8px;">${item.actionPlan}</div>` : ''}
                     <div class="gate-timer-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                         <div class="gate-timer" id="timer-${num}">00:00:00</div>
                         <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px;" onclick="event.stopPropagation(); sendToFFC('${item.route}')">Отправить на ФФЦ</button>
@@ -630,17 +650,14 @@
         const item = all.find(i => i.route === route);
         if (!item) return;
         
-        // Убираем с ворот
         Object.keys(gateStates).forEach(num => {
             if (gateStates[num] && gateStates[num].data.route === route) delete gateStates[num];
         });
         
-        // Добавляем в список ФФЦ
         if (!ffcVehicles.find(v => v.data.route === route)) {
             ffcVehicles.push({ data: item, startTime: Date.now() });
         }
         
-        // Меняем статус в источнике
         const allSource = [...google.incoming, ...google.outgoing, ...chat];
         allSource.forEach(i => { if (i.route === route) i.gate = ''; });
         
@@ -687,16 +704,14 @@
         const tbody = document.getElementById(type + 'TableBody');
         const countEl = document.getElementById(type + 'Count');
         let items = getAllItems(type);
-        if (type === 'incoming') {
-            items = items.filter(i => i.type === 'incoming' || !i.type);
-        } else {
-            items = items.filter(i => i.type === 'outgoing');
-        }
         
+        // Фильтруем по типу (на всякий случай)
+        items = items.filter(i => i.type === type || !i.type);
+
         countEl.textContent = items.length + ' рейсов';
 
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" class="empty-state"><div class="empty-state-icon">${type === 'incoming' ? '🔽' : '🔼'}</div>Нет рейсов. Вставьте данные из таблицы или от ИИ.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="10" class="empty-state"><div class="empty-state-icon">${type === 'incoming' ? '🔽' : '🔼'}</div>Нет рейсов.</td></tr>`;
             return;
         }
 
@@ -707,6 +722,11 @@
                 (item.route || '').toLowerCase().includes(searchQuery) ||
                 (item.direction || '').toLowerCase().includes(searchQuery)
             );
+            
+            // Логика что делать
+            let actionHtml = item.actionPlan || '—';
+            if (status === 'ffc') actionHtml = '<span style="color:var(--purple); font-weight:900;">На ФФЦ</span>';
+            if (status === 'loaded') actionHtml = '✅ Готово';
 
             return `<tr style="${isSearchMatch ? 'background:#fef3c7;' : ''}">
                 <td class="center">${i + 1}</td>
@@ -718,7 +738,7 @@
                 <td>${item.fact || '—'}</td>
                 <td class="center">${item.gate || '—'}</td>
                 <td class="center">${statusBadge}</td>
-                <td><span style="font-size:11px; font-weight:700;">${item.actionPlan || '—'}</span></td>
+                <td><span style="font-size:11px; font-weight:700;">${actionHtml}</span></td>
             </tr>`;
         }).join('');
     }
@@ -786,7 +806,7 @@
         return alerts;
     }
 
-    // ==================== ИИ ЛОГИСТ ====================
+    // ==================== УМНЫЙ ИИ ЛОГИСТ ====================
     function openAILogist() {
         document.getElementById('aiInput').value = '';
         document.getElementById('aiModal').classList.add('active');
@@ -828,20 +848,21 @@
             const vehicleLine = lines.find(l => l.includes('Номер тягача') || l.includes('Номер машины'));
             const vehicle = vehicleLine ? vehicleLine.split(':')[1].trim() : '';
 
-            let isOurs = false;
             let actionPlan = '';
+            let type = 'incoming';
             
             if (block.includes('(Вы, затем ФФЦ)') || block.includes('(Вы, заетм ФФЦ)')) {
-                isOurs = true;
                 actionPlan = 'Выгрузить → Отдать на ФФЦ → После ФФЦ загрузить';
+                type = 'outgoing'; // Это сложный цикл, но по сути машина приедет на загрузку
             } else if (block.includes('(ВАШ)') || block.includes('(Ваш)')) {
-                isOurs = true;
                 actionPlan = 'Загрузить (Ваша машина)';
+                type = 'outgoing';
             } else if (block.includes('(В НОЧЬ ВАША)')) {
-                isOurs = true;
                 actionPlan = 'Загрузить в ночь (Ваша)';
+                type = 'outgoing';
             } else {
                 actionPlan = 'Выгрузить (чужая)';
+                type = 'incoming';
             }
 
             if (route) {
@@ -851,11 +872,18 @@
                     vehicle: vehicle,
                     driver: driver,
                     actionPlan: actionPlan,
-                    marks: isOurs ? ['ours'] : [],
+                    type: type,
                     source: 'chat', 
-                    type: block.includes('загрузить') || block.includes('ВАШ') ? 'outgoing' : 'incoming',
                     status: 'coming'
                 };
+
+                // Ищем дубликаты (если машина есть и на вход, и на исход)
+                const inIncoming = google.incoming.find(i => i.route === route);
+                const inOutgoing = google.outgoing.find(i => i.route === route);
+                if (inIncoming && inOutgoing) {
+                    actionPlan = 'Двойной цикл: Выгрузить → (ФФЦ) → Загрузить';
+                    car.actionPlan = actionPlan;
+                }
 
                 const idx = chat.findIndex(c => c.route === route);
                 if (idx >= 0) chat[idx] = { ...chat[idx], ...car };
@@ -870,8 +898,7 @@
             renderAnalysis();
             showToast(`🤖 ИИ успешно распознал ${parsedCount} машин!`, 'success');
             closeAILogist();
-            if (chat.some(c => c.type === 'outgoing')) switchTab('outgoing');
-            else switchTab('incoming');
+            if (currentTab !== 'gates') switchTab('incoming');
         } else {
             showToast('Не удалось распознать рейсы. Проверьте формат.', 'error');
         }
@@ -885,6 +912,7 @@
 
     function closeImport() { document.getElementById('importModal').classList.remove('active'); }
 
+    // УМНЫЙ ПАРСЕР ТАБЛИЦ (Вход/Исход)
     function doImport() {
         const text = document.getElementById('importInput').value.trim();
         if (!text) return;
@@ -892,27 +920,56 @@
         const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
         if (lines.length < 2) return;
 
+        // Определяем тип таблицы по шапке
+        const headerLine = lines[0].toLowerCase();
+        let type = 'incoming';
+        if (headerLine.includes('исходящий') || headerLine.includes('загрузка') || headerLine.includes('плановая отгрузка')) {
+            type = 'outgoing';
+        } else if (headerLine.includes('входящий') || headerLine.includes('выгрузка') || headerLine.includes('плановая доставка')) {
+            type = 'incoming';
+        }
+
+        // Находим индексы колонок по шапке
+        const headerCols = lines[0].split('\t').map(c => c.trim().toLowerCase());
+        let idxRoute = headerCols.findIndex(c => c.includes('рейс'));
+        let idxDir = headerCols.findIndex(c => c.includes('направление'));
+        let idxVeh = headerCols.findIndex(c => c.includes('номер тс'));
+        let idxDriver = headerCols.findIndex(c => c.includes('фио') || c.includes('водитель'));
+        let idxPlan = headerCols.findIndex(c => c.includes('план'));
+        let idxFact = headerCols.findIndex(c => c.includes('факт'));
+        let idxGate = headerCols.findIndex(c => c.includes('ворота'));
+
+        // Если индексы не найдены (например, нестандартная шапка), ставим дефолтные
+        if (idxRoute === -1) idxRoute = 2;
+        if (idxDir === -1) idxDir = 1;
+        if (idxVeh === -1) idxVeh = 3;
+        if (idxDriver === -1) idxDriver = 4;
+        if (idxPlan === -1) idxPlan = 5;
+        if (idxFact === -1) idxFact = 7;
+        if (idxGate === -1) idxGate = 13;
+
         lines.slice(1).forEach(line => {
             const p = line.split('\t').map(x => x.trim());
             if (p.length < 5) return;
             
-            const route = '#' + (p[2] || p[3] || '').replace('#', '');
-            if (!route || route === '#') return;
+            const rawRoute = (p[idxRoute] || '').replace('#', '').trim();
+            if (!rawRoute) return;
+            const route = '#' + rawRoute;
 
             const item = {
                 route: route,
-                direction: p[1] || '',
-                vehicle: p[3] || p[2] || '',
-                driver: p[4] || '',
-                plan: [p[5], p[6]].filter(x => x).join(' '),
-                fact: [p[7], p[8]].filter(x => x).join(' '),
-                gate: p[13] || '',
+                direction: p[idxDir] || '',
+                vehicle: p[idxVeh] || '',
+                driver: p[idxDriver] || '',
+                plan: p[idxPlan] || '',
+                fact: p[idxFact] || '',
+                gate: p[idxGate] || '',
                 source: 'google', 
-                type: p.length > 12 ? 'outgoing' : 'incoming',
+                type: type,
                 status: 'coming'
             };
             
-            const target = item.type === 'incoming' ? google.incoming : google.outgoing;
+            const target = type === 'incoming' ? google.incoming : google.outgoing;
             const idx = target.findIndex(g => g.route === item.route);
             if (idx >= 0) target[idx] = { ...target[idx], ...item };
             else target.push(item);
@@ -922,7 +979,7 @@
         renderTable('outgoing'); 
         renderAnalysis();
         closeImport();
-        showToast('Данные загружены из таблицы!', 'success');
+        showToast(`Загружена таблица: ${type === 'incoming' ? 'ВХОД' : 'ИСХОД'}`, 'success');
     }
 
     // ==================== ВСПОМОГАТЕЛЬНОЕ ====================
@@ -962,7 +1019,6 @@
     renderAnalysis();
     updateTabCounts();
     
-    // Обновляем таймеры ФФЦ каждую минуту
     setInterval(() => {
         if (currentTab === 'ffc') renderFFC();
         if (currentTab === 'analysis') renderAnalysis();

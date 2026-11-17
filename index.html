@@ -405,7 +405,7 @@
         'Оренбург':        { sc: '01:30–02:30', ffc: '00:00–01:00', order: 'ffc-first' }
     };
 
-    // ==================== СОСТОЯНИЕ ====================
+    // ==================== СОСТОЯНИЕ (С СОХРАНЕНИЕМ) ====================
     let google = { incoming: [], outgoing: [] };
     let chat = [];
     let ffcVehicles = []; // { data, startTime }
@@ -414,6 +414,33 @@
     let currentTab = 'gates';
     let searchQuery = '';
     let sliceData = [];
+
+    function saveState() {
+        localStorage.setItem('wb_google', JSON.stringify(google));
+        localStorage.setItem('wb_chat', JSON.stringify(chat));
+        localStorage.setItem('wb_ffc', JSON.stringify(ffcVehicles));
+        localStorage.setItem('wb_gates', JSON.stringify(gateStates));
+        localStorage.setItem('wb_slice', JSON.stringify(sliceData));
+    }
+
+    function loadState() {
+        try {
+            const g = localStorage.getItem('wb_google');
+            if (g) google = JSON.parse(g);
+            
+            const c = localStorage.getItem('wb_chat');
+            if (c) chat = JSON.parse(c);
+            
+            const f = localStorage.getItem('wb_ffc');
+            if (f) ffcVehicles = JSON.parse(f);
+            
+            const gt = localStorage.getItem('wb_gates');
+            if (gt) gateStates = JSON.parse(gt);
+            
+            const s = localStorage.getItem('wb_slice');
+            if (s) sliceData = JSON.parse(s);
+        } catch(e) { console.error('Ошибка загрузки', e); }
+    }
     
     // ==================== ЧАСЫ ====================
     setInterval(() => {
@@ -491,7 +518,6 @@
         return { str: (h > 0 ? `${h}ч ${m}мин` : `${m}мин`), min: diffMin };
     }
 
-    // Рекомендация по сдвигу слота
     function getShiftRecommendation(item) {
         const katoff = isKatoff(item);
         if (katoff === true) {
@@ -720,6 +746,7 @@
             }
         }
         closeGateSelect();
+        saveState();
         renderGates();
         showToast(`Машина ${route} поставлена на ворота ${gateNum}`, 'success');
     }
@@ -735,6 +762,7 @@
                 if (gateStates[num] && gateStates[num].data.route === route) delete gateStates[num];
             });
         }
+        saveState();
         renderGates();
         renderTable('incoming');
         renderTable('outgoing');
@@ -757,6 +785,7 @@
         const allSource = [...google.incoming, ...google.outgoing, ...chat];
         allSource.forEach(i => { if (i.route === route) i.gate = ''; });
         
+        saveState();
         renderGates();
         renderFFC();
         updateTabCounts();
@@ -793,6 +822,7 @@
         ffcVehicles = ffcVehicles.filter(v => v.data.route !== route);
         const allSource = [...google.incoming, ...google.outgoing, ...chat];
         allSource.forEach(i => { if (i.route === route) i.fact = 'Готово'; });
+        saveState();
         renderFFC();
         renderAnalysis();
         updateTabCounts();
@@ -822,7 +852,6 @@
             if (status === 'loaded') actionHtml = '✅ Готово';
             if (item.delayReason) actionHtml += `<br><span style="color:var(--danger); font-size:10px;">Опоздание: ${item.delayReason}</span>`;
             
-            // Добавляем рекомендацию по сдвигу в таблицу
             const shift = getShiftRecommendation(item);
             let shiftBadge = '';
             if (shift.allow === true) shiftBadge = `<br><span style="color:var(--success); font-size:10px; font-weight:800;">✅ Слот можно сдвинуть</span>`;
@@ -943,6 +972,7 @@
 
         document.getElementById('sliceAnalysisText').textContent = resultText;
         document.getElementById('sliceAnalysisCount').textContent = sliceData.length + ' направлений';
+        saveState();
         closeSliceImport();
         showToast('Анализ среза готов!', 'success');
     }
@@ -1023,6 +1053,7 @@
         });
 
         if (parsedCount > 0) {
+            saveState();
             renderTable('incoming'); 
             renderTable('outgoing'); 
             renderAnalysis();
@@ -1042,6 +1073,7 @@
 
     function closeImport() { document.getElementById('importModal').classList.remove('active'); }
 
+    // УМНЫЙ ПАРСЕР ТАБЛИЦ (ищет колонки по названиям!)
     function doImport() {
         const text = document.getElementById('importInput').value.trim();
         if (!text) return;
@@ -1049,70 +1081,81 @@
         const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
         if (lines.length < 2) return;
 
+        // 1. Определяем тип таблицы
         const headerLine = lines[0].toLowerCase();
         let type = 'incoming';
         if (headerLine.includes('исходящий') || headerLine.includes('загрузка') || headerLine.includes('плановая отгрузка')) {
             type = 'outgoing';
         }
 
+        // 2. Ищем индексы колонок по ключевым словам
         const headerCols = lines[0].split('\t').map(c => c.trim().toLowerCase());
-        let idxRoute = headerCols.findIndex(c => c.includes('рейс'));
-        let idxDir = headerCols.findIndex(c => c.includes('направление'));
-        let idxVeh = headerCols.findIndex(c => c.includes('номер тс'));
-        let idxDriver = headerCols.findIndex(c => c.includes('фио') || c.includes('водитель'));
-        let idxPlan = headerCols.findIndex(c => c.includes('план'));
-        let idxFact = headerCols.findIndex(c => c.includes('факт'));
-        let idxStatus = headerCols.findIndex(c => c.includes('статус'));
-        let idxGate = headerCols.findIndex(c => c.includes('ворота'));
+        
+        const findCol = (keywords) => {
+            for (let i = 0; i < headerCols.length; i++) {
+                const col = headerCols[i];
+                if (keywords.some(kw => col.includes(kw))) return i;
+            }
+            return -1;
+        };
 
-        if (idxRoute === -1) idxRoute = 2;
-        if (idxDir === -1) idxDir = 1;
-        if (idxVeh === -1) idxVeh = 3;
-        if (idxDriver === -1) idxDriver = 4;
-        if (idxPlan === -1) idxPlan = 5;
-        if (idxFact === -1) idxFact = 7;
-        if (idxStatus === -1) idxStatus = 14;
-        if (idxGate === -1) idxGate = 13;
+        let idxRoute = findCol(['рейс', 'номер рейса']);
+        let idxDir = findCol(['направление']);
+        let idxVeh = findCol(['номер тс', 'машина', 'тягач', 'номер машины']);
+        let idxDriver = findCol(['фио', 'водитель']);
+        let idxPlan = findCol(['план', 'плановая']);
+        let idxFact = findCol(['факт', 'фактическая']);
+        let idxStatus = findCol(['статус']);
+        let idxGate = findCol(['ворота', 'gate']);
 
+        // 3. Парсим строки
+        let parsedCount = 0;
         lines.slice(1).forEach(line => {
             const p = line.split('\t').map(x => x.trim());
-            if (p.length < 5) return;
+            if (p.length < 3) return;
             
-            const rawRoute = (p[idxRoute] || '').replace('#', '').trim();
+            // Берем рейс (если пусто, пропускаем)
+            const rawRoute = idxRoute !== -1 ? (p[idxRoute] || '').replace('#', '').trim() : '';
             if (!rawRoute) return;
             const route = '#' + rawRoute;
 
-            let factValue = p[idxFact] || '';
-            let statusText = (p[idxStatus] || '').toLowerCase();
-            if (statusText.includes('загрузили') || statusText.includes('выгрузили')) {
-                factValue = statusText.includes('загрузили') ? 'Загрузили' : 'Выгрузили';
-            }
-
+            // Формируем объект
             const item = {
                 route: route,
-                direction: p[idxDir] || '',
-                vehicle: p[idxVeh] || '',
-                driver: p[idxDriver] || '',
-                plan: p[idxPlan] || '',
-                fact: factValue,
-                statusFromTable: statusText,
-                gate: p[idxGate] || '',
+                direction: idxDir !== -1 ? p[idxDir] : '',
+                vehicle: idxVeh !== -1 ? p[idxVeh] : '',
+                driver: idxDriver !== -1 ? p[idxDriver] : '',
+                plan: idxPlan !== -1 ? p[idxPlan] : '',
+                fact: idxFact !== -1 ? p[idxFact] : '',
+                gate: idxGate !== -1 ? p[idxGate] : '',
                 source: 'google', 
                 type: type,
                 status: 'coming'
             };
-            
+
+            // Умная обработка статуса из крайней колонки
+            if (idxStatus !== -1) {
+                const statusText = (p[idxStatus] || '').toLowerCase();
+                if (statusText.includes('загрузили') || statusText.includes('выгрузили')) {
+                    item.fact = statusText.includes('загрузили') ? 'Загрузили' : 'Выгрузили';
+                    item.statusFromTable = 'Готово';
+                }
+            }
+
+            // Сохраняем (обновляем, если рейс уже есть)
             const target = type === 'incoming' ? google.incoming : google.outgoing;
-            const idx = target.findIndex(g => g.route === item.route);
-            if (idx >= 0) target[idx] = { ...target[idx], ...item };
+            const existingIdx = target.findIndex(g => g.route === item.route);
+            if (existingIdx >= 0) target[existingIdx] = { ...target[existingIdx], ...item };
             else target.push(item);
+            parsedCount++;
         });
 
+        saveState();
         renderTable('incoming'); 
         renderTable('outgoing'); 
         renderAnalysis();
         closeImport();
-        showToast(`Загружена таблица: ${type === 'incoming' ? 'ВХОД' : 'ИСХОД'}`, 'success');
+        showToast(`Загружено ${parsedCount} рейсов (${type === 'incoming' ? 'ВХОД' : 'ИСХОД'})`, 'success');
     }
 
     // ==================== ВСПОМОГАТЕЛЬНОЕ ====================
@@ -1143,6 +1186,12 @@
 
     function resetAll() {
         if (!confirm('Сбросить ВСЕ данные?')) return;
+        localStorage.removeItem('wb_google');
+        localStorage.removeItem('wb_chat');
+        localStorage.removeItem('wb_ffc');
+        localStorage.removeItem('wb_gates');
+        localStorage.removeItem('wb_slice');
+        
         google = { incoming: [], outgoing: [] };
         chat = []; ffcVehicles = []; gateStates = {}; sliceData = [];
         Object.values(gateTimers).forEach(t => clearInterval(t));
@@ -1154,6 +1203,7 @@
     }
 
     // ==================== СТАРТ ====================
+    loadState(); // Загружаем данные из памяти браузера
     renderGates();
     renderTable('incoming');
     renderTable('outgoing');

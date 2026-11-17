@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Помощник бригадира</title>
+<title>Помощник бригадира PRO</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -32,68 +32,43 @@
     }
     .app-logo { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .app-logo-icon {
-        width: 32px; height: 32px;
-        background: linear-gradient(135deg, var(--accent), #1e40af);
-        border-radius: 8px; display: flex; align-items: center;
-        justify-content: center; font-size: 16px; color: white;
+        width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), #1e40af);
+        border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white;
     }
     .search-box { flex: 1; min-width: 180px; max-width: 380px; position: relative; }
     .search-box input {
-        width: 100%; padding: 8px 12px 8px 34px;
-        border: 1.5px solid var(--border-strong); border-radius: 8px;
-        font-size: 12px; font-family: inherit; font-weight: 600;
+        width: 100%; padding: 8px 12px 8px 34px; border: 1.5px solid var(--border-strong);
+        border-radius: 8px; font-size: 12px; font-family: inherit; font-weight: 600;
         background: var(--bg); color: var(--text);
     }
-    .search-box input:focus {
-        outline: none; border-color: var(--accent);
-        background: white; box-shadow: 0 0 0 3px var(--accent-light);
-    }
-    .search-box::before {
-        content: '🔍'; position: absolute; left: 10px; top: 50%;
-        transform: translateY(-50%); font-size: 14px;
-    }
+    .search-box input:focus { outline: none; border-color: var(--accent); background: white; }
+    .search-box::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); }
+    
     .header-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
     .clock {
         font-size: 15px; font-weight: 900; color: var(--accent);
-        font-variant-numeric: tabular-nums; letter-spacing: 1px;
-        padding: 6px 12px; background: var(--accent-light); border-radius: 8px;
+        font-variant-numeric: tabular-nums; padding: 6px 12px; background: var(--accent-light); border-radius: 8px;
     }
-    .cup-badge {
-        padding: 6px 10px; border-radius: 8px; font-size: 11px;
-        font-weight: 800; cursor: pointer; border: 1.5px solid;
-    }
-    .cup-badge.fresh { background: var(--success-light); color: var(--success); border-color: var(--success); }
-    .cup-badge.stale { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
-    .cup-badge.old { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
-
     .btn {
-        padding: 8px 14px; border: none; border-radius: 8px;
-        font-size: 12px; font-weight: 800; cursor: pointer;
-        transition: all 0.15s; font-family: inherit;
-        display: inline-flex; align-items: center; gap: 5px;
-        white-space: nowrap;
+        padding: 8px 14px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800;
+        cursor: pointer; transition: all 0.15s; font-family: inherit;
+        display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
     }
     .btn:active { transform: scale(0.97); }
     .btn-primary { background: var(--accent); color: white; }
-    .btn-primary:hover { background: #1d4ed8; }
     .btn-secondary { background: var(--card); color: var(--text); border: 1.5px solid var(--border-strong); }
     .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
-    .btn-success { background: var(--success); color: white; }
-    .btn-danger { background: var(--danger); color: white; }
 
     .tab-switcher { display: flex; gap: 4px; padding: 10px 20px 0; flex-wrap: wrap; }
     .tab-btn {
-        padding: 10px 16px; border: none; background: transparent;
-        border-radius: 10px 10px 0 0; font-size: 12px; font-weight: 800;
-        cursor: pointer; color: var(--text-dim);
-        font-family: inherit; display: flex; align-items: center; gap: 6px;
-        border-bottom: 3px solid transparent;
+        padding: 10px 16px; border: none; background: transparent; border-radius: 10px 10px 0 0;
+        font-size: 12px; font-weight: 800; cursor: pointer; color: var(--text-dim);
+        font-family: inherit; display: flex; align-items: center; gap: 6px; border-bottom: 3px solid transparent;
     }
     .tab-btn:hover { background: var(--card-hover); color: var(--text); }
     .tab-btn.active { background: var(--card); color: var(--accent); border-bottom-color: var(--accent); }
     .tab-btn .tab-count {
-        background: var(--text-muted); color: white;
-        font-size: 10px; font-weight: 900; padding: 2px 7px; border-radius: 10px;
+        background: var(--text-muted); color: white; font-size: 10px; font-weight: 900; padding: 2px 7px; border-radius: 10px;
     }
     .tab-btn.active .tab-count { background: var(--accent); }
 
@@ -101,331 +76,106 @@
     .tab-content.hidden { display: none; }
 
     .section {
-        background: var(--card); border-radius: 14px;
-        box-shadow: var(--shadow-md); overflow: hidden;
-        border: 1px solid var(--border); margin-bottom: 16px;
+        background: var(--card); border-radius: 14px; box-shadow: var(--shadow-md);
+        overflow: hidden; border: 1px solid var(--border); margin-bottom: 16px;
     }
     .section-header {
         padding: 12px 18px; border-bottom: 2px solid var(--border);
-        display: flex; justify-content: space-between; align-items: center;
-        flex-wrap: wrap; gap: 10px;
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
     }
-    .section-title {
-        font-size: 12px; font-weight: 900; display: flex;
-        align-items: center; gap: 8px; letter-spacing: 0.4px;
-        text-transform: uppercase;
-    }
+    .section-title { font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 8px; letter-spacing: 0.4px; text-transform: uppercase; }
     .section-title-icon {
-        width: 24px; height: 24px; border-radius: 6px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 12px; color: white;
+        width: 24px; height: 24px; border-radius: 6px; display: flex;
+        align-items: center; justify-content: center; font-size: 12px; color: white;
     }
     .section-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
     .section-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
     .section-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
     .section-title-icon.green { background: linear-gradient(135deg, #22c55e, #15803d); }
     .section-title-icon.red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-    .section-count {
-        font-size: 11px; font-weight: 800; color: var(--text-dim);
-        background: var(--bg); padding: 4px 12px; border-radius: 20px;
-    }
+    .section-count { font-size: 11px; font-weight: 800; color: var(--text-dim); background: var(--bg); padding: 4px 12px; border-radius: 20px; }
 
     .table-wrap { max-height: 600px; overflow: auto; }
-    .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
-    .table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
-
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     thead th {
-        position: sticky; top: 0; background: #f8fafc;
-        color: var(--text-dim); font-size: 10px; font-weight: 800;
-        text-transform: uppercase; padding: 10px 8px;
-        text-align: left; border-bottom: 2px solid var(--border);
-        white-space: nowrap; z-index: 2;
+        position: sticky; top: 0; background: #f8fafc; color: var(--text-dim); font-size: 10px;
+        font-weight: 800; text-transform: uppercase; padding: 10px 8px; text-align: left;
+        border-bottom: 2px solid var(--border); white-space: nowrap; z-index: 2;
     }
-    tbody td {
-        padding: 9px 8px; border-bottom: 1px solid var(--border);
-        font-weight: 600; white-space: nowrap;
-    }
+    tbody td { padding: 9px 8px; border-bottom: 1px solid var(--border); font-weight: 600; white-space: nowrap; }
     tbody tr:hover { background: var(--card-hover); }
-    tbody tr.search-match { background: #fef3c7 !important; }
     td.center { text-align: center; }
-    .num { font-weight: 900; font-size: 13px; }
-    .need-ts {
-        display: inline-flex; align-items: center; justify-content: center;
-        min-width: 30px; padding: 4px 8px; border-radius: 6px;
-        font-weight: 900; font-size: 12px;
-    }
-    .need-ts.zero { background: var(--bg); color: var(--text-muted); }
-    .need-ts.one { background: var(--accent-light); color: var(--accent); }
-    .need-ts.many { background: var(--warning-light); color: var(--warning); }
-    .need-ts.urgent { background: var(--danger-light); color: var(--danger); }
-    .highlight-row { background: rgba(254, 243, 199, 0.3) !important; }
 
-    .status-badge {
-        display: inline-block; padding: 3px 10px;
-        border-radius: 12px; font-size: 10px; font-weight: 800;
-        text-transform: uppercase; white-space: nowrap;
-    }
-    .status-badge.loaded { background: var(--success-light); color: var(--success); }
-    .status-badge.on-gate { background: var(--danger-light); color: var(--danger); }
-    .status-badge.parking { background: var(--warning-light); color: var(--warning); }
-    .status-badge.coming { background: var(--accent-light); color: var(--accent); }
-    .status-badge.agree { background: var(--purple-light); color: var(--purple); }
-
-    .source-badge {
-        display: inline-block; padding: 2px 7px; border-radius: 6px;
-        font-size: 10px; font-weight: 800;
-    }
-    .source-badge.google { background: #dbeafe; color: #1e40af; }
-    .source-badge.chat { background: var(--purple-light); color: var(--purple); }
-    .source-badge.both { background: var(--success-light); color: var(--success); }
-
-    .filters {
-        display: flex; gap: 6px; padding: 10px 14px;
-        border-bottom: 1px solid var(--border); flex-wrap: wrap;
-    }
-    .filter-btn {
-        padding: 6px 12px; border: 1.5px solid var(--border-strong);
-        background: var(--card); border-radius: 8px;
-        font-size: 11px; font-weight: 800; cursor: pointer;
-        color: var(--text-dim); font-family: inherit;
-    }
-    .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-    .gates-grid {
-        padding: 14px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-        gap: 12px;
-    }
+    .gates-grid { padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 12px; }
     .gate-card {
-        background: var(--card); border: 2px solid var(--border);
-        border-radius: 12px; overflow: hidden;
-        transition: all 0.2s; cursor: pointer;
+        background: var(--card); border: 2px solid var(--border); border-radius: 12px;
+        overflow: hidden; transition: all 0.2s; cursor: pointer;
     }
     .gate-card:hover { box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12); transform: translateY(-2px); }
     .gate-card.free { border-left: 5px solid var(--success); }
     .gate-card.unloading { border-left: 5px solid var(--danger); }
     .gate-card.loading { border-left: 5px solid var(--warning); }
-    .gate-card.urgent { animation: pulse-card 1.5s infinite; }
-    @keyframes pulse-card {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
-        50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
-    }
+    
     .gate-card-header {
         padding: 10px 14px; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-        display: flex; justify-content: space-between; align-items: center;
-        border-bottom: 1px solid var(--border);
+        display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border);
     }
     .gate-num { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
-    .gate-num-label { font-size: 9px; font-weight: 800; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-left: 6px; }
-    .gate-status {
-        font-size: 10px; font-weight: 800; padding: 3px 10px;
-        border-radius: 12px; text-transform: uppercase;
-    }
+    .gate-status { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; }
     .gate-status.free { background: var(--success-light); color: var(--success); }
     .gate-status.unloading { background: var(--danger-light); color: var(--danger); }
     .gate-status.loading { background: var(--warning-light); color: var(--warning); }
+    
     .gate-card-body { padding: 12px 14px; }
     .gate-route { font-size: 14px; font-weight: 900; }
-    .gate-direction { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-    .gate-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 10px; color: var(--text-muted); }
-    .gate-timer-row {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border);
-    }
-    .gate-timer {
-        font-size: 18px; font-weight: 900; color: var(--success);
-        font-variant-numeric: tabular-nums;
-    }
+    .gate-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    
+    .gate-timer { font-size: 18px; font-weight: 900; color: var(--success); font-variant-numeric: tabular-nums; }
     .gate-timer.warning { color: var(--warning); }
     .gate-timer.danger { color: var(--danger); animation: blink 1s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .cutoff-block {
-        display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-        padding: 7px 11px; border-radius: 8px;
-        font-size: 11px; font-weight: 800; margin-top: 4px;
-    }
-    .cutoff-block.safe { background: var(--success-light); color: var(--success); }
-    .cutoff-block.warning { background: var(--warning-light); color: var(--warning); }
-    .cutoff-block.danger { background: var(--danger-light); color: var(--danger); animation: blink 1.5s infinite; }
-    .cutoff-block.overdue { background: var(--danger); color: white; animation: blink 1s infinite; }
-    .cutoff-block.hour-from-gate { background: var(--accent-light); color: var(--accent); }
-
-    .cutoff-dual {
-        display: flex; gap: 10px; font-size: 11px;
-        margin-top: 4px; font-weight: 800; flex-wrap: wrap;
-    }
-    .cutoff-dual .sc { color: #1e40af; }
-    .cutoff-dual .ffc { color: #7c3aed; opacity: 0.7; }
-
-    .katoff-badge {
-        display: inline-block; padding: 3px 8px; border-radius: 6px;
-        font-size: 10px; font-weight: 900; margin-left: 6px;
-    }
+    .katoff-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 900; margin-left: 6px; }
     .katoff-badge.katoff { background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; }
     .katoff-badge.free { background: #f0fdf4; color: #166534; border: 1px solid #16a34a; }
 
-    .katoff-reason {
-        font-size: 10px; font-weight: 700; color: var(--text-dim);
-        margin-top: 3px; padding: 4px 8px; background: var(--bg);
-        border-radius: 6px; border-left: 3px solid var(--border-strong);
-    }
-
-    .memo {
-        margin-top: 8px; padding: 10px 12px;
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        border-left: 3px solid var(--accent); border-radius: 8px;
-    }
-    .memo-title {
-        font-weight: 900; color: var(--accent); margin-bottom: 6px;
-        font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase;
-    }
-    .memo-list { display: flex; flex-direction: column; gap: 3px; font-size: 11px; line-height: 1.4; }
-    .memo-item { display: flex; gap: 5px; }
-    .memo-item-num { font-weight: 900; color: var(--accent); }
-
-    .tag {
-        display: inline-flex; align-items: center; gap: 4px;
-        padding: 3px 9px; border-radius: 12px;
-        font-size: 10px; font-weight: 800;
-        margin-right: 4px; margin-top: 4px;
-    }
+    .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 12px; font-size: 10px; font-weight: 800; margin-right: 4px; margin-top: 4px; }
     .tag.ours { background: var(--success-light); color: var(--success); }
+    .tag.ffc { background: var(--purple-light); color: var(--purple); }
     .tag.no-load { background: var(--danger); color: white; }
-    .tag.ffc { background: var(--warning-light); color: var(--warning); }
-    .tag.head { background: var(--accent-light); color: var(--accent); }
-    .tag.tail { background: var(--purple-light); color: var(--purple); }
 
-    .alert-block {
-        background: var(--card); border-radius: 14px;
-        box-shadow: var(--shadow-md); overflow: hidden;
-        margin-bottom: 16px; border: 1px solid var(--border);
-    }
-    .alert-header {
-        padding: 12px 18px;
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border-bottom: 2px solid #fca5a5;
-        display: flex; justify-content: space-between; align-items: center;
-    }
+    .alert-block { background: var(--card); border-radius: 14px; box-shadow: var(--shadow-md); margin-bottom: 16px; border: 1px solid var(--border); overflow: hidden; }
+    .alert-header { padding: 12px 18px; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-bottom: 2px solid #fca5a5; display: flex; justify-content: space-between; align-items: center; }
     .alert-title { font-size: 13px; font-weight: 900; color: #7f1d1d; }
     .alert-list { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
-    .alert-item {
-        padding: 10px 14px; border-radius: 8px;
-        font-size: 12px; font-weight: 700;
-        display: flex; align-items: center; gap: 10px;
-    }
-    .alert-item.critical { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #7f1d1d; border-left: 4px solid #dc2626; }
-    .alert-item.warning { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; border-left: 4px solid #d97706; }
-    .alert-item.info { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a; border-left: 4px solid #2563eb; }
-    .alert-item-icon { font-size: 18px; }
-    .alert-empty {
-        padding: 40px 20px; text-align: center;
-        color: var(--success); font-size: 14px; font-weight: 800;
-    }
-    .text-preview {
-        background: #0f172a; color: #e2e8f0;
-        padding: 18px; border-radius: 12px;
-        font-family: 'Consolas', 'Monaco', monospace;
-        font-size: 12px; line-height: 1.8; white-space: pre-wrap;
-        border-left: 4px solid var(--success);
-    }
+    .alert-item { padding: 10px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .alert-item.critical { background: #fee2e2; color: #7f1d1d; border-left: 4px solid #dc2626; }
+    .alert-item.warning { background: #fef3c7; color: #78350f; border-left: 4px solid #d97706; }
+    .alert-item.info { background: #dbeafe; color: #1e3a8a; border-left: 4px solid #2563eb; }
+    .alert-empty { padding: 40px 20px; text-align: center; color: var(--success); font-size: 14px; font-weight: 800; }
 
-    .rules-block {
-        background: var(--card); border-radius: 14px;
-        box-shadow: var(--shadow-md); margin-bottom: 16px;
-        border: 1px solid var(--border); overflow: hidden;
-    }
-    .rules-header {
-        padding: 12px 18px; cursor: pointer;
-        display: flex; justify-content: space-between; align-items: center;
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    }
-    .rules-title { font-size: 13px; font-weight: 900; color: #78350f; }
-    .rules-toggle { font-size: 18px; color: #78350f; }
-    .rules-body { padding: 16px 18px; display: none; }
-    .rules-body.open { display: block; }
-    .rules-section { margin-bottom: 14px; }
-    .rules-section-title { font-size: 12px; font-weight: 900; color: var(--accent); margin-bottom: 6px; }
-    .rules-list { font-size: 12px; line-height: 1.7; color: var(--text); }
-    .rules-list li { margin-left: 20px; }
-
-    .modal-overlay {
-        display: none; position: fixed; inset: 0;
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(4px); z-index: 1000;
-        align-items: center; justify-content: center; padding: 20px;
-    }
+    /* Модальные окна */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
-    .modal {
-        background: var(--card); border-radius: 16px;
-        padding: 24px; max-width: 720px; width: 100%;
-        max-height: 90vh; overflow-y: auto;
-        box-shadow: var(--shadow-lg);
-    }
+    .modal { background: var(--card); border-radius: 16px; padding: 24px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .modal-title { font-size: 16px; font-weight: 900; }
-    .modal-close {
-        width: 32px; height: 32px; border: none;
-        background: var(--bg); border-radius: 8px;
-        font-size: 16px; cursor: pointer; color: var(--text-dim);
-    }
+    .modal-close { width: 32px; height: 32px; border: none; background: var(--bg); border-radius: 8px; font-size: 16px; cursor: pointer; color: var(--text-dim); }
     .modal-close:hover { background: var(--danger-light); color: var(--danger); }
-    .modal-desc {
-        font-size: 12px; color: var(--text-dim);
-        margin-bottom: 12px; line-height: 1.5;
-        padding: 10px 12px; background: var(--accent-light);
-        border-radius: 8px; border-left: 3px solid var(--accent);
-    }
-    .modal textarea {
-        width: 100%; min-height: 220px; padding: 12px;
-        border: 1.5px solid var(--border-strong); border-radius: 8px;
-        font-family: 'Consolas', 'Monaco', monospace;
-        font-size: 11px; resize: vertical;
-        color: var(--text); background: #f8fafc;
-        line-height: 1.5; white-space: pre;
-    }
+    .modal-desc { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; padding: 10px 12px; background: var(--accent-light); border-radius: 8px; border-left: 3px solid var(--accent); }
+    .modal textarea { width: 100%; min-height: 250px; padding: 12px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 11px; resize: vertical; color: var(--text); background: #f8fafc; line-height: 1.5; white-space: pre; }
     .modal textarea:focus { outline: none; border-color: var(--accent); background: white; }
     .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
     .modal-buttons button { flex: 1; padding: 12px; font-size: 13px; }
 
-    .toast-container {
-        position: fixed; bottom: 20px; right: 20px;
-        z-index: 2000; display: flex; flex-direction: column; gap: 8px;
-    }
-    .toast {
-        padding: 12px 18px; border-radius: 10px;
-        font-weight: 700; font-size: 12px;
-        box-shadow: var(--shadow-lg); background: var(--card);
-        border-left: 4px solid var(--accent);
-        animation: toast-in 0.3s ease; max-width: 340px;
-    }
+    .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 18px; border-radius: 10px; font-weight: 700; font-size: 12px; box-shadow: var(--shadow-lg); background: var(--card); border-left: 4px solid var(--accent); animation: toast-in 0.3s ease; max-width: 340px; }
     .toast.success { border-left-color: var(--success); }
     .toast.error { border-left-color: var(--danger); }
-    .toast.warning { border-left-color: var(--warning); }
-    @keyframes toast-in {
-        from { transform: translateX(400px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
+    @keyframes toast-in { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    .empty-state {
-        padding: 50px 20px; text-align: center;
-        color: var(--text-muted); font-size: 13px; font-style: italic;
-    }
+    .empty-state { padding: 50px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; }
     .empty-state-icon { font-size: 48px; opacity: 0.3; margin-bottom: 12px; }
-
-    .edit-cell {
-        width: 46px; padding: 4px 6px; border: 1.5px solid transparent;
-        border-radius: 6px; text-align: center;
-        font-weight: 800; font-size: 12px; font-family: inherit; outline: none;
-    }
-    .edit-cell:focus { border-color: var(--accent); background: white !important; }
-
-    @media (max-width: 900px) {
-        .gates-grid { grid-template-columns: 1fr; }
-        .tab-btn { padding: 8px 12px; font-size: 11px; }
-    }
 </style>
 </head>
 <body>
@@ -440,12 +190,7 @@
     </div>
     <div class="header-actions">
         <div class="clock" id="clock">--:--:--</div>
-        <div class="cup-badge fresh" id="cupBadge" onclick="markCupUpdated()" title="Нажми чтобы обновить">🔄 ЦУП</div>
-        <button class="btn btn-secondary" onclick="openImport('buffer')">📊 Срез</button>
-        <button class="btn btn-secondary" onclick="openImport('incoming')">📥 Вход</button>
-        <button class="btn btn-secondary" onclick="openImport('outgoing')">📤 Исход</button>
-        <button class="btn btn-secondary" onclick="openImport('chat')">📋 Чат</button>
-        <!-- НОВАЯ КНОПКА ИИ -->
+        <button class="btn btn-secondary" onclick="openImport('google')">📊 Таблица ЦУП</button>
         <button class="btn btn-primary" onclick="openAILogist()" style="background: var(--purple); box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">🤖 ИИ Логист</button>
         <button class="btn btn-secondary" onclick="resetAll()">🔄</button>
     </div>
@@ -456,19 +201,20 @@
         🚪 Ворота <span class="tab-count" id="tabCountGates">0</span>
     </button>
     <button class="tab-btn" data-tab="incoming" onclick="switchTab('incoming')">
-        🔽 Вход <span class="tab-count" id="tabCountIncoming">0</span>
+        🔽 Вход (Выгрузка) <span class="tab-count" id="tabCountIncoming">0</span>
     </button>
     <button class="tab-btn" data-tab="outgoing" onclick="switchTab('outgoing')">
-        🔼 Исход <span class="tab-count" id="tabCountOutgoing">0</span>
+        🔼 Исход (Загрузка) <span class="tab-count" id="tabCountOutgoing">0</span>
     </button>
-    <button class="tab-btn" data-tab="buffer" onclick="switchTab('buffer')">
-        📊 Срез <span class="tab-count" id="tabCountBuffer">0</span>
+    <button class="tab-btn" data-tab="ffc" onclick="switchTab('ffc')">
+        🟣 На ФФЦ <span class="tab-count" id="tabCountFfc">0</span>
     </button>
     <button class="tab-btn" data-tab="analysis" onclick="switchTab('analysis')">
-        📝 Анализ <span class="tab-count" id="tabCountAlerts">0</span>
+        📝 Анализ и Риски <span class="tab-count" id="tabCountAlerts">0</span>
     </button>
 </div>
 
+<!-- ВКЛАДКА ВОРОТА -->
 <div class="tab-content" id="tab-gates">
     <div class="section">
         <div class="section-header">
@@ -479,27 +225,18 @@
     </div>
 </div>
 
+<!-- ВКЛАДКА ВХОД -->
 <div class="tab-content hidden" id="tab-incoming">
     <div class="section">
         <div class="section-header">
             <div class="section-title"><div class="section-title-icon red">🔽</div>ВХОДЯЩИЙ ПОТОК — ВЫГРУЗКА</div>
             <div class="section-count" id="incomingCount">0 рейсов</div>
         </div>
-        <div class="filters" id="incomingFilters">
-            <button class="filter-btn active" data-filter="all" onclick="setFilter('incoming', 'all')">Все</button>
-            <button class="filter-btn" data-filter="on-gate" onclick="setFilter('incoming', 'on-gate')">🔴 На воротах</button>
-            <button class="filter-btn" data-filter="parking" onclick="setFilter('incoming', 'parking')">🟠 На парковке</button>
-            <button class="filter-btn" data-filter="coming" onclick="setFilter('incoming', 'coming')">⏳ Едет</button>
-            <button class="filter-btn" data-filter="loaded" onclick="setFilter('incoming', 'loaded')">🟢 Готово</button>
-        </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th>№</th><th>Ист.</th><th>Рейс</th><th>Направление</th>
-                        <th>Номер ТС</th><th>ФИО</th><th>План</th><th>Факт</th>
-                        <th class="center">ГМ</th><th class="center">Ворота</th>
-                        <th class="center">Статус</th><th>Что делать</th>
+                        <th>№</th><th>Рейс</th><th>Направление</th><th>Номер ТС</th><th>ФИО</th><th>План</th><th>Факт</th><th>Ворота</th><th>Статус</th><th>Что делать</th>
                     </tr>
                 </thead>
                 <tbody id="incomingTableBody"></tbody>
@@ -508,27 +245,18 @@
     </div>
 </div>
 
+<!-- ВКЛАДКА ИСХОД -->
 <div class="tab-content hidden" id="tab-outgoing">
     <div class="section">
         <div class="section-header">
             <div class="section-title"><div class="section-title-icon green">🔼</div>ИСХОДЯЩИЙ ПОТОК — ЗАГРУЗКА</div>
             <div class="section-count" id="outgoingCount">0 рейсов</div>
         </div>
-        <div class="filters" id="outgoingFilters">
-            <button class="filter-btn active" data-filter="all" onclick="setFilter('outgoing', 'all')">Все</button>
-            <button class="filter-btn" data-filter="on-gate" onclick="setFilter('outgoing', 'on-gate')">🔴 На воротах</button>
-            <button class="filter-btn" data-filter="parking" onclick="setFilter('outgoing', 'parking')">🟠 На парковке</button>
-            <button class="filter-btn" data-filter="coming" onclick="setFilter('outgoing', 'coming')">⏳ Едет</button>
-            <button class="filter-btn" data-filter="loaded" onclick="setFilter('outgoing', 'loaded')">🟢 Готово</button>
-        </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th>№</th><th>Ист.</th><th>Рейс</th><th>Направление</th>
-                        <th>Номер ТС</th><th>ФИО</th><th>План</th><th>Факт</th>
-                        <th class="center">ГМ</th><th class="center">Ворота</th>
-                        <th class="center">Статус</th><th>Что делать</th>
+                        <th>№</th><th>Рейс</th><th>Направление</th><th>Номер ТС</th><th>ФИО</th><th>План</th><th>Ворота</th><th>Статус</th><th>Что делать</th>
                     </tr>
                 </thead>
                 <tbody id="outgoingTableBody"></tbody>
@@ -537,129 +265,46 @@
     </div>
 </div>
 
-<div class="tab-content hidden" id="tab-buffer">
+<!-- ВКЛАДКА ФФЦ -->
+<div class="tab-content hidden" id="tab-ffc">
     <div class="section">
         <div class="section-header">
-            <div class="section-title"><div class="section-title-icon orange">📊</div>СРЕЗ ПО БУФЕРУ</div>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <div class="section-count" id="bufferCount">0 направлений</div>
-                <button class="btn btn-primary" onclick="addBufferRow()" style="padding: 6px 12px;">➕ Добавить</button>
-            </div>
+            <div class="section-title"><div class="section-title-icon purple">🟣</div>МАШИНЫ НА ФФЦ</div>
+            <div class="section-count" id="ffcCount">0 машин</div>
         </div>
         <div class="table-wrap">
-            <table id="bufferTable">
+            <table>
                 <thead>
                     <tr>
-                        <th rowspan="2" style="vertical-align:bottom; min-width:140px;">Направление</th>
-                        <th rowspan="2" class="center" style="vertical-align:bottom; min-width:180px;">🎯 Катофф СЦ / ФФЦ</th>
-                        <th colspan="2" class="center" style="background:#fef3c7; color:#78350f;">Старый</th>
-                        <th colspan="2" class="center" style="background:#dbeafe; color:#1e40af;">Новый</th>
-                        <th rowspan="2" class="center" style="vertical-align:bottom;">Тотал</th>
-                        <th rowspan="2" class="center" style="vertical-align:bottom; background:#fecaca; color:#991b1b;">Потр.ТС</th>
-                        <th rowspan="2" class="center" style="vertical-align:bottom;">Есть</th>
-                        <th rowspan="2" class="center" style="vertical-align:bottom;">🔥</th>
-                        <th rowspan="2" style="width:30px;"></th>
-                    </tr>
-                    <tr>
-                        <th class="center" style="font-size:9px;">Габ.</th>
-                        <th class="center" style="font-size:9px;">Негаб.</th>
-                        <th class="center" style="font-size:9px;">Габ.</th>
-                        <th class="center" style="font-size:9px;">Негаб.</th>
+                        <th>Рейс</th><th>Направление</th><th>Номер ТС</th><th>ФИО</th><th>Время на ФФЦ</th><th>Действие</th>
                     </tr>
                 </thead>
-                <tbody id="bufferTableBody"></tbody>
+                <tbody id="ffcTableBody"></tbody>
             </table>
         </div>
     </div>
 </div>
 
+<!-- ВКЛАДКА АНАЛИЗ -->
 <div class="tab-content hidden" id="tab-analysis">
-    <div class="rules-block">
-        <div class="rules-header" onclick="toggleRules()">
-            <div class="rules-title">📋 РЕГЛАМЕНТ СМЕНЫ — как отгружаться без задержек</div>
-            <div class="rules-toggle" id="rulesToggle">▼</div>
-        </div>
-        <div class="rules-body" id="rulesBody">
-            <div class="rules-section">
-                <div class="rules-section-title">⏰ ПРИОРИТЕТ</div>
-                <ul class="rules-list">
-                    <li><b>Катофная ТС</b> → дедлайн = катофф СЦ.</li>
-                    <li><b>Не катофная ТС</b> → дедлайн = 1 час с момента постановки на ворота.</li>
-                    <li>Катофф ФФЦ — только справка.</li>
-                    <li>ТС не приехал за час до катофа → ЗВОНИ водителю.</li>
-                </ul>
-            </div>
-            <div class="rules-section">
-                <div class="rules-section-title">🔄 СДВИНУТЬ СЛОТ ТС (если все три):</div>
-                <ul class="rules-list">
-                    <li>ТС не катофная</li>
-                    <li>Не руинит слот ФФЦ</li>
-                    <li>Не руинит кругорейс</li>
-                    <li><b>⚠️ Согласовать с ЛХ в чате!</b></li>
-                </ul>
-            </div>
-            <div class="rules-section">
-                <div class="rules-section-title">📦 КОРРЕКТНО СЧИТАТЬ БУФЕР</div>
-                <ul class="rules-list">
-                    <li>Кол-во паллет известно</li>
-                    <li>Габарит паллет известен</li>
-                    <li>Направления не перемешаны</li>
-                    <li>Разделён старый / новый сорт</li>
-                </ul>
-            </div>
-            <div class="rules-section">
-                <div class="rules-section-title">👥 РАБОТАТЬ В КОМАНДЕ</div>
-                <ul class="rules-list">
-                    <li>1 бриг ЛХ сутки — диспетчер</li>
-                    <li>1 бриг ЛХ сутки/день — физик</li>
-                    <li>1 старший смены — персонал</li>
-                </ul>
-            </div>
-            <div class="rules-section">
-                <div class="rules-section-title">🛠 ИНСТРУМЕНТЫ</div>
-                <ul class="rules-list">
-                    <li>Обновлять выгрузку из ЦУП 2 раза в сутки</li>
-                    <li>Прозванивать ТС, не прибывшие за час до слота</li>
-                    <li>Проверять ТС: пустые / сначала выгрузка</li>
-                </ul>
-            </div>
-            <div class="rules-section">
-                <div class="rules-section-title">⏱ КОНТРОЛЬ</div>
-                <ul class="rules-list">
-                    <li>Соблюдать ФЛОУ ≤ 1 час на 1 ТС</li>
-                    <li>Не доверять работу необученному</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
     <div class="alert-block">
         <div class="alert-header">
-            <div class="alert-title">🚨 ТРЕБУЕТ ВНИМАНИЯ</div>
+            <div class="alert-title">🚨 РЕКОМЕНДАЦИИ И РИСКИ</div>
             <div class="section-count" id="alertCount">0 проблем</div>
         </div>
         <div class="alert-list" id="alertList"></div>
     </div>
-
-    <div class="section">
-        <div class="section-header">
-            <div class="section-title"><div class="section-title-icon purple">📋</div>УТРЕННИЙ АНАЛИЗ — ТЕКСТ ДЛЯ ЧАТА</div>
-            <button class="btn btn-success" onclick="copyAnalysisText()">📋 Скопировать</button>
-        </div>
-        <div style="padding: 16px;">
-            <div class="text-preview" id="analysisText">Загрузите данные — анализ появится.</div>
-        </div>
-    </div>
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ИМПОРТА ИЗ ТАБЛИЦЫ -->
 <div class="modal-overlay" id="importModal" onclick="if(event.target===this) closeImport()">
     <div class="modal">
         <div class="modal-header">
-            <div class="modal-title" id="importTitle">📥 Импорт</div>
+            <div class="modal-title">📊 Импорт из Google Таблицы</div>
             <button class="modal-close" onclick="closeImport()">✕</button>
         </div>
-        <div class="modal-desc" id="importDesc"></div>
-        <textarea id="importInput" placeholder="Вставь сюда текст..."></textarea>
+        <div class="modal-desc">Скопируйте данные из ЦУП (с шапкой) и вставьте сюда.</div>
+        <textarea id="importInput" placeholder="Вставьте данные..."></textarea>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeImport()">Отмена</button>
             <button class="btn btn-primary" onclick="doImport()">✅ Загрузить</button>
@@ -667,15 +312,15 @@
     </div>
 </div>
 
-<!-- НОВОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ИИ -->
+<!-- МОДАЛЬНОЕ ОКНО ИИ -->
 <div class="modal-overlay" id="aiModal" onclick="if(event.target===this) closeAILogist()">
-    <div class="modal" style="max-width: 800px;">
+    <div class="modal">
         <div class="modal-header">
-            <div class="modal-title" style="color: var(--purple);">🤖 ИИ Логист — Умный парсер машин</div>
+            <div class="modal-title" style="color: var(--purple);">🤖 ИИ Логист — Умный парсер</div>
             <button class="modal-close" onclick="closeAILogist()">✕</button>
         </div>
         <div class="modal-desc" style="background: var(--purple-light); border-left-color: var(--purple); color: var(--text);">
-            Вставьте текст от логиста (как в файле Дзержинский.txt). ИИ распознает рейсы, направления, вместимость и приоритеты (Вы → ФФЦ).
+            Вставьте текст от логиста (как в файле Дзержинский.txt). ИИ распознает рейсы, направления, вместимость и приоритеты.
         </div>
         <textarea id="aiInput" style="min-height: 300px; border-color: var(--purple);" placeholder="Вставьте сюда список машин..."></textarea>
         <div class="modal-buttons">
@@ -685,19 +330,23 @@
     </div>
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ВЫБОРА МАШИНЫ НА ВОРОТА -->
+<div class="modal-overlay" id="gateSelectModal" onclick="if(event.target===this) closeGateSelect()">
+    <div class="modal" style="max-width: 600px;">
+        <div class="modal-header">
+            <div class="modal-title" id="gateSelectTitle">Выберите машину на ворота</div>
+            <button class="modal-close" onclick="closeGateSelect()">✕</button>
+        </div>
+        <div id="gateSelectList" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding-right:4px;"></div>
+    </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
     // ==================== КОНСТАНТЫ ====================
     const GATES = [11, 12, 13, 14, 15, 16, 17];
-    const HOUR_FROM_GATE = 60 * 60 * 1000; // 1 час в мс
-
-    const DEFAULT_DIRECTIONS = [
-        'Ижевск', 'Чебоксары', 'Челны', 'Киров', 'Екатеринбург',
-        'Самара', 'Самара Возврат', 'Уфа', 'Ростов', 'Ульяновск',
-        'Оренбург', 'Нижний Новгород', 'Пенза', 'Саратов', 'Дзержинский'
-    ];
-    const DEFAULT_RETURNS = ['DPD', 'X5', 'Софьино 3.1', 'Софьино КГТ', 'Домодедово', 'Казань ВП', 'ДМД ЕВСЦ'];
+    const HOUR_FROM_GATE = 60 * 60 * 1000;
 
     const CUTOFFS = {
         'Екатеринбург':    { sc: '12:00–13:00', ffc: '13:30–14:30', order: 'sc-first' },
@@ -716,53 +365,22 @@
         'Оренбург':        { sc: '01:30–02:30', ffc: '00:00–01:00', order: 'ffc-first' }
     };
 
-    const UNLOAD_STEPS = [
-        'Проверить ТрН у водителя',
-        'Сканировать паллеты инфосканом',
-        'Отделить НЕ НАШИ (если есть)',
-        'Отделить КРОСС-ДОК (если есть)',
-        'Разместить в буфере'
-    ];
-    const LOAD_STEPS = [
-        'СТАРЫЙ СОРТ — в первую очередь',
-        'НОВЫЙ СОРТ — если старого нет',
-        'Голова → хвост',
-        'Проверить документы'
-    ];
-
     // ==================== СОСТОЯНИЕ ====================
     let google = { incoming: [], outgoing: [] };
     let chat = [];
-    let buffer = [];
+    let ffcVehicles = []; // Машины, которые уехали на ФФЦ { data, startTime }
     let gateStates = {}; // { num: { startTime, data } }
     let gateTimers = {};
-    let currentImport = 'buffer';
+    let ffcTimer = null;
+    let currentImport = 'google';
     let currentTab = 'gates';
-    let filters = { incoming: 'all', outgoing: 'all' };
     let searchQuery = '';
-    let lastCupUpdate = parseInt(localStorage.getItem('wb_cup') || '0');
+    let selectedGateForModal = null;
 
     // ==================== ЧАСЫ ====================
     setInterval(() => {
         document.getElementById('clock').textContent = new Date().toTimeString().slice(0,8);
-        updateCupBadge();
     }, 1000);
-
-    function updateCupBadge() {
-        const el = document.getElementById('cupBadge');
-        if (!el) return;
-        const hours = (Date.now() - lastCupUpdate) / 3600000;
-        el.classList.remove('fresh', 'stale', 'old');
-        if (hours < 6) el.classList.add('fresh');
-        else if (hours < 12) el.classList.add('stale');
-        else el.classList.add('old');
-    }
-    function markCupUpdated() {
-        lastCupUpdate = Date.now();
-        localStorage.setItem('wb_cup', lastCupUpdate);
-        updateCupBadge();
-        showToast('🔄 ЦУП обновлён', 'success');
-    }
 
     // ==================== ВКЛАДКИ ====================
     function switchTab(tab) {
@@ -773,17 +391,11 @@
         if (tab === 'gates') renderGates();
         if (tab === 'incoming') renderTable('incoming');
         if (tab === 'outgoing') renderTable('outgoing');
-        if (tab === 'buffer') renderBuffer();
+        if (tab === 'ffc') renderFFC();
         if (tab === 'analysis') renderAnalysis();
     }
-    function toggleRules() {
-        const body = document.getElementById('rulesBody');
-        const toggle = document.getElementById('rulesToggle');
-        body.classList.toggle('open');
-        toggle.textContent = body.classList.contains('open') ? '▲' : '▼';
-    }
 
-    // ==================== КАТОФФ ====================
+    // ==================== КАТОФФ И ВРЕМЯ ====================
     function getCutoffFor(direction) {
         if (!direction) return null;
         const dir = direction.trim();
@@ -829,69 +441,6 @@
         return planMin <= deadlineMin + 30;
     }
 
-    function getKatoffReason(item) {
-        const c = getCutoffFor(item.direction);
-        if (!c) return 'Нет катоффа';
-        const planMin = getPlanMinutes(item);
-        if (planMin === null) return 'Нет плана';
-        const deadlineMin = getSCDeadlineMinutes(item.direction);
-        const planStr = minutesToStr(planMin);
-        const deadlineStr = minutesToStr(deadlineMin);
-        if (planMin <= deadlineMin + 30) {
-            return `План ${planStr} ≤ дедлайн СЦ ${deadlineStr} → КАТОФНАЯ`;
-        } else {
-            return `План ${planStr} > дедлайн СЦ ${deadlineStr} → НЕ КАТОФНАЯ (дедлайн = 1 час с ворот)`;
-        }
-    }
-
-    function minutesToStr(min) {
-        let m = min % 1440;
-        const h = Math.floor(m / 60);
-        const mm = m % 60;
-        return String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
-    }
-
-    function getCutoffStatus(item, gateNum) {
-        const katoff = isKatoff(item);
-
-        if (katoff === false) {
-            const gateStart = gateStates[gateNum]?.startTime;
-            if (!gateStart) {
-                return {
-                    type: 'hour-from-gate',
-                    deadlineStr: '1 час с ворот',
-                    diffMs: null,
-                    diffMin: null,
-                    isOverdue: false,
-                    notOnGate: true
-                };
-            }
-            const elapsed = Date.now() - gateStart;
-            const diffMs = HOUR_FROM_GATE - elapsed;
-            return {
-                type: 'hour-from-gate',
-                deadlineStr: '1 час с ворот',
-                diffMs: diffMs,
-                diffMin: Math.floor(diffMs / 60000),
-                isOverdue: diffMs < 0
-            };
-        }
-
-        const deadlineMin = getSCDeadlineMinutes(item.direction);
-        if (deadlineMin === null) return null;
-        const now = new Date();
-        const nowMin = now.getHours() * 60 + now.getMinutes();
-        const diffMs = (deadlineMin - nowMin) * 60000;
-        return {
-            type: 'cutoff',
-            deadlineMin: deadlineMin,
-            deadlineStr: minutesToStr(deadlineMin),
-            diffMs: diffMs,
-            diffMin: Math.floor(diffMs / 60000),
-            isOverdue: diffMs < 0
-        };
-    }
-
     function formatDur(ms) {
         const totalMin = Math.floor(Math.abs(ms) / 60000);
         const h = Math.floor(totalMin / 60);
@@ -900,63 +449,11 @@
         return m + 'мин';
     }
 
-    function renderCutoffBlock(direction, item, gateNum) {
-        const c = getCutoffFor(direction);
-        if (!c) return '';
-
-        const dualHtml = `<div class="cutoff-dual">
-            <span class="sc">🎯 Катофф СЦ: ${c.sc}</span>
-            <span class="ffc">🔄 ФФЦ (справка): ${c.ffc}</span>
-        </div>`;
-
-        const status = getCutoffStatus(item, gateNum);
-        if (!status) return dualHtml;
-
-        if (status.notOnGate) {
-            return dualHtml + `<div class="cutoff-block hour-from-gate">
-                <span>🔄</span>
-                <span>НЕ катофная → дедлайн 1 час с момента постановки на ворота</span>
-            </div>`;
-        }
-
-        let cls, icon, text;
-        if (status.isOverdue) {
-            cls = 'overdue';
-            icon = '🔥';
-            text = `ПРОСРОЧЕНО на ${formatDur(status.diffMs)}`;
-        } else if (status.diffMin <= 15) {
-            cls = 'danger';
-            icon = '⚠️';
-            text = `осталось ${formatDur(status.diffMs)}`;
-        } else if (status.diffMin <= 30) {
-            cls = 'warning';
-            icon = '⏰';
-            text = `осталось ${formatDur(status.diffMs)}`;
-        } else {
-            cls = status.type === 'hour-from-gate' ? 'hour-from-gate' : 'safe';
-            icon = status.type === 'hour-from-gate' ? '⏱' : '✅';
-            text = `осталось ${formatDur(status.diffMs)}`;
-        }
-
-        const label = status.type === 'cutoff'
-            ? `До дедлайна СЦ (${status.deadlineStr}):`
-            : `До дедлайна (${status.deadlineStr}):`;
-
-        return dualHtml + `<div class="cutoff-block ${cls}"><span>${icon}</span><span>${label} ${text}</span></div>`;
-    }
-
-    // ==================== СТАТУС ====================
+    // ==================== СТАТУСЫ ====================
     function detectStatus(item) {
-        const comment = (item.comment || '').toLowerCase();
-        const status = (item.status || '').toLowerCase();
+        if (ffcVehicles.find(v => v.data.route === item.route)) return 'ffc';
         const gate = String(item.gate || '').trim();
-
         if (gate && /^\d+$/.test(gate) && GATES.includes(parseInt(gate))) return 'on-gate';
-        if (status.includes('выгрузил') || status.includes('загрузил') || comment.includes('загрузил') || comment.includes('выгрузил')) return 'loaded';
-        if (status.includes('на ворот') || comment.includes('на ворот')) return 'on-gate';
-        if (status.includes('на парков') || comment.includes('на парков')) return 'parking';
-        if (status.includes('согласовать') || comment.includes('согласовать') || comment.includes('без согласования')) return 'agree';
-        if (item.marks && item.marks.includes('no-load')) return 'agree';
         if (item.fact && item.fact.trim()) return 'loaded';
         return 'coming';
     }
@@ -965,65 +462,14 @@
         const map = {
             'loaded': ['loaded', '🟢 Готово'],
             'on-gate': ['on-gate', '🔴 На воротах'],
-            'parking': ['parking', '🟠 На парковке'],
             'coming': ['coming', '⏳ Едет'],
-            'agree': ['agree', '🟣 Согласовать']
+            'ffc': ['ffc', '🟣 На ФФЦ']
         };
         const [cls, txt] = map[status] || ['coming', '⏳'];
         return `<span class="status-badge ${cls}">${txt}</span>`;
     }
 
-    function buildWhatToDo(item) {
-        const s = detectStatus(item);
-        const comment = (item.comment || '').toLowerCase();
-        if (s === 'loaded') return '✅ Готово';
-        if (s === 'parking') return '🅿️ Ждёт на парковке';
-        if (s === 'on-gate') return `🚪 На воротах ${item.gate || ''}`.trim();
-        if (s === 'agree') return '⚠️ СОГЛАСОВАТЬ с логистом';
-        if (comment.includes('ффц') && (comment.includes('остав') || comment.includes('мест'))) return '📦 Оставить место для ФФЦ';
-        if (comment.includes('не груз') || comment.includes('без соглас')) return '🚫 НЕ грузить';
-        if (comment.includes('ваш') || comment.includes('ваша')) return '✅ Загружаем';
-        return '⏳ Ждём';
-    }
-
-    function buildMemo(item, type) {
-        const steps = type === 'incoming' ? UNLOAD_STEPS : LOAD_STEPS;
-        const comment = (item.comment || '').toLowerCase();
-        let html = `<div class="memo">
-            <div class="memo-title">📋 ${type === 'incoming' ? 'ПРИ ВЫГРУЗКЕ' : 'ПРИ ЗАГРУЗКЕ'}</div>
-            <div class="memo-list">
-                ${steps.map((s, i) => `<div class="memo-item"><span class="memo-item-num">${i+1}.</span><span>${s}</span></div>`).join('')}
-            </div>`;
-        const extra = [];
-        if (comment.includes('остав') && comment.includes('ффц')) extra.push('📦 Оставить место для ФФЦ');
-        if (comment.includes('соглас')) extra.push('⚠️ СОГЛАСОВАТЬ с логистом');
-        if (comment.includes('не груз')) extra.push('🚫 НЕ грузить без разрешения');
-        if (extra.length > 0) {
-            html += `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed rgba(37,99,235,0.3);">
-                <div style="font-size:10px; font-weight:900; color:#dc2626; margin-bottom:4px;">⚠️ ВНИМАНИЕ:</div>
-                <div class="memo-list">${extra.map(e => `<div class="memo-item"><span>${e}</span></div>`).join('')}</div>
-            </div>`;
-        }
-        html += `</div>`;
-        return html;
-    }
-
-    function renderTags(item) {
-        const tags = [];
-        const comment = (item.comment || '').toLowerCase();
-        if (comment.includes('ваш') || comment.includes('ваша') || (item.marks && item.marks.includes('ours')))
-            tags.push('<span class="tag ours">✅ ВАШ</span>');
-        if (comment.includes('соглас') || (item.marks && item.marks.includes('no-load')))
-            tags.push('<span class="tag no-load">🚫 СОГЛАСОВАТЬ</span>');
-        if (comment.includes('ффц'))
-            tags.push('<span class="tag ffc">📦 ФФЦ</span>');
-        if (comment.includes('голова'))
-            tags.push('<span class="tag head">📦 ГОЛОВА</span>');
-        if (comment.includes('хвост'))
-            tags.push('<span class="tag tail">📦 ХВОСТ</span>');
-        return tags.join('');
-    }
-
+    // ==================== ОБЪЕДИНЕНИЕ ДАННЫХ ====================
     function getAllItems(type) {
         const items = [];
         const googleItems = type === 'incoming' ? google.incoming : google.outgoing;
@@ -1036,7 +482,7 @@
                 if (c.marks) exists.marks = [...(exists.marks || []), ...c.marks];
                 return;
             }
-            items.push({ ...c, source: 'chat', type: c.type || 'outgoing', status: 'coming' });
+            if (c.type === type) items.push({ ...c, source: 'chat', status: 'coming' });
         });
         return items;
     }
@@ -1046,12 +492,11 @@
         const gatesMap = {};
         GATES.forEach(n => gatesMap[n] = null);
 
+        // Заполняем ворота машинами, у которых указан gate
         const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
         all.forEach(item => {
             const gate = parseInt(item.gate);
-            if (gate && GATES.includes(gate) && !gatesMap[gate]) {
-                gatesMap[gate] = item;
-            }
+            if (gate && GATES.includes(gate)) gatesMap[gate] = item;
         });
 
         const grid = document.getElementById('gatesGrid');
@@ -1061,48 +506,30 @@
         GATES.forEach(num => {
             const item = gatesMap[num];
             if (!item) {
-                html += `<div class="gate-card free">
+                html += `<div class="gate-card free" onclick="openGateSelect(${num})">
                     <div class="gate-card-header">
                         <div><span class="gate-num">${num}</span><span class="gate-num-label">ВОРОТА</span></div>
                         <div class="gate-status free">Свободно</div>
                     </div>
                     <div class="gate-card-body">
-                        <div style="color:var(--text-muted); font-style:italic; font-size:12px; text-align:center; padding:20px 0;">Готово к постановке</div>
+                        <div style="color:var(--text-muted); font-style:italic; font-size:12px; text-align:center; padding:20px 0;">Нажмите, чтобы выбрать машину</div>
                     </div>
                 </div>`;
                 return;
             }
 
             busy++;
-
             if (!gateStates[num]) gateStates[num] = { startTime: Date.now(), data: item };
 
             const type = item.type === 'incoming' ? 'unloading' : 'loading';
             const statusText = type === 'unloading' ? '🔽 Выгрузка' : '🔼 Загрузка';
-            const cutoffHtml = renderCutoffBlock(item.direction, item, num);
-            const memoHtml = buildMemo(item, item.type || 'incoming');
-            const tagsHtml = renderTags(item);
-
+            
             const katoff = isKatoff(item);
-            const reason = getKatoffReason(item);
             let katoffBadge = '';
             if (katoff === true) katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
             else if (katoff === false) katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
 
-            let alertCallHtml = '';
-            if (katoff === true) {
-                const cs = getCutoffStatus(item, num);
-                if (cs && cs.type === 'cutoff' && !cs.isOverdue && cs.diffMin <= 60 && detectStatus(item) === 'coming') {
-                    alertCallHtml = `<div style="margin-top:6px; padding:8px 12px; background:var(--danger); color:white; border-radius:8px; font-size:11px; font-weight:800;">
-                        📞 СРОЧНО ПОЗВОНИ ВОДИТЕЛЮ! (${item.phone || 'номер в чате'})
-                    </div>`;
-                }
-            }
-
-            const cs = getCutoffStatus(item, num);
-            const urgentClass = (cs && cs.isOverdue) ? 'urgent' : '';
-
-            html += `<div class="gate-card ${type} ${urgentClass}">
+            html += `<div class="gate-card ${type}" onclick="unassignGate(${num})">
                 <div class="gate-card-header">
                     <div><span class="gate-num">${num}</span><span class="gate-num-label">ВОРОТА</span></div>
                     <div class="gate-status ${type}">${statusText}</div>
@@ -1114,14 +541,9 @@
                         <div>👤 ${item.driver || '—'}</div>
                         <div>🚛 ${item.vehicle || '—'}</div>
                     </div>
-                    ${tagsHtml ? `<div style="margin-top:4px;">${tagsHtml}</div>` : ''}
-                    ${cutoffHtml}
-                    ${reason ? `<div class="katoff-reason">${reason}</div>` : ''}
-                    ${alertCallHtml}
-                    ${memoHtml}
-                    <div class="gate-timer-row">
+                    <div class="gate-timer-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                         <div class="gate-timer" id="timer-${num}">00:00:00</div>
-                        <div style="font-size:11px; color:var(--text-dim); font-weight:700;">📦 ${item.volume || 0} ГМ</div>
+                        <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px;" onclick="event.stopPropagation(); sendToFFC('${item.route}')">Отправить на ФФЦ</button>
                     </div>
                 </div>
             </div>`;
@@ -1136,7 +558,7 @@
 
     function startGateTimer(num) {
         if (gateTimers[num]) clearInterval(gateTimers[num]);
-        if (!gateStates[num]) gateStates[num] = { startTime: Date.now() };
+        if (!gateStates[num]) return;
 
         gateTimers[num] = setInterval(() => {
             const t = document.getElementById('timer-' + num);
@@ -1146,180 +568,159 @@
             const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
             const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
             t.textContent = `${h}:${m}:${s}`;
+            
             t.classList.remove('warning', 'danger');
             if (diff > 90 * 60000) t.classList.add('danger');
             else if (diff > 60 * 60000) t.classList.add('warning');
         }, 1000);
     }
 
-    // ==================== ТАБЛИЦА ====================
+    // Модалка выбора машины на ворота
+    function openGateSelect(gateNum) {
+        selectedGateForModal = gateNum;
+        const list = document.getElementById('gateSelectList');
+        document.getElementById('gateSelectTitle').textContent = `Выберите машину на ВОРОТА ${gateNum}`;
+        
+        const available = [...getAllItems('incoming'), ...getAllItems('outgoing')].filter(i => !i.gate || !GATES.includes(parseInt(i.gate)));
+        
+        if (available.length === 0) {
+            list.innerHTML = '<div class="empty-state">Нет доступных машин для постановки.</div>';
+        } else {
+            list.innerHTML = available.map(item => `
+                <div style="border:1px solid var(--border); padding:10px; border-radius:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="assignGate('${item.route}', ${gateNum})">
+                    <div>
+                        <div style="font-weight:900; font-size:14px;">${item.route} <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(${item.type === 'incoming' ? 'Выгрузка' : 'Загрузка'})</span></div>
+                        <div style="font-size:11px;">${item.direction} | ${item.vehicle || '—'}</div>
+                    </div>
+                    <button class="btn btn-primary" style="padding:4px 10px; font-size:11px;">Посадить</button>
+                </div>
+            `).join('');
+        }
+        document.getElementById('gateSelectModal').classList.add('active');
+    }
+
+    function closeGateSelect() {
+        document.getElementById('gateSelectModal').classList.remove('active');
+        selectedGateForModal = null;
+    }
+
+    function assignGate(route, gateNum) {
+        const all = [...google.incoming, ...google.outgoing, ...chat];
+        const item = all.find(i => i.route === route);
+        if (item) {
+            item.gate = String(gateNum);
+            gateStates[gateNum] = { startTime: Date.now(), data: item };
+        }
+        closeGateSelect();
+        renderGates();
+        showToast(`Машина ${route} поставлена на ворота ${gateNum}`, 'success');
+    }
+
+    function unassignGate(gateNum) {
+        if (!confirm('Снять машину с ворот?')) return;
+        const all = [...google.incoming, ...google.outgoing, ...chat];
+        all.forEach(i => { if (parseInt(i.gate) === gateNum) delete i.gate; });
+        delete gateStates[gateNum];
+        renderGates();
+    }
+
+    // ==================== ОТПРАВКА НА ФФЦ ====================
+    function sendToFFC(route) {
+        const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
+        const item = all.find(i => i.route === route);
+        if (!item) return;
+        
+        // Убираем с ворот
+        Object.keys(gateStates).forEach(num => {
+            if (gateStates[num] && gateStates[num].data.route === route) delete gateStates[num];
+        });
+        
+        // Добавляем в список ФФЦ
+        if (!ffcVehicles.find(v => v.data.route === route)) {
+            ffcVehicles.push({ data: item, startTime: Date.now() });
+        }
+        
+        // Меняем статус в источнике
+        const allSource = [...google.incoming, ...google.outgoing, ...chat];
+        allSource.forEach(i => { if (i.route === route) i.gate = ''; });
+        
+        renderGates();
+        renderFFC();
+        updateTabCounts();
+        showToast(`Машина ${route} отправлена на ФФЦ`, 'info');
+    }
+
+    function renderFFC() {
+        const tbody = document.getElementById('ffcTableBody');
+        document.getElementById('ffcCount').textContent = ffcVehicles.length + ' машин';
+        
+        if (ffcVehicles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-state-icon">🟣</div>Нет машин на ФФЦ</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = ffcVehicles.map(v => {
+            const timeStr = formatDur(Date.now() - v.startTime);
+            return `<tr>
+                <td><b>${v.data.route}</b></td>
+                <td>${v.data.direction || '—'}</td>
+                <td>${v.data.vehicle || '—'}</td>
+                <td>${v.data.driver || '—'}</td>
+                <td class="center" style="color:var(--purple); font-weight:900;">${timeStr}</td>
+                <td><button class="btn btn-secondary" style="padding:4px 8px; font-size:10px;" onclick="returnFromFFC('${v.data.route}')">Вернулся (Готово)</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function returnFromFFC(route) {
+        ffcVehicles = ffcVehicles.filter(v => v.data.route !== route);
+        const allSource = [...google.incoming, ...google.outgoing, ...chat];
+        allSource.forEach(i => { if (i.route === route) i.fact = 'Готово'; });
+        renderFFC();
+        renderAnalysis();
+        updateTabCounts();
+        showToast(`Машина ${route} вернулась с ФФЦ и готова`, 'success');
+    }
+
+    // ==================== ТАБЛИЦЫ ====================
     function renderTable(type) {
         const tbody = document.getElementById(type + 'TableBody');
         const countEl = document.getElementById(type + 'Count');
         let items = getAllItems(type);
-        if (filters[type] !== 'all') items = items.filter(i => detectStatus(i) === filters[type]);
+        if (type === 'incoming') {
+            items = items.filter(i => i.type === 'incoming' || !i.type);
+        } else {
+            items = items.filter(i => i.type === 'outgoing');
+        }
+        
         countEl.textContent = items.length + ' рейсов';
 
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="12" class="empty-state">
-                <div class="empty-state-icon">${type === 'incoming' ? '🔽' : '🔼'}</div>
-                Нет рейсов<br>Импортируй Google, чат или используй 🤖 ИИ Логиста
-            </td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="10" class="empty-state"><div class="empty-state-icon">${type === 'incoming' ? '🔽' : '🔼'}</div>Нет рейсов. Вставьте данные из таблицы или от ИИ.</td></tr>`;
             return;
         }
 
         tbody.innerHTML = items.map((item, i) => {
-            const srcBadge = item.source === 'both' ? '<span class="source-badge both">✅</span>' :
-                             item.source === 'google' ? '<span class="source-badge google">📊</span>' :
-                             '<span class="source-badge chat">🤖</span>';
             const status = detectStatus(item);
             const statusBadge = getStatusBadge(status);
-            const whatToDo = buildWhatToDo(item);
-            const searchMatch = searchQuery && (
+            const isSearchMatch = searchQuery && (
                 (item.route || '').toLowerCase().includes(searchQuery) ||
-                (item.direction || '').toLowerCase().includes(searchQuery) ||
-                (item.vehicle || '').toLowerCase().includes(searchQuery) ||
-                (item.driver || '').toLowerCase().includes(searchQuery)
+                (item.direction || '').toLowerCase().includes(searchQuery)
             );
 
-            return `<tr class="${searchMatch ? 'search-match' : ''}">
+            return `<tr style="${isSearchMatch ? 'background:#fef3c7;' : ''}">
                 <td class="center">${i + 1}</td>
-                <td class="center">${srcBadge}</td>
-                <td><b>${item.route || '—'}</b></td>
+                <td><b>${item.route}</b></td>
                 <td>${item.direction || '—'}</td>
                 <td>${item.vehicle || '—'}</td>
                 <td>${item.driver || '—'}</td>
                 <td>${item.plan || '—'}</td>
                 <td>${item.fact || '—'}</td>
-                <td class="center num">${item.volume || item.capacity || 0}</td>
                 <td class="center">${item.gate || '—'}</td>
                 <td class="center">${statusBadge}</td>
-                <td><span style="font-size:11px; font-weight:700;">${whatToDo}</span></td>
+                <td><span style="font-size:11px; font-weight:700;">${item.actionPlan || '—'}</span></td>
             </tr>`;
         }).join('');
-    }
-
-    function setFilter(type, f) {
-        filters[type] = f;
-        document.querySelectorAll(`#${type}Filters .filter-btn`).forEach(b => b.classList.toggle('active', b.dataset.filter === f));
-        renderTable(type);
-    }
-
-    // ==================== СРЕЗ ====================
-    function initBuffer() {
-        const saved = localStorage.getItem('wb_buffer');
-        if (saved) { try { buffer = JSON.parse(saved); if (buffer.length > 0) return; } catch(e) {} }
-        buffer = [
-            ...DEFAULT_DIRECTIONS.map(d => ({ direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0, haveTS: 0, isReturn: false })),
-            ...DEFAULT_RETURNS.map(d => ({ direction: d, oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0, haveTS: 0, isReturn: true }))
-        ];
-    }
-    function saveBuffer() { localStorage.setItem('wb_buffer', JSON.stringify(buffer)); }
-
-    function renderBuffer() {
-        const tbody = document.getElementById('bufferTableBody');
-        document.getElementById('bufferCount').textContent = buffer.filter(b => !b.isReturn).length + ' направлений';
-        if (buffer.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Нажми «📊 Срез»</td></tr>';
-            return;
-        }
-
-        let html = '';
-        const main = buffer.map((r, i) => ({ ...r, idx: i })).filter(r => !r.isReturn);
-        const returns = buffer.map((r, i) => ({ ...r, idx: i })).filter(r => r.isReturn);
-
-        main.forEach(r => {
-            const total = (r.oldGab || 0) + (r.oldNegab || 0) + (r.newGab || 0) + (r.newNegab || 0);
-            const needTS = Math.ceil(((r.oldGab || 0) + (r.oldNegab || 0) * 1.5) / 33);
-            const cutoff = getCutoffFor(r.direction);
-            const cutoffStr = cutoff
-                ? `<span style="color:#1e40af; font-weight:900;">СЦ: ${cutoff.sc}</span><br><span style="color:#7c3aed; opacity:0.7; font-weight:700;">ФФЦ: ${cutoff.ffc}</span>`
-                : '<span style="color:var(--text-muted);">—</span>';
-            const fire = needTS > 0 && (r.haveTS || 0) < needTS ? '🔥' : '';
-            const highlight = needTS > 0 ? 'highlight-row' : '';
-
-            html += `<tr class="${highlight}" id="brow-${r.idx}">
-                <td><b>${r.direction}</b></td>
-                <td class="center" style="font-size:10px;">${cutoffStr}</td>
-                <td class="center">${editable(r.idx, 'oldGab', r.oldGab, '#fef3c7')}</td>
-                <td class="center">${editable(r.idx, 'oldNegab', r.oldNegab, '#fef3c7')}</td>
-                <td class="center">${editable(r.idx, 'newGab', r.newGab, '#dbeafe')}</td>
-                <td class="center">${editable(r.idx, 'newNegab', r.newNegab, '#dbeafe')}</td>
-                <td class="center num" id="bt-${r.idx}">${total}</td>
-                <td class="center"><span class="need-ts ${getNeedClass(needTS)}" id="bn-${r.idx}">${needTS}</span></td>
-                <td class="center">${editable(r.idx, 'haveTS', r.haveTS, '#f0fdf4')}</td>
-                <td class="center" style="font-size:16px;" id="bf-${r.idx}">${fire}</td>
-                <td class="center"><button onclick="removeBufferRow(${r.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;">✕</button></td>
-            </tr>`;
-        });
-
-        if (returns.length > 0) {
-            html += `<tr style="background:#dbeafe;"><td colspan="11" style="text-align:center; font-weight:900; color:#1e40af; padding:8px; letter-spacing:2px; font-size:10px;">ВОЗВРАТЫ</td></tr>`;
-            returns.forEach(r => {
-                const total = (r.oldGab || 0) + (r.oldNegab || 0) + (r.newGab || 0) + (r.newNegab || 0);
-                html += `<tr style="background:#f0f9ff;" id="brow-${r.idx}">
-                    <td><b>${r.direction}</b></td>
-                    <td class="center" style="color:var(--text-muted);">—</td>
-                    <td class="center">${editable(r.idx, 'oldGab', r.oldGab, '#fef3c7')}</td>
-                    <td class="center">${editable(r.idx, 'oldNegab', r.oldNegab, '#fef3c7')}</td>
-                    <td class="center">${editable(r.idx, 'newGab', r.newGab, '#dbeafe')}</td>
-                    <td class="center">${editable(r.idx, 'newNegab', r.newNegab, '#dbeafe')}</td>
-                    <td class="center num" id="bt-${r.idx}">${total}</td>
-                    <td class="center"><span class="need-ts zero" id="bn-${r.idx}">0</span></td>
-                    <td class="center">${editable(r.idx, 'haveTS', r.haveTS, '#f0fdf4')}</td>
-                    <td class="center" id="bf-${r.idx}"></td>
-                    <td class="center"><button onclick="removeBufferRow(${r.idx})" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:14px;">✕</button></td>
-                </tr>`;
-            });
-        }
-
-        tbody.innerHTML = html;
-        updateTabCounts();
-    }
-
-    function editable(idx, field, value, bg) {
-        return `<input type="number" class="edit-cell" value="${value || 0}" min="0"
-            style="background:${bg};"
-            onblur="this.style.background='${bg}';"
-            onfocus="this.style.background='white';"
-            onchange="updateBufferCell(${idx}, '${field}', this.value)">`;
-    }
-
-    function getNeedClass(need) {
-        if (need === 0) return 'zero';
-        if (need === 1) return 'one';
-        if (need <= 3) return 'many';
-        return 'urgent';
-    }
-
-    function updateBufferCell(idx, field, value) {
-        buffer[idx][field] = Math.max(0, parseInt(value) || 0);
-        saveBuffer();
-        const row = buffer[idx];
-        const total = (row.oldGab || 0) + (row.oldNegab || 0) + (row.newGab || 0) + (row.newNegab || 0);
-        const needTS = Math.ceil(((row.oldGab || 0) + (row.oldNegab || 0) * 1.5) / 33);
-        const totalEl = document.getElementById(`bt-${idx}`);
-        const needEl = document.getElementById(`bn-${idx}`);
-        const fireEl = document.getElementById(`bf-${idx}`);
-        if (totalEl) totalEl.textContent = total;
-        if (needEl) { needEl.textContent = needTS; needEl.className = 'need-ts ' + getNeedClass(needTS); }
-        if (fireEl) fireEl.textContent = needTS > 0 && (row.haveTS || 0) < needTS ? '🔥' : '';
-        renderAnalysis(); // Обновляем аналитику при изменении буфера
-    }
-
-    function addBufferRow() {
-        const name = prompt('Название направления:');
-        if (!name) return;
-        buffer.push({ direction: name.trim(), oldGab: 0, oldNegab: 0, newGab: 0, newNegab: 0, haveTS: 0, isReturn: false });
-        saveBuffer();
-        renderBuffer();
-    }
-
-    function removeBufferRow(idx) {
-        if (!confirm(`Удалить "${buffer[idx].direction}"?`)) return;
-        buffer.splice(idx, 1);
-        saveBuffer();
-        renderBuffer();
     }
 
     function doSearch(q) {
@@ -1328,7 +729,7 @@
         if (currentTab === 'outgoing') renderTable('outgoing');
     }
 
-    // ==================== АНАЛИЗ ====================
+    // ==================== АНАЛИЗ И РИСКИ ====================
     function renderAnalysis() {
         const alerts = buildAlerts();
         const alertList = document.getElementById('alertList');
@@ -1343,7 +744,6 @@
                 </div>
             `).join('');
         }
-        document.getElementById('analysisText').textContent = buildAnalysisText();
         updateTabCounts();
     }
 
@@ -1351,329 +751,39 @@
         const alerts = [];
         const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
 
-        // Катофные алерты
-        buffer.filter(b => !b.isReturn).forEach(b => {
-            const needTS = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
-            if (needTS === 0) return;
-            const haveTS = b.haveTS || 0;
-            const deadlineMin = getSCDeadlineMinutes(b.direction);
-            if (deadlineMin === null) return;
-
-            const now = new Date();
-            const nowMin = now.getHours() * 60 + now.getMinutes();
-            const diffMin = deadlineMin - nowMin;
-
-            if (diffMin > 0 && diffMin <= 120) {
-                alerts.push({
-                    level: diffMin <= 60 ? 'critical' : 'warning',
-                    icon: '⏰',
-                    text: `<b>${b.direction}</b> — до катоффа СЦ ${diffMin} мин, нужно ${needTS} ТС`
-                });
-            }
-
-            if (needTS > 0 && haveTS < needTS) {
-                const googleCount = all.filter(i => i.direction && i.direction.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])).length;
-                if (googleCount === 0) {
-                    alerts.push({
-                        level: 'critical',
-                        icon: '🚨',
-                        text: `<b>${b.direction}</b> — НУЖНА ${needTS - haveTS} ТС! (потребность ${needTS}, есть ${haveTS})`
-                    });
-                }
-            }
-
-            const total = (b.oldGab || 0) + (b.oldNegab || 0) + (b.newGab || 0) + (b.newNegab || 0);
-            if (total > 15 && needTS <= 1) {
-                alerts.push({
-                    level: 'warning',
-                    icon: '🔥',
-                    text: `<b>${b.direction}</b> — ${total} ГМ, но ${needTS} ТС. Возможно, не хватит места!`
-                });
-            }
-        });
-
-        // Прозвон за час (только катофные)
+        // Прозвон за час
         all.forEach(item => {
             if (detectStatus(item) !== 'coming') return;
             if (isKatoff(item) !== true) return;
-            const cutoff = getCutoffStatus(item, null);
-            if (cutoff && cutoff.type === 'cutoff' && !cutoff.isOverdue && cutoff.diffMin <= 60 && cutoff.diffMin > 0) {
+            
+            const deadlineMin = getSCDeadlineMinutes(item.direction);
+            if (deadlineMin === null) return;
+            const now = new Date();
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+            const diffMin = deadlineMin - nowMin;
+            
+            if (diffMin > 0 && diffMin <= 60) {
                 alerts.push({
                     level: 'critical',
                     icon: '📞',
-                    text: `<b>${item.route}</b> (${item.direction}) — ${formatDur(cutoff.diffMs)} до катофа. ЗВОНИ ВОДИТЕЛЮ!`
+                    text: `<b>${item.route}</b> (${item.direction}) — ${diffMin} мин до катофа. ЗВОНИ ВОДИТЕЛЮ!`
                 });
             }
         });
 
-        all.forEach(item => {
-            const c = (item.comment || '').toLowerCase();
-            if (c.includes('без соглас') || c.includes('не бер')) {
+        // Машины, которые долго на ФФЦ (более 2 часов)
+        ffcVehicles.forEach(v => {
+            const diffMin = (Date.now() - v.startTime) / 60000;
+            if (diffMin > 120) {
                 alerts.push({
                     level: 'warning',
-                    icon: '🚫',
-                    text: `<b>${item.route}</b> — требует согласования. НЕ грузить!`
+                    icon: '🟣',
+                    text: `<b>${v.data.route}</b> — на ФФЦ уже ${formatDur(Date.now() - v.startTime)}. Пора забирать!`
                 });
             }
         });
 
-        // Добавляем риски от ИИ Логиста (сравнение вместимости машин и потребности)
-        const aiRisks = calculateAICapacityRisks();
-        aiRisks.forEach(risk => alerts.push(risk));
-
         return alerts;
-    }
-
-    // Функция для автоматического сопоставления машин и буфера
-    function calculateAICapacityRisks() {
-        let alerts = [];
-        let capacityByDir = {};
-        const allItems = [...getAllItems('incoming'), ...getAllItems('outgoing')];
-        
-        allItems.forEach(item => {
-            if (!item.direction || !item.capacity) return;
-            const dirKey = item.direction.toLowerCase().split(' ')[0];
-            if (!capacityByDir[dirKey]) capacityByDir[dirKey] = 0;
-            capacityByDir[dirKey] += item.capacity;
-        });
-
-        buffer.forEach(b => {
-            if (b.isReturn) return;
-            const dirKey = b.direction.toLowerCase().split(' ')[0];
-            const totalNeed = (b.oldGab || 0) + (b.oldNegab || 0) + (b.newGab || 0) + (b.newNegab || 0);
-            
-            if (totalNeed > 0) {
-                const providedCap = capacityByDir[dirKey] || 0;
-                if (providedCap > 0 && providedCap < totalNeed) {
-                    alerts.push({
-                        level: 'warning',
-                        icon: '📦',
-                        text: `<b>${b.direction}</b> — Дефицит ПМ! Нужно: ${totalNeed} ГМ, Едут: ${providedCap} ПМ`
-                    });
-                }
-            }
-        });
-        return alerts;
-    }
-
-    function buildAnalysisText() {
-        let text = '';
-        buffer.filter(b => !b.isReturn).forEach(b => {
-            const needTS = Math.ceil(((b.oldGab || 0) + (b.oldNegab || 0) * 1.5) / 33);
-            const haveTS = b.haveTS || 0;
-            const googleCount = [...google.incoming, ...google.outgoing].filter(g =>
-                g.direction && g.direction.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
-            ).length;
-            const chatMatches = chat.filter(c =>
-                c.shortDirection && c.shortDirection.toLowerCase().includes(b.direction.toLowerCase().split(' ')[0])
-            );
-            let line = b.direction + ' - ';
-            const totalHave = haveTS + googleCount;
-            if (totalHave > 0) line += totalHave + ' ТС есть';
-            else line += 'ТС нет';
-            if (chatMatches.length > 0) line += ', ' + chatMatches.length + ' ТС едет';
-            if (needTS > totalHave) line += `, ДОП НУЖНО (${needTS - totalHave})`;
-            else line += ', доп не требуется';
-            text += line + '\n';
-        });
-        return text || 'Нет данных.';
-    }
-
-    function copyAnalysisText() {
-        const text = document.getElementById('analysisText').textContent;
-        navigator.clipboard.writeText(text).then(() => showToast('📋 Скопировано', 'success'))
-            .catch(() => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('📋 Скопировано', 'success'); });
-    }
-
-    // ==================== ИМПОРТ ====================
-    function openImport(type) {
-        currentImport = type;
-        const titles = { buffer: '📊 Импорт среза', incoming: '📥 Импорт Google ВХОД', outgoing: '📤 Импорт Google ИСХОД', chat: '📋 Импорт рейсов из чата' };
-        const descs = {
-            buffer: 'Скопируй блок среза из Google Таблицы <b>с шапкой</b>.',
-            incoming: 'Скопируй из Google «Вход» <b>с шапкой</b>.',
-            outgoing: 'Скопируй из Google «Исход» <b>с шапкой</b>.',
-            chat: 'Вставь сообщения из Telegram <b>как есть</b>.'
-        };
-        document.getElementById('importTitle').textContent = titles[type];
-        document.getElementById('importDesc').innerHTML = descs[type];
-        document.getElementById('importInput').value = '';
-        document.getElementById('importModal').classList.add('active');
-    }
-    function closeImport() { document.getElementById('importModal').classList.remove('active'); }
-    function doImport() {
-        const text = document.getElementById('importInput').value.trim();
-        if (!text) { showToast('Вставь текст', 'warning'); return; }
-        if (currentImport === 'buffer') importBuffer(text);
-        else if (currentImport === 'incoming') importGoogle(text, 'incoming');
-        else if (currentImport === 'outgoing') importGoogle(text, 'outgoing');
-        else if (currentImport === 'chat') importChat(text);
-        closeImport();
-    }
-
-    function importBuffer(text) {
-        const lines = text.split('\n').map(l => l.replace(/\r$/, ''));
-        let inReturns = false, count = 0;
-        lines.forEach(line => {
-            if (!line.trim()) return;
-            if (/^\s*Возвраты\s*$/i.test(line.trim())) { inReturns = true; return; }
-            const parts = line.split('\t').map(p => p.trim());
-            const first = parts[0] || '';
-            if (/^(Направления?|Габарит|Старый сорт|Новый сорт|Тотал|Потребность)/i.test(first)) return;
-            if (!first || /^\d+$/.test(first)) return;
-            const direction = first;
-            const nums = parts.slice(1).map(p => parseInt(p) || 0);
-            const oldGab = nums[0] || 0, oldNegab = nums[1] || 0, newGab = nums[2] || 0, newNegab = nums[3] || 0;
-            const idx = buffer.findIndex(b => b.direction === direction);
-            if (idx >= 0) buffer[idx] = { ...buffer[idx], oldGab, oldNegab, newGab, newNegab, isReturn: inReturns };
-            else buffer.push({ direction, oldGab, oldNegab, newGab, newNegab, haveTS: 0, isReturn: inReturns });
-            count++;
-        });
-        saveBuffer();
-        renderBuffer();
-        showToast(`Загружено ${count} направлений`, 'success');
-    }
-
-    function importGoogle(text, type) {
-        const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
-        if (lines.length < 2) { showToast('Мало данных', 'warning'); return; }
-        let parsed = 0;
-        const target = type === 'incoming' ? google.incoming : google.outgoing;
-        lines.slice(1).forEach(line => {
-            const p = line.split('\t').map(x => x.trim());
-            if (p.length < 5) return;
-            let item;
-            if (type === 'incoming') {
-                item = {
-                    route: '#' + (p[2] || '').replace('#', ''),
-                    direction: p[1] || '', vehicle: p[3] || '', driver: p[11] || '',
-                    plan: [p[4], p[5]].filter(x => x).join(' '),
-                    fact: [p[6], p[7]].filter(x => x).join(' '),
-                    volume: parseInt(p[10]) || 0, comment: '', gate: p[12] || '', status: p[13] || '',
-                    source: 'google', type: 'incoming'
-                };
-            } else {
-                item = {
-                    route: '#' + (p[3] || '').replace('#', ''),
-                    direction: p[1] || '', vehicle: p[2] || '', driver: p[4] || '',
-                    plan: [p[5], p[6]].filter(x => x).join(' '),
-                    fact: [p[7], p[8]].filter(x => x).join(' '),
-                    volume: parseInt(p[11]) || 0, comment: p[12] || '', gate: p[13] || '', status: '',
-                    source: 'google', type: 'outgoing'
-                };
-            }
-            if (!item.route || item.route === '#') return;
-            const idx = target.findIndex(g => g.route === item.route);
-            if (idx >= 0) target[idx] = { ...target[idx], ...item, source: 'both' };
-            else target.push(item);
-            parsed++;
-        });
-        saveGoogle();
-        showToast(`Загружено ${parsed} рейсов`, 'success');
-        if (type === 'incoming') renderTable('incoming'); else renderTable('outgoing');
-        renderGates();
-        renderAnalysis();
-    }
-
-    function saveGoogle() { localStorage.setItem('wb_google', JSON.stringify(google)); }
-    function loadGoogle() { try { const s = JSON.parse(localStorage.getItem('wb_google') || 'null'); if (s) google = s; } catch(e) {} }
-
-    function importChat(text) {
-        const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(b => b);
-        let count = 0;
-        blocks.forEach(block => {
-            const lines = block.split('\n').map(l => l.trim()).filter(l => l);
-            const item = parseChatBlock(lines);
-            if (item) {
-                const idx = chat.findIndex(c => c.route === item.route);
-                if (idx >= 0) chat[idx] = { ...chat[idx], ...item };
-                else chat.push(item);
-                count++;
-            }
-        });
-        saveChat();
-        showToast(`Разобрано ${count} рейсов`, 'success');
-        renderTable('incoming'); renderTable('outgoing'); renderGates(); renderAnalysis();
-    }
-
-    function parseChatBlock(lines) {
-        let route = '', direction = '', driver = '', phone = '', vehicle = '', pallets = 0, marks = [], comment = '';
-        lines.forEach(line => {
-            const rm = line.match(/[Рр]ейс\s*#?(\d+)/i);
-            if (rm) { route = '#' + rm[1]; return; }
-            const dm = line.match(/[Вв]одитель[:\s]+(.+)/i);
-            if (dm) { driver = dm[1].trim(); return; }
-            const pm = line.match(/\+?\d{10,12}/);
-            if (pm && !phone) { phone = pm[0]; return; }
-            const vm = line.match(/[Нн]омер\s+(?:тягача|машины|ТС|прицепа)[:\s]+([А-ЯA-Z0-9]+)/i);
-            if (vm && !vehicle) { vehicle = vm[1].trim(); return; }
-            const plm = line.match(/[Пп]ал[ае]товместимость[^\d]*(\d+)/i);
-            if (plm) { pallets = parseInt(plm[1]) || 0; return; }
-            const hasDash = / [-—] /.test(line) || line.includes(' - ') || line.includes(' — ');
-            const hasCities = /СЦ|ФФЦ|ПСЦ|МК|ВП/i.test(line);
-            if (hasDash && hasCities && !direction) { direction = line.trim(); return; }
-            if (/обе ваши|ваш\b|наша|его в работу|берите первый/i.test(line)) marks.push('ours');
-            if (/без соглас|не бер|не груз/i.test(line)) { marks.push('no-load'); comment += line + ' '; }
-            if (/ффц/i.test(line) && /остав|мест|сначала/i.test(line)) { marks.push('ffc'); comment += line + ' '; }
-            if (/голова/i.test(line)) marks.push('head');
-            if (/хвост/i.test(line)) marks.push('tail');
-        });
-        if (!route && !direction) return null;
-        return {
-            route: route || '(без номера)', direction,
-            shortDirection: normalizeDir(direction),
-            driver, phone, vehicle, pallets,
-            comment: comment.trim(),
-            marks: [...new Set(marks)],
-            source: 'chat', type: 'outgoing', status: 'coming'
-        };
-    }
-
-    function normalizeDir(dir) {
-        if (!dir) return '';
-        const parts = dir.replace(/\b(СЦ|ПСЦ|ФФЦ|МК|ВП)\b/gi, '').split(/\s*[-—→]\s*/).map(p => p.trim()).filter(p => p);
-        if (parts.length === 0) return '';
-        let last = parts[parts.length - 1];
-        if (last.includes(' ')) last = last.split(/\s+/).pop();
-        return last;
-    }
-
-    function saveChat() { localStorage.setItem('wb_chat', JSON.stringify(chat)); }
-    function loadChat() { try { const s = JSON.parse(localStorage.getItem('wb_chat') || 'null'); if (s) chat = s; } catch(e) {} }
-
-    function updateTabCounts() {
-        document.getElementById('tabCountGates').textContent = document.querySelectorAll('.gate-card:not(.free)').length;
-        document.getElementById('tabCountIncoming').textContent = getAllItems('incoming').length;
-        document.getElementById('tabCountOutgoing').textContent = getAllItems('outgoing').length;
-        document.getElementById('tabCountBuffer').textContent = buffer.filter(b => !b.isReturn).length;
-        document.getElementById('tabCountAlerts').textContent = buildAlerts().length;
-    }
-
-    function showToast(text, type = 'info') {
-        const c = document.getElementById('toastContainer');
-        const t = document.createElement('div');
-        t.className = 'toast ' + type;
-        t.textContent = text;
-        c.appendChild(t);
-        setTimeout(() => {
-            t.style.opacity = '0';
-            t.style.transition = 'all 0.3s';
-            setTimeout(() => t.remove(), 300);
-        }, 3000);
-    }
-
-    function resetAll() {
-        if (!confirm('Сбросить ВСЕ данные?')) return;
-        localStorage.clear();
-        google = { incoming: [], outgoing: [] };
-        chat = []; buffer = []; gateStates = {};
-        Object.values(gateTimers).forEach(t => clearInterval(t));
-        gateTimers = {};
-        lastCupUpdate = 0;
-        initBuffer();
-        renderGates(); renderTable('incoming'); renderTable('outgoing'); renderBuffer(); renderAnalysis();
-        updateTabCounts(); updateCupBadge();
-        showToast('Всё сброшено', 'success');
     }
 
     // ==================== ИИ ЛОГИСТ ====================
@@ -1715,26 +825,23 @@
             const driverLine = lines.find(l => l.includes('Водитель:'));
             const driver = driverLine ? driverLine.replace('Водитель:', '').trim() : '';
 
-            const palletLine = lines.find(l => l.includes('Палетовместимость'));
-            let capacity = 0;
-            if (palletLine) {
-                const match = palletLine.match(/\d+/);
-                capacity = match ? parseInt(match[0]) : 0;
-            }
-
             const vehicleLine = lines.find(l => l.includes('Номер тягача') || l.includes('Номер машины'));
             const vehicle = vehicleLine ? vehicleLine.split(':')[1].trim() : '';
 
             let isOurs = false;
-            let ffcNote = '';
-            if (block.includes('(Ваш)') || block.includes('(Вы') || block.includes('(ВАШ)') || block.includes('(ВАША)')) {
+            let actionPlan = '';
+            
+            if (block.includes('(Вы, затем ФФЦ)') || block.includes('(Вы, заетм ФФЦ)')) {
                 isOurs = true;
-            }
-            if (block.includes('затем ФФЦ')) {
-                ffcNote = '⚠️ Сначала СЦ, затем передать на ФФЦ!';
-            }
-            if (block.includes('В НОЧЬ ВАША')) {
-                ffcNote = '🌙 Ночная смена (Ваша)';
+                actionPlan = 'Выгрузить → Отдать на ФФЦ → После ФФЦ загрузить';
+            } else if (block.includes('(ВАШ)') || block.includes('(Ваш)')) {
+                isOurs = true;
+                actionPlan = 'Загрузить (Ваша машина)';
+            } else if (block.includes('(В НОЧЬ ВАША)')) {
+                isOurs = true;
+                actionPlan = 'Загрузить в ночь (Ваша)';
+            } else {
+                actionPlan = 'Выгрузить (чужая)';
             }
 
             if (route) {
@@ -1743,11 +850,10 @@
                     direction: direction || 'Не определено',
                     vehicle: vehicle,
                     driver: driver,
-                    capacity: capacity,
-                    comment: ffcNote,
+                    actionPlan: actionPlan,
                     marks: isOurs ? ['ours'] : [],
                     source: 'chat', 
-                    type: 'outgoing',
+                    type: block.includes('загрузить') || block.includes('ВАШ') ? 'outgoing' : 'incoming',
                     status: 'coming'
                 };
 
@@ -1759,35 +865,108 @@
         });
 
         if (parsedCount > 0) {
-            saveChat();
             renderTable('incoming'); 
             renderTable('outgoing'); 
-            renderGates(); 
             renderAnalysis();
             showToast(`🤖 ИИ успешно распознал ${parsedCount} машин!`, 'success');
             closeAILogist();
-            switchTab('outgoing');
+            if (chat.some(c => c.type === 'outgoing')) switchTab('outgoing');
+            else switchTab('incoming');
         } else {
             showToast('Не удалось распознать рейсы. Проверьте формат.', 'error');
         }
     }
 
+    // ==================== ИМПОРТ ИЗ ТАБЛИЦЫ ====================
+    function openImport() {
+        document.getElementById('importInput').value = '';
+        document.getElementById('importModal').classList.add('active');
+    }
+
+    function closeImport() { document.getElementById('importModal').classList.remove('active'); }
+
+    function doImport() {
+        const text = document.getElementById('importInput').value.trim();
+        if (!text) return;
+
+        const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
+        if (lines.length < 2) return;
+
+        lines.slice(1).forEach(line => {
+            const p = line.split('\t').map(x => x.trim());
+            if (p.length < 5) return;
+            
+            const route = '#' + (p[2] || p[3] || '').replace('#', '');
+            if (!route || route === '#') return;
+
+            const item = {
+                route: route,
+                direction: p[1] || '',
+                vehicle: p[3] || p[2] || '',
+                driver: p[4] || '',
+                plan: [p[5], p[6]].filter(x => x).join(' '),
+                fact: [p[7], p[8]].filter(x => x).join(' '),
+                gate: p[13] || '',
+                source: 'google', 
+                type: p.length > 12 ? 'outgoing' : 'incoming',
+                status: 'coming'
+            };
+            
+            const target = item.type === 'incoming' ? google.incoming : google.outgoing;
+            const idx = target.findIndex(g => g.route === item.route);
+            if (idx >= 0) target[idx] = { ...target[idx], ...item };
+            else target.push(item);
+        });
+
+        renderTable('incoming'); 
+        renderTable('outgoing'); 
+        renderAnalysis();
+        closeImport();
+        showToast('Данные загружены из таблицы!', 'success');
+    }
+
+    // ==================== ВСПОМОГАТЕЛЬНОЕ ====================
+    function updateTabCounts() {
+        document.getElementById('tabCountGates').textContent = Object.keys(gateStates).length;
+        document.getElementById('tabCountIncoming').textContent = getAllItems('incoming').length;
+        document.getElementById('tabCountOutgoing').textContent = getAllItems('outgoing').length;
+        document.getElementById('tabCountFfc').textContent = ffcVehicles.length;
+        document.getElementById('tabCountAlerts').textContent = buildAlerts().length;
+    }
+
+    function showToast(text, type = 'info') {
+        const c = document.getElementById('toastContainer');
+        const t = document.createElement('div');
+        t.className = 'toast ' + type;
+        t.textContent = text;
+        c.appendChild(t);
+        setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'all 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    function resetAll() {
+        if (!confirm('Сбросить ВСЕ данные?')) return;
+        google = { incoming: [], outgoing: [] };
+        chat = []; ffcVehicles = []; gateStates = {};
+        Object.values(gateTimers).forEach(t => clearInterval(t));
+        gateTimers = {};
+        renderGates(); renderTable('incoming'); renderTable('outgoing'); renderFFC(); renderAnalysis();
+        updateTabCounts();
+        showToast('Всё сброшено', 'success');
+    }
+
     // ==================== СТАРТ ====================
-    initBuffer();
-    loadGoogle();
-    loadChat();
     renderGates();
     renderTable('incoming');
     renderTable('outgoing');
-    renderBuffer();
+    renderFFC();
     renderAnalysis();
     updateTabCounts();
-    updateCupBadge();
-
+    
+    // Обновляем таймеры ФФЦ каждую минуту
     setInterval(() => {
-        if (currentTab === 'gates') renderGates();
+        if (currentTab === 'ffc') renderFFC();
         if (currentTab === 'analysis') renderAnalysis();
-    }, 30000);
+    }, 60000);
 </script>
 
 </body>

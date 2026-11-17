@@ -58,6 +58,8 @@
     .btn-primary { background: var(--accent); color: white; }
     .btn-secondary { background: var(--card); color: var(--text); border: 1.5px solid var(--border-strong); }
     .btn-secondary:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
 
     .tab-switcher { display: flex; gap: 4px; padding: 10px 20px 0; flex-wrap: wrap; }
     .tab-btn {
@@ -89,7 +91,6 @@
         align-items: center; justify-content: center; font-size: 12px; color: white;
     }
     .section-title-icon.blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
-    .section-title-icon.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
     .section-title-icon.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
     .section-title-icon.green { background: linear-gradient(135deg, #22c55e, #15803d); }
     .section-title-icon.red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
@@ -109,10 +110,10 @@
     .gates-grid { padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 12px; }
     .gate-card {
         background: var(--card); border: 2px solid var(--border); border-radius: 12px;
-        overflow: hidden; transition: all 0.2s; cursor: pointer;
+        overflow: hidden; transition: all 0.2s;
     }
     .gate-card:hover { box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12); transform: translateY(-2px); }
-    .gate-card.free { border-left: 5px solid var(--success); }
+    .gate-card.free { border-left: 5px solid var(--success); cursor: pointer; }
     .gate-card.unloading { border-left: 5px solid var(--danger); }
     .gate-card.loading { border-left: 5px solid var(--warning); }
     
@@ -138,7 +139,11 @@
     .katoff-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 900; margin-left: 6px; }
     .katoff-badge.katoff { background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; }
     .katoff-badge.free { background: #f0fdf4; color: #166534; border: 1px solid #16a34a; }
-    .katoff-time { font-size: 10px; font-weight: 800; color: var(--danger); margin-top: 4px; }
+    
+    .risk-warning { background: #fee2e2; color: #991b1b; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; margin-top: 6px; border-left: 3px solid #dc2626; }
+    .shift-recommendation { padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; margin-top: 6px; }
+    .shift-recommendation.allow { background: #f0fdf4; color: #166534; border-left: 3px solid #16a34a; }
+    .shift-recommendation.deny { background: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
 
     .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 12px; font-size: 10px; font-weight: 800; margin-right: 4px; margin-top: 4px; }
     .tag.ours { background: var(--success-light); color: var(--success); }
@@ -150,10 +155,13 @@
     .alert-title { font-size: 13px; font-weight: 900; color: #7f1d1d; }
     .alert-list { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
     .alert-item { padding: 10px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .alert-item.critical { background: #fee2e2; color: #7f1d1d; border-left: 4px solid #dc2626; }
+    .alert-item.critical { background: #fee2e2; color: #7f1d1d; border-left: 4px solid #dc2626; animation: pulse-bg 2s infinite; }
     .alert-item.warning { background: #fef3c7; color: #78350f; border-left: 4px solid #d97706; }
     .alert-item.info { background: #dbeafe; color: #1e3a8a; border-left: 4px solid #2563eb; }
     .alert-empty { padding: 40px 20px; text-align: center; color: var(--success); font-size: 14px; font-weight: 800; }
+    @keyframes pulse-bg { 0%, 100% { background: #fee2e2; } 50% { background: #fecaca; } }
+
+    .analysis-text { background: #0f172a; color: #e2e8f0; padding: 18px; border-radius: 12px; font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; line-height: 1.8; white-space: pre-wrap; border-left: 4px solid var(--success); }
 
     /* Модальные окна */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
@@ -191,8 +199,9 @@
     </div>
     <div class="header-actions">
         <div class="clock" id="clock">--:--:--</div>
-        <button class="btn btn-secondary" onclick="openImport('google')">📊 Таблица ЦУП</button>
+        <button class="btn btn-secondary" onclick="openImport()">📊 Таблица ЦУП</button>
         <button class="btn btn-primary" onclick="openAILogist()" style="background: var(--purple); box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">🤖 ИИ Логист</button>
+        <button class="btn btn-secondary" onclick="openSliceImport()" style="background: var(--warning-light); color: var(--warning); border-color: var(--warning);">📦 Срез</button>
         <button class="btn btn-secondary" onclick="resetAll()">🔄</button>
     </div>
 </header>
@@ -295,6 +304,16 @@
         </div>
         <div class="alert-list" id="alertList"></div>
     </div>
+    
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title"><div class="section-title-icon orange">📦</div>АНАЛИЗ СРЕЗА ПО ПОДДОНАМ</div>
+            <div class="section-count" id="sliceAnalysisCount">Нет данных</div>
+        </div>
+        <div style="padding: 16px;">
+            <div class="analysis-text" id="sliceAnalysisText">Загрузите срез, чтобы увидеть анализ.</div>
+        </div>
+    </div>
 </div>
 
 <!-- МОДАЛЬНОЕ ОКНО ИМПОРТА ИЗ ТАБЛИЦЫ -->
@@ -323,19 +342,37 @@
             <button class="modal-close" onclick="closeAILogist()">✕</button>
         </div>
         <div class="modal-desc" style="background: var(--purple-light); border-left-color: var(--purple); color: var(--text);">
-            Вставьте текст от логиста (как в файле Дзержинский.txt). ИИ распознает приоритеты и скажет, что делать с машиной (ФФЦ и т.д.).
+            Вставьте текст от логиста. ИИ распознает приоритеты, укажет на необходимость ФФЦ и выдаст рекомендацию по сдвигу слота.
         </div>
         <textarea id="aiInput" style="min-height: 300px; border-color: var(--purple);" placeholder="Вставьте сюда список машин..."></textarea>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeAILogist()">Отмена</button>
-            <button class="btn btn-primary" onclick="runAILogist()" style="background: var(--purple);">🧠 Проанализировать и добавить</button>
+            <button class="btn btn-primary" onclick="runAILogist()" style="background: var(--purple);">🧠 Проанализировать</button>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО СРЕЗА -->
+<div class="modal-overlay" id="sliceModal" onclick="if(event.target===this) closeSliceImport()">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" style="color: var(--warning);">📦 Срез по поддонам</div>
+            <button class="modal-close" onclick="closeSliceImport()">✕</button>
+        </div>
+        <div class="modal-desc" style="background: var(--warning-light); border-left-color: var(--warning); color: var(--text);">
+            Вставьте срез по направлениям (в формате: Направление - количество паллет).
+        </div>
+        <textarea id="sliceInput" style="min-height: 250px;" placeholder="Ижевск - 52&#10;Чебоксары - 51&#10;..."></textarea>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeSliceImport()">Отмена</button>
+            <button class="btn btn-primary" onclick="analyzeSlice()" style="background: var(--warning);">📊 Сделать анализ</button>
         </div>
     </div>
 </div>
 
 <!-- МОДАЛЬНОЕ ОКНО ВЫБОРА МАШИНЫ НА ВОРОТА -->
 <div class="modal-overlay" id="gateSelectModal" onclick="if(event.target===this) closeGateSelect()">
-    <div class="modal" style="max-width: 600px;">
+    <div class="modal" style="max-width: 700px;">
         <div class="modal-header">
             <div class="modal-title" id="gateSelectTitle">Выберите машину на ворота</div>
             <button class="modal-close" onclick="closeGateSelect()">✕</button>
@@ -376,8 +413,8 @@
     let gateTimers = {};
     let currentTab = 'gates';
     let searchQuery = '';
-    let selectedGateForModal = null;
-
+    let sliceData = [];
+    
     // ==================== ЧАСЫ ====================
     setInterval(() => {
         document.getElementById('clock').textContent = new Date().toTimeString().slice(0,8);
@@ -396,7 +433,7 @@
         if (tab === 'analysis') renderAnalysis();
     }
 
-    // ==================== ЛОГИКА КАТОФА И ВРЕМЕНИ ====================
+    // ==================== ЛОГИКА КАТОФА ====================
     function getCutoffFor(direction) {
         if (!direction) return null;
         const dir = direction.trim();
@@ -448,26 +485,29 @@
         const now = new Date();
         const nowMin = now.getHours() * 60 + now.getMinutes();
         const diffMin = deadlineMin - nowMin;
-        if (diffMin < 0) return 'ПРОСРОЧЕН';
+        if (diffMin < 0) return { str: 'ПРОСРОЧЕН', min: diffMin };
         const h = Math.floor(diffMin / 60);
         const m = diffMin % 60;
-        return h > 0 ? `${h}ч ${m}мин` : `${m}мин`;
+        return { str: (h > 0 ? `${h}ч ${m}мин` : `${m}мин`), min: diffMin };
     }
 
-    function formatDur(ms) {
-        const totalMin = Math.floor(Math.abs(ms) / 60000);
-        const h = Math.floor(totalMin / 60);
-        const m = totalMin % 60;
-        if (h > 0) return h + 'ч ' + m + 'мин';
-        return m + 'мин';
+    // Рекомендация по сдвигу слота
+    function getShiftRecommendation(item) {
+        const katoff = isKatoff(item);
+        if (katoff === true) {
+            return { allow: false, text: '❌ Слот сдвигать НЕЛЬЗЯ (катофная машина)' };
+        } else if (katoff === false) {
+            return { allow: true, text: '✅ Слот можно сдвинуть вправо (не катофная)' };
+        }
+        return { allow: null, text: 'Нет данных для оценки' };
     }
 
     // ==================== СТАТУСЫ ====================
     function detectStatus(item) {
+        if (item.fact === 'Загрузили' || item.fact === 'Выгрузили' || item.statusFromTable === 'Готово') return 'loaded';
         if (ffcVehicles.find(v => v.data.route === item.route)) return 'ffc';
         const gate = String(item.gate || '').trim();
         if (gate && /^\d+$/.test(gate) && GATES.includes(parseInt(gate))) return 'on-gate';
-        if (item.fact && item.fact.trim()) return 'loaded';
         return 'coming';
     }
 
@@ -493,7 +533,7 @@
             if (exists) {
                 exists.source = 'both';
                 if (c.comment) exists.comment = (exists.comment || '') + ' ' + c.comment;
-                if (c.marks) exists.marks = [...(exists.marks || []), ...c.marks];
+                if (c.actionPlan) exists.actionPlan = c.actionPlan;
                 return;
             }
             items.push({ ...c, source: 'chat', status: 'coming' });
@@ -537,33 +577,42 @@
             const type = item.type === 'incoming' ? 'unloading' : 'loading';
             const statusText = type === 'unloading' ? '🔽 Выгрузка' : '🔼 Загрузка';
             
-            const katoff = isKatoff(item);
-            let katoffBadge = '';
-            let katoffTimeStr = '';
-            if (katoff === true) {
-                katoffBadge = '<span class="katoff-badge katoff">🎯 КАТОФНАЯ</span>';
-                katoffTimeStr = `<div class="katoff-time">До катофа: ${getTimeToKatoff(item)}</div>`;
-            } else if (katoff === false) {
-                katoffBadge = '<span class="katoff-badge free">🔄 НЕ КАТОФНАЯ</span>';
+            const shift = getShiftRecommendation(item);
+            let shiftHtml = '';
+            if (shift.allow === true) shiftHtml = `<div class="shift-recommendation allow">${shift.text}</div>`;
+            else if (shift.allow === false) shiftHtml = `<div class="shift-recommendation deny">${shift.text}</div>`;
+
+            const timeTo = getTimeToKatoff(item);
+            let riskHtml = '';
+            if (timeTo) {
+                if (timeTo.min < 0) {
+                    riskHtml = `<div class="risk-warning">🚨 ВЫ ОПАЗДЫВАЕТЕ! Катоф уже сгорел!</div>`;
+                } else if (timeTo.min < 60) {
+                    riskHtml = `<div class="risk-warning">🔥 СЛОТ ГОРИТ! До катофа ${timeTo.str}. Ускорьтесь!</div>`;
+                }
             }
 
-            html += `<div class="gate-card ${type}" onclick="unassignGate(${num})">
+            html += `<div class="gate-card ${type}">
                 <div class="gate-card-header">
                     <div><span class="gate-num">${num}</span><span class="gate-num-label">ВОРОТА</span></div>
                     <div class="gate-status ${type}">${statusText}</div>
                 </div>
                 <div class="gate-card-body">
-                    <div class="gate-route">${item.route} ${katoffBadge}</div>
+                    <div class="gate-route">${item.route}</div>
                     <div class="gate-direction">${item.direction || '—'}</div>
                     <div class="gate-meta">
                         <div>👤 ${item.driver || '—'}</div>
                         <div>🚛 ${item.vehicle || '—'}</div>
                     </div>
-                    ${katoffTimeStr}
+                    ${riskHtml}
+                    ${shiftHtml}
                     ${item.actionPlan ? `<div class="tag ffc" style="margin-top:8px;">${item.actionPlan}</div>` : ''}
                     <div class="gate-timer-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                         <div class="gate-timer" id="timer-${num}">00:00:00</div>
-                        <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px;" onclick="event.stopPropagation(); sendToFFC('${item.route}')">Отправить на ФФЦ</button>
+                        <div style="display:flex; gap:4px;">
+                            <button class="btn btn-success" style="padding:4px 10px; font-size:10px;" onclick="markAsDone('${item.route}')">✅ Готово</button>
+                            <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px;" onclick="sendToFFC('${item.route}')">На ФФЦ</button>
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -597,54 +646,101 @@
 
     // Модалка выбора машины на ворота
     function openGateSelect(gateNum) {
-        selectedGateForModal = gateNum;
         const list = document.getElementById('gateSelectList');
         document.getElementById('gateSelectTitle').textContent = `Выберите машину на ВОРОТА ${gateNum}`;
         
-        const available = [...getAllItems('incoming'), ...getAllItems('outgoing')].filter(i => !i.gate || !GATES.includes(parseInt(i.gate)));
+        let available = [...getAllItems('incoming'), ...getAllItems('outgoing')]
+            .filter(i => !i.gate || !GATES.includes(parseInt(i.gate)));
+            
+        available.sort((a, b) => {
+            const aK = isKatoff(a) ? 1 : 0;
+            const bK = isKatoff(b) ? 1 : 0;
+            return bK - aK;
+        });
         
         if (available.length === 0) {
-            list.innerHTML = '<div class="empty-state">Нет доступных машин для постановки.</div>';
+            list.innerHTML = '<div class="empty-state">Нет доступных машин.</div>';
         } else {
-            list.innerHTML = available.map(item => `
-                <div style="border:1px solid var(--border); padding:10px; border-radius:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="assignGate('${item.route}', ${gateNum})">
-                    <div>
-                        <div style="font-weight:900; font-size:14px;">${item.route} <span style="font-size:10px; font-weight:normal; color:var(--text-muted);">(${item.type === 'incoming' ? 'Выгрузка' : 'Загрузка'})</span></div>
-                        <div style="font-size:11px;">${item.direction} | ${item.vehicle || '—'}</div>
+            list.innerHTML = available.map(item => {
+                const isK = isKatoff(item);
+                const shift = getShiftRecommendation(item);
+                
+                let kBadge = '';
+                if (isK === true) kBadge = '<span class="katoff-badge katoff" style="margin-left:6px;">🎯 КАТОФ</span>';
+                else if (isK === false) kBadge = '<span class="katoff-badge free" style="margin-left:6px;">🔄 НЕ КАТОФ</span>';
+
+                let shiftHtml = '';
+                if (shift.allow === true) shiftHtml = `<div class="shift-recommendation allow">${shift.text}</div>`;
+                else if (shift.allow === false) shiftHtml = `<div class="shift-recommendation deny">${shift.text}</div>`;
+
+                return `
+                <div style="border:1px solid var(--border); padding:10px; border-radius:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; ${isK === true ? 'border-color:#dc2626; background:#fef2f2;' : ''}" onclick="assignGate('${item.route}', ${gateNum})">
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:14px;">${item.route} ${kBadge}</div>
+                        <div style="font-size:11px; margin-bottom:4px;">${item.direction} | ${item.vehicle || '—'}</div>
+                        ${shiftHtml}
                     </div>
-                    <button class="btn btn-primary" style="padding:4px 10px; font-size:11px;">Посадить</button>
+                    <button class="btn btn-primary" style="padding:4px 10px; font-size:11px; margin-left:10px;">Посадить</button>
                 </div>
-            `).join('');
+            `}).join('');
         }
         document.getElementById('gateSelectModal').classList.add('active');
     }
 
     function closeGateSelect() {
         document.getElementById('gateSelectModal').classList.remove('active');
-        selectedGateForModal = null;
     }
 
     function assignGate(route, gateNum) {
         const all = [...google.incoming, ...google.outgoing, ...chat];
         const item = all.find(i => i.route === route);
+        
+        const available = [...getAllItems('incoming'), ...getAllItems('outgoing')].filter(i => !i.gate || !GATES.includes(parseInt(i.gate)));
+        const urgentKatoff = available.find(i => isKatoff(i) === true && i.route !== route);
+        
+        if (item && urgentKatoff && isKatoff(item) !== true) {
+            const timeTo = getTimeToKatoff(urgentKatoff);
+            if (timeTo && timeTo.min < 120) {
+                if (!confirm(`⚠️ ВНИМАНИЕ! Есть катофная машина ${urgentKatoff.route} (${urgentKatoff.direction}), до катофа ${timeTo.str}. Вы уверены, что хотите поставить НЕ катофную машину?`)) {
+                    return;
+                }
+            }
+        }
+
         if (item) {
             item.gate = String(gateNum);
             gateStates[gateNum] = { startTime: Date.now(), data: item };
+            
+            const planMin = getPlanMinutes(item);
+            const now = new Date();
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+            if (planMin && nowMin > planMin + 15) {
+                const reason = prompt(`🚨 Машина ${item.route} опаздывает на ${nowMin - planMin} мин. Укажите причину опоздания:`);
+                if (reason) item.delayReason = reason;
+            }
         }
         closeGateSelect();
         renderGates();
         showToast(`Машина ${route} поставлена на ворота ${gateNum}`, 'success');
     }
 
-    function unassignGate(gateNum) {
-        if (!confirm('Снять машину с ворот?')) return;
+    // ==================== ДЕЙСТВИЯ С ВОРОТ ====================
+    function markAsDone(route) {
         const all = [...google.incoming, ...google.outgoing, ...chat];
-        all.forEach(i => { if (parseInt(i.gate) === gateNum) delete i.gate; });
-        delete gateStates[gateNum];
+        const item = all.find(i => i.route === route);
+        if (item) {
+            item.fact = 'Готово';
+            item.statusFromTable = 'Готово';
+            Object.keys(gateStates).forEach(num => {
+                if (gateStates[num] && gateStates[num].data.route === route) delete gateStates[num];
+            });
+        }
         renderGates();
+        renderTable('incoming');
+        renderTable('outgoing');
+        showToast(`Машина ${route} отмечена как Готово`, 'success');
     }
 
-    // ==================== ОТПРАВКА НА ФФЦ ====================
     function sendToFFC(route) {
         const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
         const item = all.find(i => i.route === route);
@@ -678,13 +774,17 @@
 
         tbody.innerHTML = ffcVehicles.map(v => {
             const timeStr = formatDur(Date.now() - v.startTime);
+            let alertHtml = '';
+            if ((Date.now() - v.startTime) > 120 * 60000 && isKatoff(v.data)) {
+                alertHtml = `<div class="risk-warning">🔥 Катоф сгорит! Заберите машину!</div>`;
+            }
             return `<tr>
-                <td><b>${v.data.route}</b></td>
+                <td><b>${v.data.route}</b> ${alertHtml}</td>
                 <td>${v.data.direction || '—'}</td>
                 <td>${v.data.vehicle || '—'}</td>
                 <td>${v.data.driver || '—'}</td>
                 <td class="center" style="color:var(--purple); font-weight:900;">${timeStr}</td>
-                <td><button class="btn btn-secondary" style="padding:4px 8px; font-size:10px;" onclick="returnFromFFC('${v.data.route}')">Вернулся (Готово)</button></td>
+                <td><button class="btn btn-secondary" style="padding:4px 8px; font-size:10px;" onclick="returnFromFFC('${v.data.route}')">Вернулся</button></td>
             </tr>`;
         }).join('');
     }
@@ -696,7 +796,7 @@
         renderFFC();
         renderAnalysis();
         updateTabCounts();
-        showToast(`Машина ${route} вернулась с ФФЦ и готова`, 'success');
+        showToast(`Машина ${route} вернулась с ФФЦ`, 'success');
     }
 
     // ==================== ТАБЛИЦЫ ====================
@@ -705,7 +805,6 @@
         const countEl = document.getElementById(type + 'Count');
         let items = getAllItems(type);
         
-        // Фильтруем по типу (на всякий случай)
         items = items.filter(i => i.type === type || !i.type);
 
         countEl.textContent = items.length + ' рейсов';
@@ -718,17 +817,18 @@
         tbody.innerHTML = items.map((item, i) => {
             const status = detectStatus(item);
             const statusBadge = getStatusBadge(status);
-            const isSearchMatch = searchQuery && (
-                (item.route || '').toLowerCase().includes(searchQuery) ||
-                (item.direction || '').toLowerCase().includes(searchQuery)
-            );
-            
-            // Логика что делать
             let actionHtml = item.actionPlan || '—';
-            if (status === 'ffc') actionHtml = '<span style="color:var(--purple); font-weight:900;">На ФФЦ</span>';
+            
             if (status === 'loaded') actionHtml = '✅ Готово';
+            if (item.delayReason) actionHtml += `<br><span style="color:var(--danger); font-size:10px;">Опоздание: ${item.delayReason}</span>`;
+            
+            // Добавляем рекомендацию по сдвигу в таблицу
+            const shift = getShiftRecommendation(item);
+            let shiftBadge = '';
+            if (shift.allow === true) shiftBadge = `<br><span style="color:var(--success); font-size:10px; font-weight:800;">✅ Слот можно сдвинуть</span>`;
+            else if (shift.allow === false) shiftBadge = `<br><span style="color:var(--danger); font-size:10px; font-weight:800;">❌ Слот сдвигать нельзя</span>`;
 
-            return `<tr style="${isSearchMatch ? 'background:#fef3c7;' : ''}">
+            return `<tr>
                 <td class="center">${i + 1}</td>
                 <td><b>${item.route}</b></td>
                 <td>${item.direction || '—'}</td>
@@ -738,15 +838,9 @@
                 <td>${item.fact || '—'}</td>
                 <td class="center">${item.gate || '—'}</td>
                 <td class="center">${statusBadge}</td>
-                <td><span style="font-size:11px; font-weight:700;">${actionHtml}</span></td>
+                <td><span style="font-size:11px; font-weight:700;">${actionHtml}${shiftBadge}</span></td>
             </tr>`;
         }).join('');
-    }
-
-    function doSearch(q) {
-        searchQuery = (q || '').toLowerCase().trim();
-        if (currentTab === 'incoming') renderTable('incoming');
-        if (currentTab === 'outgoing') renderTable('outgoing');
     }
 
     // ==================== АНАЛИЗ И РИСКИ ====================
@@ -764,34 +858,26 @@
                 </div>
             `).join('');
         }
-        updateTabCounts();
     }
 
     function buildAlerts() {
         const alerts = [];
         const all = [...getAllItems('incoming'), ...getAllItems('outgoing')];
 
-        // Прозвон за час
         all.forEach(item => {
             if (detectStatus(item) !== 'coming') return;
             if (isKatoff(item) !== true) return;
             
-            const deadlineMin = getSCDeadlineMinutes(item.direction);
-            if (deadlineMin === null) return;
-            const now = new Date();
-            const nowMin = now.getHours() * 60 + now.getMinutes();
-            const diffMin = deadlineMin - nowMin;
-            
-            if (diffMin > 0 && diffMin <= 60) {
+            const timeTo = getTimeToKatoff(item);
+            if (timeTo && timeTo.min > 0 && timeTo.min <= 60) {
                 alerts.push({
                     level: 'critical',
                     icon: '📞',
-                    text: `<b>${item.route}</b> (${item.direction}) — ${diffMin} мин до катофа. ЗВОНИ ВОДИТЕЛЮ!`
+                    text: `<b>${item.route}</b> (${item.direction}) — ${timeTo.str} до катофа. ЗВОНИ ВОДИТЕЛЮ!`
                 });
             }
         });
 
-        // Машины, которые долго на ФФЦ (более 2 часов)
         ffcVehicles.forEach(v => {
             const diffMin = (Date.now() - v.startTime) / 60000;
             if (diffMin > 120) {
@@ -806,7 +892,62 @@
         return alerts;
     }
 
-    // ==================== УМНЫЙ ИИ ЛОГИСТ ====================
+    // ==================== АНАЛИЗ СРЕЗА ====================
+    function openSliceImport() {
+        document.getElementById('sliceInput').value = '';
+        document.getElementById('sliceModal').classList.add('active');
+    }
+
+    function closeSliceImport() { document.getElementById('sliceModal').classList.remove('active'); }
+
+    function analyzeSlice() {
+        const text = document.getElementById('sliceInput').value.trim();
+        if (!text) return;
+
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+        sliceData = [];
+        
+        lines.forEach(line => {
+            const parts = line.split('-');
+            if (parts.length >= 2) {
+                const dir = parts[0].trim();
+                const count = parseInt(parts[1]) || 0;
+                sliceData.push({ direction: dir, count: count });
+            }
+        });
+
+        let resultText = '';
+        sliceData.forEach(item => {
+            const dir = item.direction;
+            const count = item.count;
+            const cutoff = getCutoffFor(dir);
+            
+            if (!cutoff) {
+                resultText += `${dir} - нет данных о катофе\n`;
+                return;
+            }
+
+            const cars = getAllItems('incoming').concat(getAllItems('outgoing')).filter(c => c.direction && c.direction.toLowerCase().includes(dir.toLowerCase()));
+            
+            if (cars.length === 0) {
+                resultText += `${dir} - рисков нет (нет машин, но и груза нет)\n`;
+            } else {
+                const katoffCars = cars.filter(c => isKatoff(c) === true);
+                if (katoffCars.length > 0) {
+                    resultText += `${dir} - рисков нет (катофные машины есть)\n`;
+                } else {
+                    resultText += `${dir} - рисков нет (не катофные, время есть)\n`;
+                }
+            }
+        });
+
+        document.getElementById('sliceAnalysisText').textContent = resultText;
+        document.getElementById('sliceAnalysisCount').textContent = sliceData.length + ' направлений';
+        closeSliceImport();
+        showToast('Анализ среза готов!', 'success');
+    }
+
+    // ==================== ИИ ЛОГИСТ ====================
     function openAILogist() {
         document.getElementById('aiInput').value = '';
         document.getElementById('aiModal').classList.add('active');
@@ -819,7 +960,7 @@
     function runAILogist() {
         const text = document.getElementById('aiInput').value.trim();
         if (!text) {
-            showToast('Вставьте текст от логиста', 'warning');
+            showToast('Вставьте текст', 'warning');
             return;
         }
 
@@ -851,18 +992,15 @@
             let actionPlan = '';
             let type = 'incoming';
             
-            if (block.includes('(Вы, затем ФФЦ)') || block.includes('(Вы, заетм ФФЦ)')) {
-                actionPlan = 'Выгрузить → Отдать на ФФЦ → После ФФЦ загрузить';
-                type = 'outgoing'; // Это сложный цикл, но по сути машина приедет на загрузку
+            if (block.includes('(Вы, затем ФФЦ)')) {
+                actionPlan = 'Вы, затем ФФЦ';
+                type = 'outgoing';
             } else if (block.includes('(ВАШ)') || block.includes('(Ваш)')) {
-                actionPlan = 'Загрузить (Ваша машина)';
+                actionPlan = 'Ваша';
                 type = 'outgoing';
             } else if (block.includes('(В НОЧЬ ВАША)')) {
-                actionPlan = 'Загрузить в ночь (Ваша)';
+                actionPlan = 'В ночь ваша';
                 type = 'outgoing';
-            } else {
-                actionPlan = 'Выгрузить (чужая)';
-                type = 'incoming';
             }
 
             if (route) {
@@ -877,14 +1015,6 @@
                     status: 'coming'
                 };
 
-                // Ищем дубликаты (если машина есть и на вход, и на исход)
-                const inIncoming = google.incoming.find(i => i.route === route);
-                const inOutgoing = google.outgoing.find(i => i.route === route);
-                if (inIncoming && inOutgoing) {
-                    actionPlan = 'Двойной цикл: Выгрузить → (ФФЦ) → Загрузить';
-                    car.actionPlan = actionPlan;
-                }
-
                 const idx = chat.findIndex(c => c.route === route);
                 if (idx >= 0) chat[idx] = { ...chat[idx], ...car };
                 else chat.push(car);
@@ -896,11 +1026,11 @@
             renderTable('incoming'); 
             renderTable('outgoing'); 
             renderAnalysis();
-            showToast(`🤖 ИИ успешно распознал ${parsedCount} машин!`, 'success');
+            showToast(`🤖 ИИ распознал ${parsedCount} машин!`, 'success');
             closeAILogist();
             if (currentTab !== 'gates') switchTab('incoming');
         } else {
-            showToast('Не удалось распознать рейсы. Проверьте формат.', 'error');
+            showToast('Не удалось распознать.', 'error');
         }
     }
 
@@ -912,7 +1042,6 @@
 
     function closeImport() { document.getElementById('importModal').classList.remove('active'); }
 
-    // УМНЫЙ ПАРСЕР ТАБЛИЦ (Вход/Исход)
     function doImport() {
         const text = document.getElementById('importInput').value.trim();
         if (!text) return;
@@ -920,16 +1049,12 @@
         const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim());
         if (lines.length < 2) return;
 
-        // Определяем тип таблицы по шапке
         const headerLine = lines[0].toLowerCase();
         let type = 'incoming';
         if (headerLine.includes('исходящий') || headerLine.includes('загрузка') || headerLine.includes('плановая отгрузка')) {
             type = 'outgoing';
-        } else if (headerLine.includes('входящий') || headerLine.includes('выгрузка') || headerLine.includes('плановая доставка')) {
-            type = 'incoming';
         }
 
-        // Находим индексы колонок по шапке
         const headerCols = lines[0].split('\t').map(c => c.trim().toLowerCase());
         let idxRoute = headerCols.findIndex(c => c.includes('рейс'));
         let idxDir = headerCols.findIndex(c => c.includes('направление'));
@@ -937,15 +1062,16 @@
         let idxDriver = headerCols.findIndex(c => c.includes('фио') || c.includes('водитель'));
         let idxPlan = headerCols.findIndex(c => c.includes('план'));
         let idxFact = headerCols.findIndex(c => c.includes('факт'));
+        let idxStatus = headerCols.findIndex(c => c.includes('статус'));
         let idxGate = headerCols.findIndex(c => c.includes('ворота'));
 
-        // Если индексы не найдены (например, нестандартная шапка), ставим дефолтные
         if (idxRoute === -1) idxRoute = 2;
         if (idxDir === -1) idxDir = 1;
         if (idxVeh === -1) idxVeh = 3;
         if (idxDriver === -1) idxDriver = 4;
         if (idxPlan === -1) idxPlan = 5;
         if (idxFact === -1) idxFact = 7;
+        if (idxStatus === -1) idxStatus = 14;
         if (idxGate === -1) idxGate = 13;
 
         lines.slice(1).forEach(line => {
@@ -956,13 +1082,20 @@
             if (!rawRoute) return;
             const route = '#' + rawRoute;
 
+            let factValue = p[idxFact] || '';
+            let statusText = (p[idxStatus] || '').toLowerCase();
+            if (statusText.includes('загрузили') || statusText.includes('выгрузили')) {
+                factValue = statusText.includes('загрузили') ? 'Загрузили' : 'Выгрузили';
+            }
+
             const item = {
                 route: route,
                 direction: p[idxDir] || '',
                 vehicle: p[idxVeh] || '',
                 driver: p[idxDriver] || '',
                 plan: p[idxPlan] || '',
-                fact: p[idxFact] || '',
+                fact: factValue,
+                statusFromTable: statusText,
                 gate: p[idxGate] || '',
                 source: 'google', 
                 type: type,
@@ -983,6 +1116,14 @@
     }
 
     // ==================== ВСПОМОГАТЕЛЬНОЕ ====================
+    function formatDur(ms) {
+        const totalMin = Math.floor(Math.abs(ms) / 60000);
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        if (h > 0) return h + 'ч ' + m + 'мин';
+        return m + 'мин';
+    }
+
     function updateTabCounts() {
         document.getElementById('tabCountGates').textContent = Object.keys(gateStates).length;
         document.getElementById('tabCountIncoming').textContent = getAllItems('incoming').length;
@@ -1003,10 +1144,11 @@
     function resetAll() {
         if (!confirm('Сбросить ВСЕ данные?')) return;
         google = { incoming: [], outgoing: [] };
-        chat = []; ffcVehicles = []; gateStates = {};
+        chat = []; ffcVehicles = []; gateStates = {}; sliceData = [];
         Object.values(gateTimers).forEach(t => clearInterval(t));
         gateTimers = {};
         renderGates(); renderTable('incoming'); renderTable('outgoing'); renderFFC(); renderAnalysis();
+        document.getElementById('sliceAnalysisText').textContent = 'Загрузите срез...';
         updateTabCounts();
         showToast('Всё сброшено', 'success');
     }

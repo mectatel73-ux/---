@@ -638,6 +638,7 @@
                         <div style="display:flex; gap:4px;">
                             <button class="btn btn-success" style="padding:4px 10px; font-size:10px;" onclick="markAsDone('${item.route}')">✅ Готово</button>
                             <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px;" onclick="sendToFFC('${item.route}')">На ФФЦ</button>
+                            <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px; background: var(--danger-light); color: var(--danger); border-color: var(--danger);" onclick="unassignGate(${num})" title="Просто снять с ворот">❌</button>
                         </div>
                     </div>
                 </div>
@@ -670,7 +671,6 @@
         }, 1000);
     }
 
-    // Модалка выбора машины на ворота
     function openGateSelect(gateNum) {
         const list = document.getElementById('gateSelectList');
         document.getElementById('gateSelectTitle').textContent = `Выберите машину на ВОРОТА ${gateNum}`;
@@ -758,15 +758,40 @@
         if (item) {
             item.fact = 'Готово';
             item.statusFromTable = 'Готово';
-            Object.keys(gateStates).forEach(num => {
-                if (gateStates[num] && gateStates[num].data.route === route) delete gateStates[num];
-            });
+            item.gate = ''; // ВАЖНО: Очищаем ворота!
         }
+        
+        // Убираем из состояния ворот и таймеров
+        Object.keys(gateStates).forEach(num => {
+            if (gateStates[num] && gateStates[num].data.route === route) {
+                delete gateStates[num];
+                if (gateTimers[num]) { clearInterval(gateTimers[num]); delete gateTimers[num]; }
+            }
+        });
+        
         saveState();
         renderGates();
         renderTable('incoming');
         renderTable('outgoing');
-        showToast(`Машина ${route} отмечена как Готово`, 'success');
+        showToast(`Машина ${route} отмечена как Готово и снята с ворот`, 'success');
+    }
+
+    function unassignGate(gateNum) {
+        if (!confirm('Просто снять машину с ворот (без отметки Готово)?')) return;
+        
+        const all = [...google.incoming, ...google.outgoing, ...chat];
+        all.forEach(i => {
+            if (parseInt(i.gate) === gateNum) i.gate = '';
+        });
+        
+        delete gateStates[gateNum];
+        if (gateTimers[gateNum]) { clearInterval(gateTimers[gateNum]); delete gateTimers[gateNum]; }
+        
+        saveState();
+        renderGates();
+        renderTable('incoming');
+        renderTable('outgoing');
+        showToast(`Ворота ${gateNum} освобождены`, 'info');
     }
 
     function sendToFFC(route) {
@@ -775,7 +800,10 @@
         if (!item) return;
         
         Object.keys(gateStates).forEach(num => {
-            if (gateStates[num] && gateStates[num].data.route === route) delete gateStates[num];
+            if (gateStates[num] && gateStates[num].data.route === route) {
+                delete gateStates[num];
+                if (gateTimers[num]) { clearInterval(gateTimers[num]); delete gateTimers[num]; }
+            }
         });
         
         if (!ffcVehicles.find(v => v.data.route === route)) {
